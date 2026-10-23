@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Enums\ProjectRole;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -46,5 +49,37 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Delete the projects a user owns along with the user.
+     */
+    protected static function booted(): void
+    {
+        static::deleting(function (User $user): void {
+            $user->projects()
+                ->wherePivot('role', ProjectRole::Owner->value)
+                ->get()
+                ->each->delete();
+        });
+    }
+
+    /**
+     * @return BelongsToMany<Project, $this, ProjectMembership>
+     */
+    public function projects(): BelongsToMany
+    {
+        return $this->belongsToMany(Project::class)
+            ->using(ProjectMembership::class)
+            ->withPivot('id', 'role')
+            ->withTimestamps();
+    }
+
+    /**
+     * @return HasMany<ProjectMembership, $this>
+     */
+    public function memberships(): HasMany
+    {
+        return $this->hasMany(ProjectMembership::class);
     }
 }
