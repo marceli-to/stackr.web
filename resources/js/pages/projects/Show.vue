@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { Head, setLayoutProps } from '@inertiajs/vue3';
-import { Columns3, Pencil, Trash2 } from '@lucide/vue';
+import { Pencil, Trash2 } from '@lucide/vue';
 import { ref, watchEffect } from 'vue';
+import Board from '@/components/board/Board.vue';
 import Heading from '@/components/Heading.vue';
 import DeleteProjectDialog from '@/components/projects/DeleteProjectDialog.vue';
 import ProjectFormDialog from '@/components/projects/ProjectFormDialog.vue';
 import { Button } from '@/components/ui/button';
 import { index, show } from '@/routes/projects';
-import type { Project, ProjectRole } from '@/types';
+import type { BoardStack, Project, ProjectRole } from '@/types';
 
 const props = defineProps<{
     project: Project;
     role: ProjectRole;
+    stacks: BoardStack[];
 }>();
 
 watchEffect(() => {
@@ -30,7 +32,7 @@ const deleteOpen = ref(false);
 <template>
     <Head :title="props.project.name" />
 
-    <div class="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
+    <div class="flex h-full min-h-0 flex-1 flex-col gap-6 p-4 md:p-6">
         <div class="flex items-start justify-between gap-4">
             <Heading
                 :title="project.name"
@@ -54,14 +56,7 @@ const deleteOpen = ref(false);
             </div>
         </div>
 
-        <div
-            class="flex flex-1 flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-sidebar-border/70 p-12 text-center dark:border-sidebar-border"
-        >
-            <Columns3 class="size-10 text-muted-foreground" />
-            <p class="text-sm text-muted-foreground">
-                Lists and cards for this board are coming next.
-            </p>
-        </div>
+        <Board :project="project" :stacks="stacks" />
     </div>
 
     <ProjectFormDialog v-model:open="editOpen" :project="project" />

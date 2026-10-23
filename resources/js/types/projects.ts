@@ -14,3 +14,15 @@ export type ProjectSummary = Project & {
 };
 
 export type ProjectLink = Pick<Project, 'id' | 'name'>;
+
+export type BoardCard = {
+    id: number;
+    title: string;
+    due_at: string | null;
+};
+
+export type BoardStack = {
+    id: number;
+    name: string;
+    cards: BoardCard[];
+};

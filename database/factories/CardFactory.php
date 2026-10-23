@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Card;
 use App\Models\Stack;
+use App\Support\FractionalIndex;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -11,6 +12,11 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class CardFactory extends Factory
 {
+    /**
+     * Each new model sorts after the previous one, like appending in the app.
+     */
+    private static ?string $lastPosition = null;
+
     /**
      * Define the model's default state.
      *
@@ -22,7 +28,7 @@ class CardFactory extends Factory
             'stack_id' => Stack::factory(),
             'title' => fake()->sentence(4),
             'description' => fake()->optional()->paragraph(),
-            'position' => 'a0',
+            'position' => fn () => self::$lastPosition = FractionalIndex::between(self::$lastPosition, null),
             'due_at' => fake()->optional()->dateTimeBetween('now', '+1 month'),
         ];
     }

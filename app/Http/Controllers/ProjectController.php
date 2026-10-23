@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Enums\ProjectRole;
 use App\Http\Requests\ProjectRequest;
+use App\Models\Card;
 use App\Models\Project;
 use App\Models\ProjectMembership;
+use App\Models\Stack;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -64,9 +66,20 @@ class ProjectController extends Controller
     {
         Gate::authorize('view', $project);
 
+        $project->load('stacks.cards');
+
         return Inertia::render('projects/Show', [
             'project' => $project->only('id', 'name', 'description'),
             'role' => $project->roleOf($request->user()),
+            'stacks' => $project->stacks->map(fn (Stack $stack) => [
+                'id' => $stack->id,
+                'name' => $stack->name,
+                'cards' => $stack->cards->map(fn (Card $card) => [
+                    'id' => $card->id,
+                    'title' => $card->title,
+                    'due_at' => $card->due_at,
+                ]),
+            ]),
         ]);
     }
 

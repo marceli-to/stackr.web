@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Project;
 use App\Models\Stack;
+use App\Support\FractionalIndex;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -11,6 +12,11 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class StackFactory extends Factory
 {
+    /**
+     * Each new model sorts after the previous one, like appending in the app.
+     */
+    private static ?string $lastPosition = null;
+
     /**
      * Define the model's default state.
      *
@@ -21,7 +27,7 @@ class StackFactory extends Factory
         return [
             'project_id' => Project::factory(),
             'name' => fake()->word(),
-            'position' => 'a0',
+            'position' => fn () => self::$lastPosition = FractionalIndex::between(self::$lastPosition, null),
         ];
     }
 }
