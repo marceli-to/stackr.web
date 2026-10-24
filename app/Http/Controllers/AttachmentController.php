@@ -55,6 +55,22 @@ class AttachmentController extends Controller
 	}
 
 	/**
+	 * Serve the small copy of a large image, or the image itself when it has none.
+	 */
+	public function thumbnail(Attachment $attachment): StreamedResponse
+	{
+		Gate::authorize('view', $attachment->card->stack->project);
+
+		$path = $attachment->thumb_path ?? $attachment->path;
+
+		return Storage::disk(Attachment::DISK)->response($path, $attachment->name, [
+			'Content-Type' => $attachment->thumb_path !== null ? 'image/webp' : $attachment->mime_type,
+			'Cache-Control' => 'private, max-age=31536000, immutable',
+			'X-Content-Type-Options' => 'nosniff',
+		]);
+	}
+
+	/**
 	 * Delete a file. A card that used it as its cover loses the cover.
 	 */
 	public function destroy(Attachment $attachment, DeleteAttachment $deleteAttachment): RedirectResponse

@@ -58,13 +58,23 @@ class MoveCard
 		$new = Attachment::directoryFor($to, $card->id);
 
 		foreach ($card->attachments()->get() as $attachment) {
-			$path = $new.'/'.basename($attachment->path);
+			$paths = [];
 
-			if ($disk->exists($attachment->path)) {
-				$disk->move($attachment->path, $path);
+			foreach (['path', 'thumb_path'] as $column) {
+				$current = $attachment->{$column};
+
+				if ($current === null) {
+					continue;
+				}
+
+				$paths[$column] = $new.'/'.basename($current);
+
+				if ($disk->exists($current)) {
+					$disk->move($current, $paths[$column]);
+				}
 			}
 
-			$attachment->update(['path' => $path]);
+			$attachment->update($paths);
 		}
 
 		$disk->deleteDirectory($old);

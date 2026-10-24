@@ -43,6 +43,6 @@ rsync -az --delete \
 	"$STAGE/" "$HOST:$DEST/"
 
 echo "Migrating and refreshing caches…"
-ssh "$HOST" "cd '$DEST' && $PHP artisan migrate --force && $PHP artisan optimize:clear >/dev/null && $PHP artisan optimize >/dev/null && $PHP artisan queue:restart >/dev/null"
+ssh "$HOST" "cd '$DEST' && $PHP artisan migrate --force && $PHP artisan app:make-thumbnails >/dev/null && $PHP artisan optimize:clear >/dev/null && $PHP artisan optimize >/dev/null && $PHP artisan queue:restart >/dev/null"
 
 echo "Deployed $(git rev-parse --short HEAD) to https://stackr.kimiyu.ch"

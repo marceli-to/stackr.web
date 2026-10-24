@@ -276,7 +276,7 @@ const sideButton =
 				class="relative flex h-48 shrink-0 justify-center bg-field"
 			>
 				<img
-					:src="cover.url"
+					:src="cover.thumb_url ?? cover.url"
 					alt=""
 					class="h-full max-w-full object-contain"
 				/>

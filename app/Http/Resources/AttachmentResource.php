@@ -23,6 +23,8 @@ class AttachmentResource extends JsonResource
 			'size' => $this->size,
 			'is_image' => $this->isImage(),
 			'url' => route('attachments.show', $this->resource),
+			// Small enough for covers and previews; the image itself if it's small already.
+			'thumb_url' => $this->isImage() ? route('attachments.thumbnail', $this->resource) : null,
 			'download_url' => route('attachments.show', ['attachment' => $this->resource, 'download' => 1]),
 			'width' => $this->width,
 			'height' => $this->height,

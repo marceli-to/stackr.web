@@ -69,6 +69,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 	Route::post('cards/{card}/attachments', [AttachmentController::class, 'store'])->name('attachments.store');
 	Route::get('attachments/{attachment}', [AttachmentController::class, 'show'])->name('attachments.show');
+	Route::get('attachments/{attachment}/thumbnail', [AttachmentController::class, 'thumbnail'])->name('attachments.thumbnail');
 	Route::delete('attachments/{attachment}', [AttachmentController::class, 'destroy'])->name('attachments.destroy');
 
 	Route::post('cards/{card}/comments', [CommentController::class, 'store'])->name('comments.store');

@@ -32,7 +32,7 @@ class CardFaceResource extends JsonResource
 			'labels' => $this->labels->pluck('id'),
 			'members' => $this->members->pluck('id'),
 			'cover' => $this->cover !== null ? [
-				'url' => route('attachments.show', $this->cover),
+				'url' => route('attachments.thumbnail', $this->cover),
 				'width' => $this->cover->width,
 				'height' => $this->cover->height,
 			] : null,

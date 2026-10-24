@@ -99,6 +99,8 @@ export type CardAttachment = {
 	size: number;
 	is_image: boolean;
 	url: string;
+	/** A small copy for previews; null for files that aren't images. */
+	thumb_url: string | null;
 	download_url: string;
 	width: number | null;
 	height: number | null;

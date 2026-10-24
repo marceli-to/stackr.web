@@ -75,7 +75,7 @@ function extension(name: string): string {
 				>
 					<img
 						v-if="attachment.is_image"
-						:src="attachment.url"
+						:src="attachment.thumb_url ?? attachment.url"
 						alt=""
 						loading="lazy"
 						class="size-full object-cover"

@@ -76,7 +76,7 @@ function remove() {
 						@click="save({ cover_attachment_id: image.id })"
 					>
 						<img
-							:src="image.url"
+							:src="image.thumb_url ?? image.url"
 							alt=""
 							loading="lazy"
 							class="size-full object-cover"

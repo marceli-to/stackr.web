@@ -23,6 +23,7 @@ _Last updated: 2026-10-24_
 | 13. Activity log per card                              | ✅ done |
 | 14. Notifications (bell + email) and @mentions         | ✅ done |
 | 15. Colour covers                                      | ✅ done |
+| 16. Image thumbnails                                   | ✅ done |
 
 Everything is on `main`, pushed to GitHub (https://github.com/marceli-to/stackr.web) and deployed
 to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
@@ -119,6 +120,11 @@ to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
   A card can have a colour cover instead (`cards.cover_color`, the 8 label colours): "Cover" in
   the dialog (`CardCoverPicker.vue`) picks a colour or one of the card's images; choosing one
   clears the other, and a new upload doesn't replace a colour cover.
+- **Thumbnails:** images wider than 640px get a WebP copy on upload (`App\Support\Thumbnail`, GD,
+  EXIF rotation honoured; GIFs, huge images over 40 MP and anything GD can't read are skipped) at
+  `thumb_<name>.webp` beside the original (`attachments.thumb_path`). `attachments.thumbnail`
+  serves it, or the original when there's none; covers, the dialog cover and previews use it.
+  Moves and copies take thumbnails along. `app:make-thumbnails` backfills; `deploy.sh` runs it.
 - **Search and filters** (`components/board/{BoardFilterBar.vue,filter.ts}`) work in the browser:
   the board already has every card. A search field (`/` focuses it, Esc clears it) matches the
   title and label names, every word has to match. The "Filter" popover picks members ("Cards
@@ -259,7 +265,7 @@ Same method as the kimiyuch projects (gotaticket/usverchauft):
 
 ## Next up
 
-Feature list (2026-10-24), being worked through in order (1–5, 8 and 13 are done),
+Feature list (2026-10-24), being worked through in order (1–6, 8 and 13 are done),
 then 13 with 4 (notifications with mentions; needs the scheduler decision first).
 
 **Cards**
@@ -269,7 +275,7 @@ then 13 with 4 (notifications with mentions; needs the scheduler decision first)
 3. ~~Activity log per card, shown together with the comments.~~ Done.
 4. ~~@mentions in comments, with a notification to the person mentioned.~~ Done.
 5. ~~Cover colours: a plain colour cover as well as image covers.~~ Done.
-6. Image thumbnails: covers and previews currently load images at full size.
+6. ~~Image thumbnails: covers and previews currently load images at full size.~~ Done.
 7. Card templates and duplicating a checklist.
 
 **Board**

@@ -11,7 +11,10 @@ use Illuminate\Support\Str;
 
 class StoreAttachments
 {
-	public function __construct(private RecordActivity $recordActivity) {}
+	public function __construct(
+		private RecordActivity $recordActivity,
+		private MakeThumbnail $makeThumbnail,
+	) {}
 
 	/**
 	 * Stores the files on the card. The first image becomes the cover when
@@ -39,6 +42,7 @@ class StoreAttachments
 			$attachment->card()->associate($card);
 			$attachment->user()->associate($user);
 			$attachment->save();
+			$this->makeThumbnail->handle($attachment);
 			$this->recordActivity->handle($card, 'attached', ['name' => $attachment->name]);
 
 			if ($card->cover_attachment_id === null && $card->cover_color === null && $attachment->isImage()) {

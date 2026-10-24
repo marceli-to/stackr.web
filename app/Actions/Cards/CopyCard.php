@@ -98,8 +98,13 @@ class CopyCard
 				$disk->copy($attachment->path, $path);
 			}
 
-			$new = $attachment->replicate(['card_id', 'path']);
+			$new = $attachment->replicate(['card_id', 'path', 'thumb_path']);
 			$new->path = $path;
+
+			if ($attachment->thumb_path !== null && $disk->exists($attachment->thumb_path)) {
+				$new->thumb_path = $directory.'/thumb_'.pathinfo($path, PATHINFO_FILENAME).'.webp';
+				$disk->copy($attachment->thumb_path, $new->thumb_path);
+			}
 			$new->card()->associate($copy);
 			$new->save();
 
