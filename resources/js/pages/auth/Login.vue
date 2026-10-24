@@ -30,7 +30,7 @@ defineProps<{
 
     <div
         v-if="status"
-        class="mb-4 text-center text-sm font-medium text-green-600"
+        class="mb-4 text-center text-sm font-medium text-(--color-success)"
     >
         {{ status }}
     </div>
@@ -94,7 +94,7 @@ defineProps<{
                 Forgot your password?
             </TextLink>
             <div>
-                Don't have an account?
+                Don’t have an account?
                 <TextLink :href="register()" :tabindex="5">Sign up</TextLink>
             </div>
         </div>

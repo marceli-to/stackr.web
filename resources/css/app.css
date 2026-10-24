@@ -1,6 +1,17 @@
+/* Hallmark · shape: app screen · genre: modern-minimal · theme: custom · redesign: full
+ * idea: "every project stands on its own colour: the board is a poster for the project, the overview a wall of those colours"
+ * vibe: "poster fields, condensed type, white cards"
+ * paper: oklch(97.6% 0.004 90) · accent: six project fields (cobalt, signal, moss, oxblood, lagoon, ochre), ink for the primary, cobalt for focus · display: Antonio 700 · body: Hanken Grotesk 400/600
+ * nav: a slim top bar with a project switcher, replacing the sidebar · signature: the board drenched in its project's colour under a poster-size name · states: empty (projects, list), error (forms)
+ * axes: light/display-condensed/chromatic-cobalt · posture: drenched on a board, restrained on paper · contrast: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P3 H3 E3 S3 R3 V3 · weakest: R, a drenched page can drown its content, so lists sit in a darker well of the field and cards stay plain white */
+/* Hallmark · waive 26b · AppTopBar.vue renders the shared Button, whose disabled styling lives in components/ui/button/index.ts · the project switcher and the user menu are triggers that are never disabled */
 @import 'tailwindcss';
 
 @import 'tw-animate-css';
+
+@import './tokens.css';
+@import './base.css' layer(base);
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -8,13 +19,15 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-sans:
-        Instrument Sans, ui-sans-serif, system-ui, sans-serif,
-        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-        'Noto Color Emoji';
+    --font-sans: var(--font-body);
+    --font-display: var(--font-display);
 
-    --shadow-soft:
-        0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -6px rgb(0 0 0 / 0.08);
+    --color-sheet: var(--color-sheet);
+    --color-field: var(--field);
+    --color-field-ink: var(--field-ink);
+    --color-field-well: var(--field-well);
+
+    --shadow-soft: 0 0 0 1px var(--color-rule);
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
@@ -78,91 +91,45 @@
     ::before,
     ::backdrop,
     ::file-selector-button {
-        border-color: var(--color-gray-200, currentColor);
-    }
-}
-
-@layer utilities {
-    body,
-    html {
-        --font-sans:
-            'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
-            'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-            'Noto Color Emoji';
+        border-color: var(--border, currentColor);
     }
 }
 
 :root {
-    --background: hsl(0 0% 100%);
-    --foreground: hsl(0 0% 3.9%);
-    --card: hsl(0 0% 100%);
-    --card-foreground: hsl(0 0% 3.9%);
-    --popover: hsl(0 0% 100%);
-    --popover-foreground: hsl(0 0% 3.9%);
-    --primary: oklch(0.511 0.262 276.966);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: hsl(0 0% 92.1%);
-    --secondary-foreground: hsl(0 0% 9%);
-    --muted: hsl(0 0% 96.1%);
-    --muted-foreground: hsl(0 0% 45.1%);
-    --accent: hsl(0 0% 96.1%);
-    --accent-foreground: hsl(0 0% 9%);
-    --destructive: hsl(0 84.2% 60.2%);
-    --destructive-foreground: hsl(0 0% 98%);
-    --border: hsl(0 0% 92.8%);
-    --input: hsl(0 0% 89.8%);
-    --ring: oklch(0.585 0.233 277.117);
-    --chart-1: hsl(12 76% 61%);
-    --chart-2: hsl(173 58% 39%);
-    --chart-3: hsl(197 37% 24%);
-    --chart-4: hsl(43 74% 66%);
-    --chart-5: hsl(27 87% 67%);
-    --radius: 0.5rem;
-    --sidebar-background: oklch(0.962 0.018 272.314);
-    --sidebar-foreground: oklch(0.3 0.03 275);
-    --sidebar-primary: oklch(0.511 0.262 276.966);
-    --sidebar-primary-foreground: hsl(0 0% 98%);
-    --sidebar-accent: oklch(0.93 0.034 272.788);
-    --sidebar-accent-foreground: oklch(0.257 0.09 281.288);
-    --sidebar-border: oklch(0.91 0.03 273);
-    --sidebar-ring: oklch(0.585 0.233 277.117);
-    --sidebar: oklch(0.962 0.018 272.314);
-}
-
-.dark {
-    --background: hsl(0 0% 3.9%);
-    --foreground: hsl(0 0% 98%);
-    --card: hsl(0 0% 3.9%);
-    --card-foreground: hsl(0 0% 98%);
-    --popover: hsl(0 0% 3.9%);
-    --popover-foreground: hsl(0 0% 98%);
-    --primary: oklch(0.585 0.233 277.117);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: hsl(0 0% 14.9%);
-    --secondary-foreground: hsl(0 0% 98%);
-    --muted: hsl(0 0% 16.08%);
-    --muted-foreground: hsl(0 0% 63.9%);
-    --accent: hsl(0 0% 14.9%);
-    --accent-foreground: hsl(0 0% 98%);
-    --destructive: hsl(0 84% 60%);
-    --destructive-foreground: hsl(0 0% 98%);
-    --border: hsl(0 0% 14.9%);
-    --input: hsl(0 0% 14.9%);
-    --ring: oklch(0.673 0.182 276.935);
-    --chart-1: hsl(220 70% 50%);
-    --chart-2: hsl(160 60% 45%);
-    --chart-3: hsl(30 80% 55%);
-    --chart-4: hsl(280 65% 60%);
-    --chart-5: hsl(340 75% 55%);
-    --sidebar-background: hsl(0 0% 7%);
-    --sidebar-foreground: hsl(0 0% 95.9%);
-    --sidebar-primary: oklch(0.585 0.233 277.117);
-    --sidebar-primary-foreground: hsl(0 0% 100%);
-    --sidebar-accent: hsl(0 0% 15.9%);
-    --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-    --sidebar-border: hsl(0 0% 15.9%);
-    --sidebar-ring: oklch(0.673 0.182 276.935);
-    --sidebar: hsl(240 5.9% 10%);
+    --background: var(--color-paper);
+    --foreground: var(--color-ink);
+    --card: var(--color-sheet);
+    --card-foreground: var(--color-ink);
+    --popover: var(--color-sheet);
+    --popover-foreground: var(--color-ink);
+    --primary: var(--color-ink);
+    --primary-foreground: var(--color-paper);
+    --secondary: var(--color-paper-3);
+    --secondary-foreground: var(--color-ink);
+    --muted: var(--color-paper-2);
+    --muted-foreground: var(--color-ink-3);
+    --accent: var(--color-paper-3);
+    --accent-foreground: var(--color-ink);
+    --destructive: var(--color-error);
+    --destructive-foreground: var(--color-paper);
+    --border: var(--color-rule);
+    --input: var(--color-rule);
+    --ring: var(--color-focus);
+    --chart-1: var(--color-field-cobalt);
+    --chart-2: var(--color-field-signal);
+    --chart-3: var(--color-field-moss);
+    --chart-4: var(--color-field-oxblood);
+    --chart-5: var(--color-field-ochre);
+    --radius: var(--radius-tile);
+    --sidebar-background: var(--color-paper-2);
+    --sidebar-foreground: var(--color-ink-2);
+    --sidebar-primary: var(--color-ink);
+    --sidebar-primary-foreground: var(--color-paper);
+    --sidebar-accent: var(--color-paper-3);
+    --sidebar-accent-foreground: var(--color-ink);
+    --sidebar-border: var(--color-rule);
+    --sidebar-ring: var(--color-focus);
+    --sidebar: var(--color-paper-2);
 }
 
 @layer base {

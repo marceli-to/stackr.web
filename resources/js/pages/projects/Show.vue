@@ -2,7 +2,6 @@
 import { Head, setLayoutProps } from '@inertiajs/vue3';
 import { watchEffect } from 'vue';
 import Board from '@/components/board/Board.vue';
-import Heading from '@/components/Heading.vue';
 import { index, show } from '@/routes/projects';
 import type { BoardStack, Project } from '@/types';
 
@@ -24,12 +23,17 @@ watchEffect(() => {
 <template>
     <Head :title="props.project.name" />
 
-    <div class="flex h-full min-h-0 flex-1 flex-col gap-6 p-4 md:p-6">
-        <Heading
-            :title="project.name"
-            :description="project.description ?? undefined"
-            class="mb-0!"
-        />
+    <div class="flex h-full min-h-0 flex-1 flex-col gap-8 px-4 pt-8 md:px-8">
+        <header class="space-y-4">
+            <h1
+                class="max-w-[20ch] font-display text-(length:--text-poster) leading-[0.95] font-bold tracking-(--tracking-display)"
+            >
+                {{ project.name }}
+            </h1>
+            <p v-if="project.description" class="max-w-[60ch] text-lg">
+                {{ project.description }}
+            </p>
+        </header>
 
         <Board :project="project" :stacks="stacks" />
     </div>

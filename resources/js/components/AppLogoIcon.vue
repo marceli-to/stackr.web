@@ -7,6 +7,8 @@ defineOptions({
 
 type Props = {
     className?: HTMLAttributes['class'];
+    // Full-strength bars, for when --logo-1 to --logo-3 give each its colour.
+    colored?: boolean;
 };
 
 defineProps<Props>();
@@ -16,6 +18,7 @@ defineProps<Props>();
     <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
+        aria-hidden="true"
         :class="className"
         v-bind="$attrs"
     >
@@ -25,8 +28,8 @@ defineProps<Props>();
             width="14"
             height="4.5"
             rx="1.5"
-            fill="currentColor"
-            opacity="0.5"
+            :style="{ fill: 'var(--logo-1, currentColor)' }"
+            :opacity="colored ? 1 : 0.5"
         />
         <rect
             x="5"
@@ -34,8 +37,8 @@ defineProps<Props>();
             width="14"
             height="4.5"
             rx="1.5"
-            fill="currentColor"
-            opacity="0.75"
+            :style="{ fill: 'var(--logo-2, currentColor)' }"
+            :opacity="colored ? 1 : 0.75"
         />
         <rect
             x="7"
@@ -43,7 +46,7 @@ defineProps<Props>();
             width="14"
             height="4.5"
             rx="1.5"
-            fill="currentColor"
+            :style="{ fill: 'var(--logo-3, currentColor)' }"
         />
     </svg>
 </template>

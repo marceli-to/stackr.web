@@ -15,12 +15,23 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import type { Project } from '@/types';
+import { projectColors } from '@/types';
+import type { Project, ProjectColor } from '@/types';
 
 // Creates a project, or edits `project` when one is given.
 const props = defineProps<{
     project?: Project | null;
+    suggestedColor?: ProjectColor;
 }>();
+
+const colorNames: Record<ProjectColor, string> = {
+    cobalt: 'Cobalt',
+    signal: 'Signal orange',
+    moss: 'Moss',
+    oxblood: 'Oxblood',
+    lagoon: 'Lagoon',
+    ochre: 'Ochre',
+};
 
 const open = defineModel<boolean>('open', { required: true });
 
@@ -50,7 +61,7 @@ const form = computed(() =>
                     <DialogDescription>
                         {{
                             project
-                                ? 'Change the name or description.'
+                                ? 'Change the name, description or colour.'
                                 : 'Each project gets its own board.'
                         }}
                     </DialogDescription>
@@ -87,6 +98,30 @@ const form = computed(() =>
                     />
                     <InputError :message="errors.description" />
                 </div>
+
+                <fieldset class="grid gap-2">
+                    <legend class="mb-2 text-sm font-medium">Colour</legend>
+                    <div class="flex flex-wrap gap-2">
+                        <label
+                            v-for="color in projectColors"
+                            :key="color"
+                            :data-field="color"
+                            class="relative size-10 cursor-pointer rounded-[var(--radius-sheet)] bg-field has-checked:outline-2 has-checked:outline-offset-2 has-checked:outline-foreground has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-(--color-focus)"
+                        >
+                            <input
+                                type="radio"
+                                name="color"
+                                :value="color"
+                                :checked="
+                                    color === (project?.color ?? suggestedColor)
+                                "
+                                class="sr-only"
+                            />
+                            <span class="sr-only">{{ colorNames[color] }}</span>
+                        </label>
+                    </div>
+                    <InputError :message="errors.color" />
+                </fieldset>
 
                 <DialogFooter class="gap-2">
                     <DialogClose as-child>

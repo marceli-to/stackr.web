@@ -79,7 +79,7 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 
 <template>
     <section
-        class="flex max-h-[calc(100svh-11rem)] w-72 shrink-0 flex-col rounded-xl bg-indigo-50 dark:bg-muted/40"
+        class="flex max-h-[calc(100svh-16rem)] w-72 shrink-0 flex-col rounded-[var(--radius-tile)] bg-field-well"
         :aria-label="stack.name"
     >
         <header
@@ -102,7 +102,7 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
                     required
                     maxlength="255"
                     aria-label="List name"
-                    class="w-full rounded-md border border-input bg-background px-2 py-1 text-sm font-medium outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                    class="w-full rounded-[var(--radius-sheet)] bg-sheet px-2 py-1 text-[0.9375rem] font-semibold text-foreground outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                     @blur="finishRename($event.target as HTMLInputElement)"
                     @keydown.esc="renaming = false"
                 />
@@ -112,11 +112,15 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
             </Form>
             <h3
                 v-else
-                class="flex-1 truncate px-2 py-1 text-sm font-medium"
+                class="flex min-w-0 flex-1 items-baseline gap-2 px-1"
                 @dblclick="startRename"
             >
-                {{ stack.name }}
-                <span class="ml-1 font-normal text-muted-foreground">
+                <span
+                    class="truncate pb-0.5 font-display text-2xl leading-tight font-bold"
+                >
+                    {{ stack.name }}
+                </span>
+                <span class="num text-sm opacity-75">
                     {{ cards.length }}
                 </span>
             </h3>
@@ -126,7 +130,7 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
                     <Button
                         variant="ghost"
                         size="icon"
-                        class="size-7 hover:bg-indigo-100 hover:text-indigo-900 dark:hover:bg-accent dark:hover:text-accent-foreground"
+                        class="size-8 text-inherit hover:bg-current/10 hover:text-inherit"
                         :aria-label="`Actions for ${stack.name}`"
                     >
                         <EllipsisVertical />
@@ -153,7 +157,7 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
             group="cards"
             :animation="150"
             ghost-class="opacity-40"
-            class="flex min-h-2 flex-col gap-2 overflow-y-auto px-2 py-1"
+            class="flex min-h-2 flex-col gap-1.5 overflow-y-auto px-2 py-1"
             :data-stack-id="stack.id"
             @update="onCardMoved($event, false)"
             @add="onCardMoved($event, true)"

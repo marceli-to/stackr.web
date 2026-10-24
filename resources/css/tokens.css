@@ -1,0 +1,91 @@
+/* Field tokens. A neutral paper for the overview, and six fields: each
+   project's board stands on one. shadcn already owns --color-accent and
+   --color-muted, so the third ink is --color-ink-3. */
+:root {
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-md: 1rem;
+    --text-poster: clamp(3rem, 2rem + 3.5vw, 5.5rem);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur-micro: 120ms;
+    --dur-short: 220ms;
+
+    --color-paper: oklch(97.6% 0.004 90);
+    --color-paper-2: oklch(95% 0.005 90);
+    --color-paper-3: oklch(91.5% 0.006 90);
+    --color-sheet: oklch(99.4% 0.003 90);
+    --color-rule: oklch(88.5% 0.006 90);
+    --color-ink: oklch(18% 0.012 262);
+    --color-ink-2: oklch(32% 0.012 262);
+    --color-ink-3: oklch(46% 0.012 262);
+    --color-focus: oklch(48% 0.19 262);
+    --color-error: oklch(51% 0.19 27);
+    --color-success: oklch(48% 0.11 150);
+    --color-on-dark: oklch(98.6% 0.004 90);
+    --color-on-light: oklch(18% 0.012 262);
+
+    --color-field-cobalt: oklch(45% 0.17 262);
+    --color-field-signal: oklch(67% 0.19 42);
+    --color-field-moss: oklch(46% 0.1 135);
+    --color-field-oxblood: oklch(40% 0.13 22);
+    --color-field-lagoon: oklch(47% 0.085 205);
+    --color-field-ochre: oklch(77% 0.14 80);
+
+    --font-display: 'Antonio', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --font-figure: var(--font-body);
+
+    --radius-tile: 6px;
+    --radius-sheet: 4px;
+    --tracking-display: -0.005em;
+}
+
+.dark {
+    --color-paper: oklch(15.5% 0.008 262);
+    --color-paper-2: oklch(19% 0.009 262);
+    --color-paper-3: oklch(24% 0.01 262);
+    --color-sheet: oklch(23% 0.01 262);
+    --color-rule: oklch(29% 0.01 262);
+    --color-ink: oklch(95% 0.005 90);
+    --color-ink-2: oklch(85% 0.006 90);
+    --color-ink-3: oklch(70% 0.008 90);
+    --color-focus: oklch(70% 0.15 262);
+    --color-error: oklch(68% 0.17 27);
+
+    --color-field-cobalt: oklch(39% 0.15 262);
+    --color-field-signal: oklch(60% 0.17 42);
+    --color-field-moss: oklch(40% 0.085 135);
+    --color-field-oxblood: oklch(35% 0.11 22);
+    --color-field-lagoon: oklch(41% 0.075 205);
+    --color-field-ochre: oklch(68% 0.12 80);
+}
+
+/* A field sets its colour, the ink that reads on it, the well its lists sit
+   in, and a focus ring that shows on it. */
+[data-field] {
+    --field-well: color-mix(in oklab, var(--field) 82%, black);
+    --field-ink: var(--color-on-dark);
+    --ring: var(--field-ink);
+}
+[data-field='cobalt'] {
+    --field: var(--color-field-cobalt);
+}
+[data-field='signal'] {
+    --field: var(--color-field-signal);
+    --field-ink: var(--color-on-light);
+    --field-well: color-mix(in oklab, var(--field) 90%, black);
+}
+[data-field='moss'] {
+    --field: var(--color-field-moss);
+}
+[data-field='oxblood'] {
+    --field: var(--color-field-oxblood);
+}
+[data-field='lagoon'] {
+    --field: var(--color-field-lagoon);
+}
+[data-field='ochre'] {
+    --field: var(--color-field-ochre);
+    --field-ink: var(--color-on-light);
+    --field-well: color-mix(in oklab, var(--field) 90%, black);
+}

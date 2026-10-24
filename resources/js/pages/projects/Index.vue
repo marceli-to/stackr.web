@@ -1,17 +1,9 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import {
-    EllipsisVertical,
-    FolderKanban,
-    Pencil,
-    Plus,
-    Trash2,
-} from '@lucide/vue';
-import { ref } from 'vue';
-import Heading from '@/components/Heading.vue';
+import { EllipsisVertical, Pencil, Plus, Trash2 } from '@lucide/vue';
+import { computed, ref } from 'vue';
 import DeleteProjectDialog from '@/components/projects/DeleteProjectDialog.vue';
 import ProjectFormDialog from '@/components/projects/ProjectFormDialog.vue';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -20,7 +12,8 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { index, show } from '@/routes/projects';
-import type { ProjectSummary } from '@/types';
+import { projectColors } from '@/types';
+import type { ProjectColor, ProjectSummary } from '@/types';
 
 defineOptions({
     layout: {
@@ -33,9 +26,17 @@ defineOptions({
     },
 });
 
-defineProps<{
+const props = defineProps<{
     projects: ProjectSummary[];
 }>();
+
+// A new project starts on the colour the wall uses least.
+const suggestedColor = computed<ProjectColor>(() => {
+    const uses = (color: ProjectColor) =>
+        props.projects.filter((project) => project.color === color).length;
+
+    return [...projectColors].sort((a, b) => uses(a) - uses(b))[0];
+});
 
 const formOpen = ref(false);
 const editing = ref<ProjectSummary | null>(null);
@@ -65,13 +66,18 @@ function plural(count: number, word: string) {
 <template>
     <Head title="Projects" />
 
-    <div class="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
-        <div class="flex items-start justify-between gap-4">
-            <Heading
-                title="Projects"
-                description="Every project has its own board"
-                class="mb-0!"
-            />
+    <div class="flex h-full flex-1 flex-col gap-8 px-4 pt-8 pb-12 md:px-8">
+        <div class="flex items-end justify-between gap-4">
+            <header class="space-y-4">
+                <h1
+                    class="font-display text-(length:--text-poster) leading-[0.95] font-bold tracking-(--tracking-display)"
+                >
+                    Projects
+                </h1>
+                <p class="text-lg text-muted-foreground">
+                    Every project has its own board
+                </p>
+            </header>
             <Button @click="create" data-test="new-project-button">
                 <Plus />
                 New project
@@ -80,12 +86,11 @@ function plural(count: number, word: string) {
 
         <div
             v-if="projects.length === 0"
-            class="flex flex-1 flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border p-12 text-center"
+            class="flex flex-col items-start gap-4 rounded-[var(--radius-tile)] border-2 border-dashed border-border p-8"
         >
-            <FolderKanban class="size-10 text-muted-foreground" />
             <div class="space-y-1">
-                <p class="font-medium">No projects yet</p>
-                <p class="text-sm text-muted-foreground">
+                <p class="font-display text-3xl font-bold">No projects yet</p>
+                <p class="text-muted-foreground">
                     Create your first project to start a board.
                 </p>
             </div>
@@ -95,16 +100,20 @@ function plural(count: number, word: string) {
             </Button>
         </div>
 
-        <ul v-else class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <ul
+            v-else
+            class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,20rem),1fr))] gap-3"
+        >
             <li
                 v-for="project in projects"
                 :key="project.id"
-                class="group relative flex flex-col gap-3 rounded-2xl border border-transparent bg-card p-4 shadow-soft transition-colors hover:border-primary/30 dark:border-border"
+                :data-field="project.color"
+                class="relative flex aspect-[4/3] flex-col rounded-[var(--radius-tile)] bg-field p-5 text-field-ink"
             >
                 <div class="flex items-start justify-between gap-2">
                     <Link
                         :href="show(project.id)"
-                        class="font-medium after:absolute after:inset-0 after:rounded-2xl focus-visible:outline-none"
+                        class="min-w-0 font-display text-4xl leading-[0.95] font-bold tracking-(--tracking-display) break-words after:absolute after:inset-0 after:rounded-[var(--radius-tile)] focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-(--color-focus)"
                     >
                         {{ project.name }}
                     </Link>
@@ -114,7 +123,7 @@ function plural(count: number, word: string) {
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                class="relative z-10 -mt-1 -mr-2 size-8"
+                                class="relative z-10 -mt-1 -mr-2 size-8 text-inherit hover:bg-current/10 hover:text-inherit"
                                 :aria-label="`Actions for ${project.name}`"
                             >
                                 <EllipsisVertical />
@@ -139,29 +148,35 @@ function plural(count: number, word: string) {
 
                 <p
                     v-if="project.description"
-                    class="line-clamp-2 text-sm text-muted-foreground"
+                    class="mt-3 line-clamp-2 max-w-[40ch] opacity-90"
                 >
                     {{ project.description }}
                 </p>
 
                 <div
-                    class="mt-auto flex items-center gap-2 text-xs text-muted-foreground"
+                    class="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 text-sm"
                 >
-                    <span>{{ plural(project.stacks_count, 'list') }}</span>
-                    <span aria-hidden="true">·</span>
-                    <span>{{ plural(project.cards_count, 'card') }}</span>
-                    <Badge
+                    <span class="num">{{
+                        plural(project.stacks_count, 'list')
+                    }}</span>
+                    <span class="num">{{
+                        plural(project.cards_count, 'card')
+                    }}</span>
+                    <span
                         v-if="project.role === 'member'"
-                        variant="secondary"
-                        class="ml-auto"
+                        class="ml-auto font-semibold"
                     >
                         Shared with you
-                    </Badge>
+                    </span>
                 </div>
             </li>
         </ul>
     </div>
 
-    <ProjectFormDialog v-model:open="formOpen" :project="editing" />
+    <ProjectFormDialog
+        v-model:open="formOpen"
+        :project="editing"
+        :suggested-color="suggestedColor"
+    />
     <DeleteProjectDialog v-model:open="deleteOpen" :project="deleting" />
 </template>

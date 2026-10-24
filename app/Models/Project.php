@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ProjectColor;
 use App\Enums\ProjectRole;
 use Database\Factories\ProjectFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -16,14 +17,25 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property string $name
  * @property string|null $description
+ * @property ProjectColor $color
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'description'])]
+#[Fillable(['name', 'description', 'color'])]
 class Project extends Model
 {
     /** @use HasFactory<ProjectFactory> */
     use HasFactory;
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'color' => ProjectColor::class,
+        ];
+    }
 
     /**
      * @return BelongsToMany<User, $this, ProjectMembership>

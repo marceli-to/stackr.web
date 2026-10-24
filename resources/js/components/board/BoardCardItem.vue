@@ -26,15 +26,20 @@ const due = computed(() => {
 
 <template>
     <article
-        class="cursor-grab rounded-lg border border-transparent bg-card px-3 py-2 text-sm shadow-xs ring-1 ring-foreground/5 hover:border-foreground/15 active:cursor-grabbing"
+        class="cursor-grab rounded-[var(--radius-sheet)] bg-sheet px-3 py-2.5 text-[0.9375rem] leading-snug text-foreground hover:outline-2 hover:outline-current/20 active:cursor-grabbing"
     >
         <p class="break-words">{{ card.title }}</p>
         <p
             v-if="due"
-            class="mt-1.5 inline-flex items-center gap-1 text-xs"
-            :class="due.overdue ? 'text-destructive' : 'text-muted-foreground'"
+            class="num mt-1.5 inline-flex items-center gap-1 text-sm"
+            :class="
+                due.overdue
+                    ? 'font-semibold text-destructive'
+                    : 'text-muted-foreground'
+            "
         >
             <CalendarClock class="size-3.5" />
+            <span v-if="due.overdue" class="sr-only">Overdue: </span>
             {{ due.label }}
         </p>
     </article>

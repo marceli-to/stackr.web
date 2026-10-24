@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\ProjectColor;
 use App\Enums\ProjectRole;
 use App\Models\Card;
 use App\Models\Project;
@@ -41,6 +42,7 @@ class ProjectTest extends TestCase
                 ->where('projects.0.role', 'owner')
                 ->where('projects.0.stacks_count', 1)
                 ->where('projects.0.cards_count', 2)
+                ->has('projects.0.color')
                 ->where('projects.1.name', 'Shared')
                 ->where('projects.1.role', 'member')
             );
@@ -90,6 +92,40 @@ class ProjectTest extends TestCase
         $response->assertRedirect(route('projects.show', $project));
     }
 
+    public function test_new_projects_cycle_through_the_colours()
+    {
+        $user = User::factory()->create();
+
+        foreach (['A', 'B', 'C'] as $name) {
+            $this->actingAs($user)->post(route('projects.store'), ['name' => $name]);
+        }
+
+        $this->assertSame(
+            ['cobalt', 'signal', 'moss'],
+            $user->projects()->orderBy('projects.id')->get()->map(fn (Project $project) => $project->color->value)->all(),
+        );
+    }
+
+    public function test_a_project_can_be_created_with_a_colour()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('projects.store'), ['name' => 'Ochre one', 'color' => 'ochre'])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame(ProjectColor::Ochre, Project::firstWhere('name', 'Ochre one')->color);
+    }
+
+    public function test_a_project_colour_must_be_one_of_the_six()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('projects.store'), ['name' => 'Nope', 'color' => 'purple'])
+            ->assertSessionHasErrors('color');
+    }
+
     public function test_a_project_needs_a_name()
     {
         $user = User::factory()->create();
@@ -131,12 +167,13 @@ class ProjectTest extends TestCase
         $project->members()->attach($user, ['role' => ProjectRole::Member->value]);
 
         $this->actingAs($user)
-            ->patch(route('projects.update', $project), ['name' => 'Renamed', 'description' => 'New text'])
+            ->patch(route('projects.update', $project), ['name' => 'Renamed', 'description' => 'New text', 'color' => 'lagoon'])
             ->assertSessionHasNoErrors();
 
         $project->refresh();
         $this->assertSame('Renamed', $project->name);
         $this->assertSame('New text', $project->description);
+        $this->assertSame(ProjectColor::Lagoon, $project->color);
     }
 
     public function test_non_members_cannot_edit_a_project()

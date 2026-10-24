@@ -21,7 +21,7 @@ const open = ref(false);
             v-bind="StackController.store.form(project.id)"
             :options="{ preserveScroll: true, preserveState: true }"
             reset-on-success
-            class="space-y-2 rounded-xl bg-indigo-50 p-2 dark:bg-muted/40"
+            class="space-y-2 rounded-[var(--radius-tile)] bg-field-well p-2"
             v-slot="{ errors, processing }"
         >
             <input
@@ -30,7 +30,7 @@ const open = ref(false);
                 maxlength="255"
                 placeholder="List name"
                 aria-label="List name"
-                class="block w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                class="block w-full rounded-[var(--radius-sheet)] bg-sheet px-3 py-2 text-[0.9375rem] text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                 v-focus
                 @keydown.esc="open = false"
             />
@@ -38,14 +38,19 @@ const open = ref(false);
                 {{ errors.name }}
             </p>
             <div class="flex items-center gap-1">
-                <Button type="submit" size="sm" :disabled="processing">
+                <Button
+                    type="submit"
+                    size="sm"
+                    :disabled="processing"
+                    class="bg-field-ink text-field hover:bg-field-ink/90"
+                >
                     Add list
                 </Button>
                 <Button
                     type="button"
                     variant="ghost"
                     size="icon"
-                    class="size-8 hover:bg-indigo-100 hover:text-indigo-900 dark:hover:bg-accent dark:hover:text-accent-foreground"
+                    class="size-8 text-inherit hover:bg-current/10 hover:text-inherit"
                     aria-label="Close"
                     @click="open = false"
                 >
@@ -55,8 +60,8 @@ const open = ref(false);
         </Form>
         <Button
             v-else
-            variant="outline"
-            class="w-full justify-start border-dashed text-muted-foreground"
+            variant="ghost"
+            class="h-11 w-full justify-start rounded-[var(--radius-tile)] border-2 border-dashed border-current/35 text-inherit hover:border-current/70 hover:bg-transparent hover:text-inherit"
             @click="open = true"
         >
             <Plus />

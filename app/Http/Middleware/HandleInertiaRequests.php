@@ -42,10 +42,10 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'sidebarProjects' => fn () => $request->user()?->projects()
-                ->get(['projects.id', 'projects.name'])
+                ->get(['projects.id', 'projects.name', 'projects.color'])
                 ->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)
                 ->values()
-                ->map->only('id', 'name') ?? [],
+                ->map->only('id', 'name', 'color') ?? [],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

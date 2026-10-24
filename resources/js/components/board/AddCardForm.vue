@@ -38,7 +38,7 @@ function submitOnEnter(event: KeyboardEvent) {
                 maxlength="500"
                 placeholder="Card title"
                 aria-label="Card title"
-                class="block w-full resize-none rounded-lg border border-input bg-card px-3 py-2 text-sm shadow-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                class="block w-full resize-none rounded-[var(--radius-sheet)] bg-sheet px-3 py-2.5 text-[0.9375rem] text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                 v-focus
                 @keydown.enter="submitOnEnter"
                 @keydown.esc="open = false"
@@ -47,14 +47,19 @@ function submitOnEnter(event: KeyboardEvent) {
                 {{ errors.title }}
             </p>
             <div class="flex items-center gap-1">
-                <Button type="submit" size="sm" :disabled="processing">
+                <Button
+                    type="submit"
+                    size="sm"
+                    :disabled="processing"
+                    class="bg-field-ink text-field hover:bg-field-ink/90"
+                >
                     Add card
                 </Button>
                 <Button
                     type="button"
                     variant="ghost"
                     size="icon"
-                    class="size-8 hover:bg-indigo-100 hover:text-indigo-900 dark:hover:bg-accent dark:hover:text-accent-foreground"
+                    class="size-8 text-inherit hover:bg-current/10 hover:text-inherit"
                     aria-label="Close"
                     @click="open = false"
                 >
@@ -66,7 +71,7 @@ function submitOnEnter(event: KeyboardEvent) {
             v-else
             variant="ghost"
             size="sm"
-            class="w-full justify-start text-muted-foreground hover:bg-indigo-100 hover:text-indigo-900 dark:hover:bg-accent dark:hover:text-accent-foreground"
+            class="w-full justify-start text-inherit opacity-85 hover:bg-current/10 hover:text-inherit hover:opacity-100"
             @click="open = true"
         >
             <Plus />

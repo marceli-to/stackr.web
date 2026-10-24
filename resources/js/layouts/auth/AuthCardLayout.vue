@@ -1,48 +1,50 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
 import { home } from '@/routes';
 
 defineProps<{
     title?: string;
     description?: string;
 }>();
+
+const name = usePage().props.name;
 </script>
 
 <template>
     <div
-        class="flex min-h-svh flex-col items-center justify-center gap-6 bg-indigo-50 p-6 md:p-10 dark:bg-muted"
+        data-field="cobalt"
+        class="flex min-h-svh flex-col bg-field text-field-ink"
     >
-        <div class="flex w-full max-w-sm flex-col gap-6">
+        <header class="px-6 py-5 md:px-10">
             <Link
                 :href="home()"
-                class="flex items-center gap-2 self-center font-medium"
+                class="inline-flex items-center gap-2 rounded-sm"
+                :aria-label="`${name} home`"
             >
-                <div class="flex h-9 w-9 items-center justify-center">
-                    <AppLogoIcon class="size-9 fill-current text-primary" />
-                </div>
+                <AppLogoIcon class="size-6 fill-current" />
+                <span class="font-display text-2xl leading-none font-bold">
+                    {{ name }}
+                </span>
             </Link>
+        </header>
 
-            <div class="flex flex-col gap-6">
-                <Card class="gap-8 rounded-2xl py-8 shadow-soft">
-                    <CardHeader class="px-8 text-center">
-                        <CardTitle class="text-xl">{{ title }}</CardTitle>
-                        <CardDescription>
-                            {{ description }}
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent class="px-8">
-                        <slot />
-                    </CardContent>
-                </Card>
+        <main
+            class="grid flex-1 items-start gap-10 px-6 pt-[8vh] pb-16 md:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] md:px-10"
+        >
+            <h1
+                class="max-w-[12ch] font-display text-(length:--text-poster) leading-[0.95] font-bold tracking-(--tracking-display)"
+            >
+                {{ title }}
+            </h1>
+            <div
+                class="rounded-[var(--radius-tile)] bg-sheet p-8 text-foreground [--ring:var(--color-focus)]"
+            >
+                <p v-if="description" class="mb-6 text-muted-foreground">
+                    {{ description }}
+                </p>
+                <slot />
             </div>
-        </div>
+        </main>
     </div>
 </template>

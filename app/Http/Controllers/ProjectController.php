@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ProjectColor;
 use App\Enums\ProjectRole;
 use App\Http\Requests\ProjectRequest;
 use App\Models\Card;
@@ -31,6 +32,7 @@ class ProjectController extends Controller
                 'id' => $membership->project->id,
                 'name' => $membership->project->name,
                 'description' => $membership->project->description,
+                'color' => $membership->project->color,
                 'role' => $membership->role,
                 'stacks_count' => $membership->project->stacks_count,
                 'cards_count' => $membership->project->cards_count,
@@ -48,7 +50,12 @@ class ProjectController extends Controller
     public function store(ProjectRequest $request): RedirectResponse
     {
         $project = DB::transaction(function () use ($request): Project {
-            $project = Project::create($request->validated());
+            $latest = $request->user()->projects()->latest('projects.id')->first();
+
+            $project = Project::create([
+                'color' => $latest?->color->next() ?? ProjectColor::Cobalt,
+                ...$request->validated(),
+            ]);
             $project->members()->attach($request->user(), ['role' => ProjectRole::Owner->value]);
 
             return $project;
@@ -69,7 +76,7 @@ class ProjectController extends Controller
         $project->load('stacks.cards');
 
         return Inertia::render('projects/Show', [
-            'project' => $project->only('id', 'name', 'description'),
+            'project' => $project->only('id', 'name', 'description', 'color'),
             'stacks' => $project->stacks->map(fn (Stack $stack) => [
                 'id' => $stack->id,
                 'name' => $stack->name,
