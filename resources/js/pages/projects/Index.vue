@@ -85,7 +85,7 @@ function plural(count: number, word: string) {
                 v-for="project in projects"
                 :key="project.id"
                 :data-field="project.color"
-                class="relative flex aspect-[4/3] flex-col rounded-[var(--radius-tile)] bg-field p-5 text-field-ink"
+                class="relative flex aspect-[16/10] flex-col rounded-[var(--radius-tile)] bg-field p-5 text-field-ink"
             >
                 <div class="flex items-start justify-between gap-2">
                     <Link
@@ -152,7 +152,7 @@ function plural(count: number, word: string) {
             <li>
                 <button
                     type="button"
-                    class="flex aspect-[4/3] w-full flex-col justify-between rounded-[var(--radius-tile)] bg-(--color-paper-3) p-5 text-left transition-colors duration-(--dur-micro) hover:bg-(--color-rule) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) focus-visible:outline-solid"
+                    class="flex aspect-[16/10] w-full flex-col justify-between rounded-[var(--radius-tile)] bg-(--color-paper-3) p-5 text-left transition-colors duration-(--dur-micro) hover:bg-(--color-rule) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) focus-visible:outline-solid"
                     data-test="new-project-button"
                     @click="create"
                 >

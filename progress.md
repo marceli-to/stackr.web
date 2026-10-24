@@ -61,7 +61,7 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
       hidden `h1`). No sidebar, no breadcrumbs, no project switcher.
     - Board: lists show no card count; the list menu (and every other ⋯ menu, e.g. on project tiles) uses horizontal dots. "Add a card" is card-height
       with a faint tint, "Add a list" has the list's well colour.
-    - Overview: a wall of colour tiles that ends with a neutral "New project" tile.
+    - Overview: a wall of 16:10 colour tiles that ends with a neutral "New project" tile.
     - Controls: 4px corners, ink primary buttons, white inputs with an ink hairline (`--control-edge`),
       white menus/dialogs/toasts with `--surface-edge` and `--float-shadow`, dark-grey focus ring.
       Focus outlines need `focus-visible:outline-solid` (Tailwind 4's `outline-none` clears the style).
