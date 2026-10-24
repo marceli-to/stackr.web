@@ -83,7 +83,7 @@ watch(
 function close(isOpen: boolean) {
 	if (!isOpen) {
 		open.value = false;
-		closeCard(project.value.id);
+		closeCard(project.value.key);
 	}
 }
 

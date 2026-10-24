@@ -75,8 +75,8 @@ provide(filterKey, createFilter(toRef(props, 'labels')));
 function toggleWatching() {
 	router.visit(
 		props.watching
-			? unwatchProject(props.project.id)
-			: watchProject(props.project.id),
+			? unwatchProject(props.project.key)
+			: watchProject(props.project.key),
 		{ preserveScroll: true, preserveState: true },
 	);
 }

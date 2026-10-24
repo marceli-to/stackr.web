@@ -45,7 +45,7 @@ function save() {
 	const label = editing.value;
 
 	if (label === 'new') {
-		router.post(LabelController.store(project.value.id).url, data, {
+		router.post(LabelController.store(project.value.key).url, data, {
 			...keep,
 			onSuccess: () => (editing.value = null),
 		});

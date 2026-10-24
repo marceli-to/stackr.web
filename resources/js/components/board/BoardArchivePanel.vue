@@ -61,7 +61,7 @@ function deleteStack(id: number) {
 
 function show(id: number) {
 	open.value = false;
-	openCard(project.value.id, id);
+	openCard(project.value.key, id);
 }
 
 const cards = computed(() => props.archive?.cards ?? []);

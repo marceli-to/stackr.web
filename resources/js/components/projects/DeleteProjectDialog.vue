@@ -24,7 +24,7 @@ const open = defineModel<boolean>('open', { required: true });
 	<Dialog v-model:open="open">
 		<DialogContent v-if="project">
 			<Form
-				v-bind="ProjectController.destroy.form(project.id)"
+				v-bind="ProjectController.destroy.form(project.key)"
 				class="space-y-6"
 				@success="open = false"
 				v-slot="{ processing }"

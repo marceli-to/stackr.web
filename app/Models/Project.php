@@ -18,11 +18,13 @@ use Illuminate\Support\Str;
 
 /**
  * @property int $id
+ * @property string $key
  * @property string $name
  * @property string|null $description
  * @property string|null $url
  * @property ProjectColor $color
  * @property string|null $background_path
+ * @property string|null $invite_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -31,6 +33,25 @@ class Project extends Model
 {
 	/** @use HasFactory<ProjectFactory> */
 	use HasFactory;
+
+	protected $hidden = ['invite_token'];
+
+	/**
+	 * URLs show the random key, not the id.
+	 */
+	public function getRouteKeyName(): string
+	{
+		return 'key';
+	}
+
+	public static function newKey(): string
+	{
+		do {
+			$key = Str::lower(Str::random(10));
+		} while (static::where('key', $key)->exists());
+
+		return $key;
+	}
 
 	/**
 	 * @return array<string, string>
@@ -47,6 +68,10 @@ class Project extends Model
 	 */
 	protected static function booted(): void
 	{
+		static::creating(function (Project $project): void {
+			$project->key ??= static::newKey();
+		});
+
 		static::deleting(function (Project $project): void {
 			Storage::disk(Attachment::DISK)->deleteDirectory("attachments/{$project->id}");
 			Storage::disk(Attachment::DISK)->deleteDirectory("backgrounds/{$project->id}");

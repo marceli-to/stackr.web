@@ -7,6 +7,7 @@ use App\Http\Controllers\CardMemberController;
 use App\Http\Controllers\ChecklistController;
 use App\Http\Controllers\ChecklistItemController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\InviteLinkController;
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProjectBackgroundController;
@@ -24,11 +25,14 @@ Route::inertia('legal', 'site/Legal')->name('legal');
 
 // Invitation links work signed out too: guests sign up or log in first and come back.
 Route::get('invitations/{token}', [ProjectInvitationController::class, 'show'])->name('invitations.show');
+Route::get('join/{token}', [InviteLinkController::class, 'show'])->name('invite-link.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 	// Fortify sends users here after login; projects are the home screen.
 	Route::redirect('dashboard', '/projects')->name('dashboard');
 
+	// Board URLs used to carry the id; old links and stale tabs land on the key URL.
+	Route::get('projects/{id}', [ProjectController::class, 'legacy'])->whereNumber('id');
 	Route::resource('projects', ProjectController::class)->except(['create', 'edit']);
 
 	Route::post('notifications/read', [NotificationController::class, 'readAll'])->name('notifications.read-all');
@@ -45,6 +49,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 	Route::post('projects/{project}/members', [ProjectMemberController::class, 'store'])->name('projects.members.store');
 	Route::delete('projects/{project}/members/{user}', [ProjectMemberController::class, 'destroy'])->name('projects.members.destroy');
+	Route::post('projects/{project}/invite-link', [InviteLinkController::class, 'store'])->name('invite-link.store');
+	Route::delete('projects/{project}/invite-link', [InviteLinkController::class, 'destroy'])->name('invite-link.destroy');
 	Route::delete('invitations/{invitation}', [ProjectInvitationController::class, 'destroy'])->name('invitations.destroy');
 
 	Route::post('projects/{project}/stacks', [StackController::class, 'store'])->name('stacks.store');

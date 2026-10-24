@@ -18,7 +18,7 @@ const open = ref(false);
 		<!-- Stays open after adding, so several lists can be typed in a row. -->
 		<Form
 			v-if="open"
-			v-bind="StackController.store.form(project.id)"
+			v-bind="StackController.store.form(project.key)"
 			:options="{ preserveScroll: true, preserveState: true }"
 			reset-on-success
 			class="space-y-2 rounded-[var(--radius-tile)] bg-field-well p-2"

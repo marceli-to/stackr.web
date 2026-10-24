@@ -27,6 +27,8 @@ export type ProjectColor = (typeof projectColors)[number];
 
 export type Project = {
 	id: number;
+	/** Stands in for the id in URLs. */
+	key: string;
 	name: string;
 	description: string | null;
 	url: string | null;

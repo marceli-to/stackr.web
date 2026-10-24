@@ -50,17 +50,17 @@ export const colorNames: Record<LabelColor, string> = {
 };
 
 /** Opens a card by putting ?card=<id> in the URL; only the card reloads. */
-export function openCard(projectId: number, cardId: number) {
+export function openCard(projectKey: string, cardId: number) {
 	router.get(
-		show.url(projectId, { query: { card: cardId } }),
+		show.url(projectKey, { query: { card: cardId } }),
 		{},
 		{ preserveScroll: true, preserveState: true, only: ['card'] },
 	);
 }
 
-export function closeCard(projectId: number) {
+export function closeCard(projectKey: string) {
 	router.get(
-		show.url(projectId),
+		show.url(projectKey),
 		{},
 		{ preserveScroll: true, preserveState: true, only: ['card'] },
 	);

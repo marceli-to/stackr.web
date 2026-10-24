@@ -228,7 +228,7 @@ function drop(date: Date) {
 							card.completed_at ? 'text-muted-foreground' : ''
 						"
 						:title="card.title"
-						@click="openCard(project.id, card.id)"
+						@click="openCard(project.key, card.id)"
 						@dragstart="dragging = card"
 						@dragend="
 							dragging = null;

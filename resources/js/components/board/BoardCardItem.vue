@@ -70,7 +70,7 @@ const hasBadges = computed(
 );
 
 function open() {
-	openCard(project.value.id, props.card.id);
+	openCard(project.value.key, props.card.id);
 }
 </script>
 

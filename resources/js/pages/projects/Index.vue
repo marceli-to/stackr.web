@@ -102,7 +102,7 @@ function plural(count: number, word: string) {
 			>
 				<div class="flex items-start justify-between gap-2">
 					<Link
-						:href="show(project.id)"
+						:href="show(project.key)"
 						class="min-w-0 font-display text-4xl leading-[0.95] font-bold tracking-(--tracking-display) break-words after:absolute after:inset-0 after:rounded-[var(--radius-tile)] focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-(--color-focus) focus-visible:after:outline-solid"
 					>
 						{{ project.name }}

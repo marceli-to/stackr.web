@@ -32,6 +32,7 @@ _Last updated: 2026-10-24_
 | 22. Watching cards and boards                          | ✅ done |
 | 23. Calmer board chrome (one bar, ⋯ menu)              | ✅ done |
 | 24. Gradient project colours                           | ✅ done |
+| 25. Project keys in URLs, join links                   | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 **Production is behind:** https://stackr.kimiyu.ch still runs `59a7b69` (2026-10-24, before steps
@@ -115,6 +116,14 @@ Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stac
   Guests opening the link go to register (or login) with the email filled in and come back via
   `url.intended`; accepting also marks the email verified when it matches. Removing a member also
   takes them off the project's cards.
+- **Join link:** besides email, the owner can turn on a shareable link (`projects.invite_token`,
+  `/join/{token}`, `InviteLinkController`). Anyone opening it joins as a member (guests register
+  first and come back via `url.intended`). It doesn't expire; "New link" replaces it, "Turn off"
+  clears it. Only the owner sees it (`inviteLink` prop).
+- **Project URLs use a random key, not the id:** `projects.key` (10 lowercase letters/digits, set on
+  create) is the route key (`/projects/k3f9x2qa7m`). Old numeric URLs (`/projects/5?card=7`)
+  redirect members to the key URL. The frontend passes `project.key` to Wayfinder; `id` is still in
+  the resource for things like move/copy destinations. Cards still show up as `?card=<id>`.
 - **Mail:** the project mails (`AddedToProjectMail`, `ProjectInvitationMail`) are queued
   (`ShouldQueue`, database queue); in production a cron job works through the queue every minute.
   Laravel's verification and password-reset mails are still sent right away. Locally, run

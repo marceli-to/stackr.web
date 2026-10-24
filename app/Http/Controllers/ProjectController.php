@@ -99,6 +99,7 @@ class ProjectController extends Controller
 			'members' => MemberResource::collection($project->membershipsInOrder()),
 			'invitations' => $manages ? InvitationResource::collection($project->invitations()->get()) : [],
 			'canManageMembers' => $manages,
+			'inviteLink' => $manages && $project->invite_token !== null ? route('invite-link.show', $project->invite_token) : null,
 			'watching' => $request->user() !== null && $project->watchers()->whereKey($request->user()->id)->exists(),
 			'stacks' => StackResource::collection($project->stacks),
 			'card' => $card !== null ? new CardResource($card) : null,
@@ -126,6 +127,18 @@ class ProjectController extends Controller
 				),
 			]),
 		]);
+	}
+
+	/**
+	 * Send an old id URL to the board's key URL, keeping ?card=.
+	 */
+	public function legacy(Request $request, int $id): RedirectResponse
+	{
+		$project = Project::findOrFail($id);
+
+		Gate::authorize('view', $project);
+
+		return to_route('projects.show', [$project, ...$request->query()]);
 	}
 
 	/**

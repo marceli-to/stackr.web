@@ -241,4 +241,80 @@ class ProjectMembersTest extends TestCase
 			->assertSeeInHtml('Wallet')
 			->assertSeeInHtml(route('invitations.show', $invitation->token));
 	}
+
+	public function test_board_urls_use_the_project_key_and_old_id_urls_redirect()
+	{
+		$this->assertMatchesRegularExpression('/^[a-z0-9]{10}$/', $this->project->key);
+		$this->assertStringEndsWith('/projects/'.$this->project->key, route('projects.show', $this->project));
+
+		$this->actingAs($this->owner)
+			->get('/projects/'.$this->project->id.'?card=7')
+			->assertRedirect(route('projects.show', [$this->project, 'card' => 7]));
+		$this->actingAs(User::factory()->create())->get('/projects/'.$this->project->id)->assertForbidden();
+	}
+
+	public function test_the_owner_turns_the_join_link_on_renews_it_and_turns_it_off()
+	{
+		$this->actingAs($this->owner)->post(route('invite-link.store', $this->project));
+		$first = $this->project->fresh()->invite_token;
+		$this->assertNotNull($first);
+
+		$this->actingAs($this->owner)
+			->get(route('projects.show', $this->project))
+			->assertInertia(fn (Assert $page) => $page->where('inviteLink', route('invite-link.show', $first)));
+
+		$this->actingAs($this->owner)->post(route('invite-link.store', $this->project));
+		$this->assertNotSame($first, $this->project->fresh()->invite_token);
+
+		$this->actingAs($this->owner)->delete(route('invite-link.destroy', $this->project));
+		$this->assertNull($this->project->fresh()->invite_token);
+	}
+
+	public function test_only_the_owner_manages_the_join_link_and_members_never_see_it()
+	{
+		$member = $this->member();
+		$this->project->forceFill(['invite_token' => 'secret'])->save();
+
+		$this->actingAs($member)->post(route('invite-link.store', $this->project))->assertForbidden();
+		$this->actingAs($member)->delete(route('invite-link.destroy', $this->project))->assertForbidden();
+
+		$this->actingAs($member)
+			->get(route('projects.show', $this->project))
+			->assertInertia(fn (Assert $page) => $page->where('inviteLink', null));
+	}
+
+	public function test_opening_the_join_link_signed_in_joins_the_project()
+	{
+		$user = User::factory()->create();
+		$this->project->forceFill(['invite_token' => 'secret'])->save();
+
+		$this->actingAs($user)
+			->get(route('invite-link.show', 'secret'))
+			->assertRedirect(route('projects.show', $this->project));
+
+		$this->assertSame(ProjectRole::Member, $this->project->roleOf($user));
+
+		// The owner opening their own link stays the owner.
+		$this->actingAs($this->owner)->get(route('invite-link.show', 'secret'));
+		$this->assertSame(ProjectRole::Owner, $this->project->roleOf($this->owner));
+	}
+
+	public function test_a_guest_opening_the_join_link_signs_up_first()
+	{
+		$this->project->forceFill(['invite_token' => 'secret'])->save();
+		$link = route('invite-link.show', 'secret');
+
+		$this->get($link)
+			->assertRedirect(route('register'))
+			->assertSessionHas('url.intended', $link);
+	}
+
+	public function test_a_turned_off_join_link_does_nothing()
+	{
+		$user = User::factory()->create();
+
+		$this->actingAs($user)->get(route('invite-link.show', 'nope'))->assertRedirect(route('home'));
+
+		$this->assertNull($this->project->roleOf($user));
+	}
 }

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Form, usePage } from '@inertiajs/vue3';
+import { useClipboard } from '@vueuse/core';
 import { computed, ref } from 'vue';
+import InviteLinkController from '@/actions/App/Http/Controllers/InviteLinkController';
 import ProjectInvitationController from '@/actions/App/Http/Controllers/ProjectInvitationController';
 import ProjectMemberController from '@/actions/App/Http/Controllers/ProjectMemberController';
 import InputError from '@/components/InputError.vue';
@@ -21,10 +23,11 @@ import type { ProjectInvitation, ProjectMember } from '@/types';
 // dialog, as does the board menu. Only the owner invites and removes; anyone
 // else can leave.
 const page = usePage<{
-	project: { id: number; name: string };
+	project: { key: string; name: string };
 	members: ProjectMember[];
 	invitations: ProjectInvitation[];
 	canManageMembers: boolean;
+	inviteLink: string | null;
 }>();
 
 const project = computed(() => page.props.project);
@@ -32,6 +35,9 @@ const members = computed(() => page.props.members ?? []);
 const invitations = computed(() => page.props.invitations ?? []);
 const canManage = computed(() => page.props.canManageMembers);
 const me = computed(() => page.props.auth.user.id);
+const inviteLink = computed(() => page.props.inviteLink);
+
+const { copy, copied } = useClipboard({ legacy: true });
 
 // Your own initials are the account menu next door, so the stack shows the others.
 const others = computed(() => members.value.filter((m) => m.id !== me.value));
@@ -88,10 +94,10 @@ const actionClass =
 
 			<Form
 				v-if="canManage"
-				v-bind="ProjectMemberController.store.form(project.id)"
+				v-bind="ProjectMemberController.store.form(project.key)"
 				:options="{ preserveScroll: true, preserveState: true }"
 				reset-on-success
-				class="space-y-2"
+				class="grid gap-2"
 				v-slot="{ errors, processing }"
 			>
 				<label for="invite-email" class="text-sm font-semibold">
@@ -116,6 +122,79 @@ const actionClass =
 					gets a link to sign up.
 				</p>
 			</Form>
+
+			<div v-if="canManage" class="grid gap-2">
+				<label for="invite-link" class="text-sm font-semibold">
+					Invite with a link
+				</label>
+				<template v-if="inviteLink">
+					<div class="flex gap-2">
+						<Input
+							id="invite-link"
+							:model-value="inviteLink"
+							readonly
+							class="text-muted-foreground"
+							@focus="
+								($event.target as HTMLInputElement).select()
+							"
+						/>
+						<Button
+							type="button"
+							variant="secondary"
+							class="w-20"
+							@click="copy(inviteLink)"
+						>
+							{{ copied ? 'Copied' : 'Copy' }}
+						</Button>
+					</div>
+					<div
+						class="flex flex-wrap items-center gap-x-3 text-sm text-muted-foreground"
+					>
+						<span class="mr-auto"
+							>Anyone with the link can join.</span
+						>
+						<Form
+							v-bind="
+								InviteLinkController.store.form(project.key)
+							"
+							:options="{
+								preserveScroll: true,
+								preserveState: true,
+							}"
+						>
+							<button type="submit" :class="actionClass">
+								New link
+							</button>
+						</Form>
+						<Form
+							v-bind="
+								InviteLinkController.destroy.form(project.key)
+							"
+							:options="{
+								preserveScroll: true,
+								preserveState: true,
+							}"
+						>
+							<button type="submit" :class="actionClass">
+								Turn off
+							</button>
+						</Form>
+					</div>
+				</template>
+				<Form
+					v-else
+					v-bind="InviteLinkController.store.form(project.key)"
+					:options="{ preserveScroll: true, preserveState: true }"
+					class="flex flex-wrap items-center gap-x-3 text-sm text-muted-foreground"
+				>
+					<span class="mr-auto">
+						A link anyone can use to join, no email needed.
+					</span>
+					<button type="submit" :class="actionClass">
+						Create link
+					</button>
+				</Form>
+			</div>
 
 			<ul class="divide-y divide-border">
 				<li
@@ -155,7 +234,7 @@ const actionClass =
 							v-if="confirming === member.id"
 							v-bind="
 								ProjectMemberController.destroy.form({
-									project: project.id,
+									project: project.key,
 									user: member.id,
 								})
 							"
@@ -219,7 +298,7 @@ const actionClass =
 						</span>
 					</span>
 					<Form
-						v-bind="ProjectMemberController.store.form(project.id)"
+						v-bind="ProjectMemberController.store.form(project.key)"
 						:options="{ preserveScroll: true, preserveState: true }"
 					>
 						<input

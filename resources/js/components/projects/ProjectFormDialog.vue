@@ -56,7 +56,7 @@ function upload(event: Event) {
 	}
 
 	router.post(
-		ProjectBackgroundController.store(props.project.id).url,
+		ProjectBackgroundController.store(props.project.key).url,
 		{ image },
 		{
 			preserveScroll: true,
@@ -75,7 +75,7 @@ function upload(event: Event) {
 function removeBackground() {
 	if (props.project) {
 		router.delete(
-			ProjectBackgroundController.destroy(props.project.id).url,
+			ProjectBackgroundController.destroy(props.project.key).url,
 			{
 				preserveScroll: true,
 				preserveState: true,
@@ -86,7 +86,7 @@ function removeBackground() {
 
 const form = computed(() =>
 	props.project
-		? ProjectController.update.form(props.project.id)
+		? ProjectController.update.form(props.project.key)
 		: ProjectController.store.form(),
 );
 </script>
