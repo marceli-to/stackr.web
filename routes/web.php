@@ -14,6 +14,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectInvitationController;
 use App\Http\Controllers\ProjectMemberController;
 use App\Http\Controllers\StackController;
+use App\Http\Controllers\WatchController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -36,6 +37,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::get('projects/{project}/background', [ProjectBackgroundController::class, 'show'])->name('projects.background');
 	Route::post('projects/{project}/background', [ProjectBackgroundController::class, 'store'])->name('projects.background.store');
 	Route::delete('projects/{project}/background', [ProjectBackgroundController::class, 'destroy'])->name('projects.background.destroy');
+
+	Route::post('projects/{project}/watch', [WatchController::class, 'project'])->name('projects.watch');
+	Route::delete('projects/{project}/watch', [WatchController::class, 'project'])->name('projects.unwatch');
+	Route::post('cards/{card}/watch', [WatchController::class, 'card'])->name('cards.watch');
+	Route::delete('cards/{card}/watch', [WatchController::class, 'card'])->name('cards.unwatch');
 
 	Route::post('projects/{project}/members', [ProjectMemberController::class, 'store'])->name('projects.members.store');
 	Route::delete('projects/{project}/members/{user}', [ProjectMemberController::class, 'destroy'])->name('projects.members.destroy');

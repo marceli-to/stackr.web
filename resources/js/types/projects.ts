@@ -71,6 +71,8 @@ export type BoardCard = {
 	title: string;
 	has_description: boolean;
 	is_template: boolean;
+	/** Whether the viewer watches it. */
+	watching: boolean;
 	start_at: string | null;
 	due_at: string | null;
 	completed_at: string | null;
@@ -140,6 +142,7 @@ export type CardDetail = {
 	due_at: string | null;
 	completed_at: string | null;
 	is_template: boolean;
+	watching: boolean;
 	/** Archived itself, or in an archived list. */
 	archived: boolean;
 	created_at: string;

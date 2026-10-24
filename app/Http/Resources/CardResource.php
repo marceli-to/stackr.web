@@ -43,6 +43,7 @@ class CardResource extends JsonResource
 			'completed_at' => $this->completed_at,
 			// Off the board: archived itself, or in an archived list.
 			'is_template' => $this->is_template,
+			'watching' => $request->user() !== null && $this->watchers()->whereKey($request->user()->id)->exists(),
 			'archived' => $this->archived_at !== null || $this->stack->archived_at !== null,
 			'created_at' => $this->created_at,
 			'stack' => $this->stack->only('id', 'name'),

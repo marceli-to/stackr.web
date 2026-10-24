@@ -107,6 +107,16 @@ class Card extends Model
 	}
 
 	/**
+	 * People who asked to hear about changes to this card.
+	 *
+	 * @return BelongsToMany<User, $this>
+	 */
+	public function watchers(): BelongsToMany
+	{
+		return $this->belongsToMany(User::class, 'card_watchers');
+	}
+
+	/**
 	 * @return HasMany<Checklist, $this>
 	 */
 	public function checklists(): HasMany

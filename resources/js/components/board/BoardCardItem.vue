@@ -4,6 +4,7 @@ import {
 	PhChatCircle,
 	PhCheckSquare,
 	PhCopySimple,
+	PhEye,
 	PhPaperclip,
 	PhTextAlignLeft,
 } from '@phosphor-icons/vue';
@@ -60,6 +61,7 @@ const checklistDone = computed(
 const hasBadges = computed(
 	() =>
 		due.value !== null ||
+		props.card.watching ||
 		props.card.has_description ||
 		props.card.comments_count > 0 ||
 		props.card.attachments_count > 0 ||
@@ -138,6 +140,14 @@ function open() {
 						>Complete:
 					</span>
 					{{ due.label }}
+				</span>
+				<span
+					v-if="card.watching"
+					class="inline-flex"
+					title="You're watching this card"
+				>
+					<PhEye weight="regular" class="size-4" />
+					<span class="sr-only">Watching</span>
 				</span>
 				<span
 					v-if="card.has_description"

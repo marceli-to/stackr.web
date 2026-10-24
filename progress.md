@@ -29,9 +29,11 @@ _Last updated: 2026-10-24_
 | 19. Keyboard shortcuts                                 | ✅ done |
 | 20. Card limits and collapsing lists                   | ✅ done |
 | 21. Board background photos                            | ✅ done |
+| 22. Watching cards and boards                          | ✅ done |
 
-Everything is on `main`, pushed to GitHub (https://github.com/marceli-to/stackr.web) and deployed
-to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
+Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
+**Production is behind:** https://stackr.kimiyu.ch still runs `59a7b69` (2026-10-24, before steps
+10–22). The next deploy brings 12 new migrations; see "Before the next deploy" under "Next up".
 (`design/field` and `feature/card-details` are merged into `main` and can be deleted.)
 
 ## Stack
@@ -75,7 +77,7 @@ to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
     - Shell: a slim top bar (logo → projects, the user's initials → menu). On a board the wordmark
       gives way to the board's name next to the icon; the board has no big title of its own (only a
       hidden `h1`). No sidebar, no breadcrumbs, no project switcher.
-    - Board: lists show no card count; the list menu (and every other ⋯ menu, e.g. on project tiles) uses horizontal dots. "Add a card" is card-height
+    - Board: lists show no card count (unless they have a card limit); the list menu (and every other ⋯ menu, e.g. on project tiles) uses horizontal dots. "Add a card" is card-height
       with a faint tint, "Add a list" has the list's well colour.
     - Overview: a wall of 16:10 colour tiles that ends with a neutral "New project" tile.
     - Controls: 4px corners, ink primary buttons, white inputs with an ink hairline (`--control-edge`),
@@ -197,6 +199,13 @@ to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
   (`projects.background`, `?v=<file name>` so it caches for good). The board page stands on it
   under a 28% black veil; overview tiles show it under their colour. Lists and cards keep their
   opaque wells, so they stay readable.
+- **Watching:** `card_watchers` and `project_watchers` (pivots). "Watch" in the card dialog's Actions
+  and in the board toolbar (`cards.watch` / `projects.watch`, DELETE to stop); cards you watch show
+  an eye. `NotifyWatchers` sends `CardUpdated` (bell only, never email: moves would flood inboxes)
+  to the card's watchers, its members (always, so their Watch button shows "Watching", disabled) and
+  the board's watchers, minus the actor and anyone who got a more specific notification (the person
+  just added, people mentioned). It runs from `RecordActivity` (the line comes from
+  `App\Support\ActivityText`) and for new comments. Leaving a board drops your watches there.
 - **Projects** have a name, an optional description, an optional link (`url`, http/https) shown
   on the board, and a colour. Editing and deleting happens from the ⋮ menu on the overview tiles.
 - **Landing page** (`pages/site/Welcome.vue`) for guests at `/`; signed-in users still go straight to
@@ -230,16 +239,23 @@ to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
 
 - Backend: `app/Http/Controllers/*`, `app/Actions/{Projects,Stacks,Cards,Labels,Checklists,Attachments,Comments,Members}/*`,
   `app/Http/Requests/*`, `app/Http/Resources/*`, `app/Policies/ProjectPolicy.php`,
-  `app/Models/{Project,ProjectMembership,Stack,Card}.php`, `routes/web.php`
+  `app/Models/{Project,ProjectMembership,Stack,Card,Activity}.php`, `routes/web.php`,
+  `routes/console.php` (schedule), `app/Console/Commands/*` (backup, due reminders, thumbnails)
+- Notifications: `app/Notifications/*` (`CardNotification` base), `app/Http/Controllers/{Notification,Watch}Controller.php`,
+  `app/Support/{Mentions,ActivityText,Thumbnail}.php`
 - Card backend: `app/Http/Controllers/{Card,Label,CardLabel,CardMember,Checklist,ChecklistItem,Attachment,Comment}Controller.php`,
   `app/Models/{Label,Checklist,ChecklistItem,Attachment,Comment}.php`, `app/Support/Markdown.php`
-- Frontend: `resources/js/pages/projects/{Index,Show}.vue`, `resources/js/components/board/*`,
-  `resources/js/components/card/*` (dialog, pickers, sections; `board.ts` holds the shared helpers),
-  `resources/js/components/projects/*`, `resources/js/components/AppTopBar.vue`,
+- Frontend: `resources/js/pages/projects/{Index,Show}.vue` (Show holds the toolbar and provides the
+  board context and filter), `resources/js/components/board/*` (board, calendar, filter bar, archive
+  panel, shortcuts), `resources/js/components/card/*` (dialog, pickers, sections, move/copy, mention
+  textarea; `board.ts` holds the shared helpers and `describeActivity()`),
+  `resources/js/components/projects/*`, `resources/js/components/{AppTopBar,NotificationBell}.vue`,
   `resources/js/layouts/{AppLayout,settings/Layout,auth/AuthCardLayout}.vue`
 - Landing page and legal notice: `resources/js/pages/site/{Welcome,Legal}.vue`,
   `resources/js/components/site/{SiteHeader,SiteFooter,BoardMock}.vue`
-- Tests: `tests/Feature/{ProjectTest,ProjectMembersTest,BoardTest,CardDetailsTest,DashboardTest,HomeTest}.php`, `tests/Unit/FractionalIndexTest.php`
+- Tests: `tests/Feature/*Test.php` (one file per area: Project, ProjectMembers, Board, CardDetails, Archive,
+  MoveCopyCard, Activity, Notification, Watch, Template, Thumbnail, Background, …), `tests/Unit/FractionalIndexTest.php`
+  (162 tests on 2026-10-24)
 
 ## Production
 
@@ -250,7 +266,8 @@ Same method as the kimiyuch projects (gotaticket/usverchauft):
 
 - **Deploy:** `./deploy.sh` from the Mac (own SSH key). It refuses uncommitted changes and a missing
   `public/build`, runs the tests, exports `HEAD` with `git archive`, runs `composer install --no-dev`
-  in a temp folder, rsyncs it up, then runs `migrate --force`, `optimize` and `queue:restart`.
+  in a temp folder, rsyncs it up, then runs `migrate --force`, `app:make-thumbnails`, `optimize` and
+  `queue:restart`.
   **`public/build` is committed**: run `npm run build` before committing frontend changes.
 - **Never touched by deploys:** `.env`, `storage/` (attachments, backups), `database/database.sqlite`.
 - **PHP 8.5:** web via `Use php-fpm php85` in the versioned `public/.htaccess` (also HTTPS-only,
@@ -284,8 +301,9 @@ Same method as the kimiyuch projects (gotaticket/usverchauft):
 - Checks: `php artisan test`, `vendor/bin/phpstan analyse --memory-limit=1G`, `composer format:check`,
   `npm run types:check`, `npm run check`. Then `npm run build` (the build is committed) and
   `./deploy.sh` when asked to deploy.
-- Account: `m@marceli.to`, email verified by hand in the database. For screenshots, a throwaway
-  user (`ledger-demo@stackr.test` / `password`) was created and deleted again each time.
+- Account: `m@marceli.to`, email verified by hand in the database. For screenshots, throwaway
+  users (`ledger-demo@stackr.test` and `amy-demo@stackr.test`, both `password`) are created and
+  deleted again each time; `email_verified_at` isn't fillable, so verify them with `forceFill`.
 - Headless screenshots: puppeteer-core in `/tmp/pp` against the system Chrome (not part of the repo).
   Dragging needs `card.drag(target)` + `target.drop(card)` (SortableJS uses native HTML5 drag).
   Check new pages with `prefers-color-scheme: dark` too: the app follows the system setting.
@@ -293,8 +311,16 @@ Same method as the kimiyuch projects (gotaticket/usverchauft):
 
 ## Next up
 
-Feature list (2026-10-24), being worked through in order (1–13 are done),
-then 13 with 4 (notifications with mentions; needs the scheduler decision first).
+Feature list (2026-10-24). 1–14 are done (one commit each on 2026-10-24); 15–19 are left.
+
+**Before the next deploy** (production is on `59a7b69`):
+
+- Run `./deploy.sh` (migrations and `app:make-thumbnails` run by themselves).
+- Append to the server crontab (agreed 2026-10-24, ask before touching the server):
+  `* * * * * cd ~/www/stackr.kimiyu.ch && /usr/local/php85/bin/php artisan schedule:run`
+  (due-date reminders every 15 minutes). Without it, everything else still works.
+- Check by hand on production: drag & drop with a filter on, the archive panel, move to another
+  board, the bell, an email for an assignment (the queue cron sends it), a background photo upload.
 
 **Cards**
 
@@ -318,7 +344,7 @@ then 13 with 4 (notifications with mentions; needs the scheduler decision first)
 
 13. ~~Notifications: in-app bell plus email when you're assigned, mentioned, or a due date is near.~~
     Done; production needs the `schedule:run` cron line (see "Production").
-14. Watching a card or board, to get notified about changes.
+14. ~~Watching a card or board, to get notified about changes.~~ Done (bell only).
 15. Avatars: upload a profile picture instead of initials.
 16. Hand over ownership: the owner can't leave a project, and there's no way to pass it on.
 

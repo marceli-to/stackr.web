@@ -80,6 +80,8 @@ class ProjectController extends Controller
 			'stacks.cards.labels:id',
 			'stacks.cards.members:id',
 			'stacks.cards.cover',
+			// Only whether the viewer watches each card.
+			'stacks.cards.watchers' => fn ($query) => $query->whereKey($request->user()?->id)->select('users.id'),
 			'stacks.cards.checklists.items:id,checklist_id,completed_at',
 		]);
 
@@ -97,6 +99,7 @@ class ProjectController extends Controller
 			'members' => MemberResource::collection($project->membershipsInOrder()),
 			'invitations' => $manages ? InvitationResource::collection($project->invitations()->get()) : [],
 			'canManageMembers' => $manages,
+			'watching' => $request->user() !== null && $project->watchers()->whereKey($request->user()->id)->exists(),
 			'stacks' => StackResource::collection($project->stacks),
 			'card' => $card !== null ? new CardResource($card) : null,
 			'destinations' => Inertia::optional(fn () => DestinationResource::collection(

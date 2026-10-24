@@ -81,6 +81,16 @@ class Project extends Model
 	}
 
 	/**
+	 * People who asked to hear about changes anywhere on this board.
+	 *
+	 * @return BelongsToMany<User, $this>
+	 */
+	public function watchers(): BelongsToMany
+	{
+		return $this->belongsToMany(User::class, 'project_watchers');
+	}
+
+	/**
 	 * @return HasMany<Stack, $this>
 	 */
 	public function stacks(): HasMany

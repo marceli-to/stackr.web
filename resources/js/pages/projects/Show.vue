@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
-import { PhCalendarBlank, PhKanban, PhLink } from '@phosphor-icons/vue';
+import { Head, router } from '@inertiajs/vue3';
+import { PhCalendarBlank, PhEye, PhKanban, PhLink } from '@phosphor-icons/vue';
 import { useStorage } from '@vueuse/core';
 import { computed, provide, toRef } from 'vue';
 import Board from '@/components/board/Board.vue';
@@ -10,6 +10,10 @@ import BoardFilterBar from '@/components/board/BoardFilterBar.vue';
 import BoardShortcuts from '@/components/board/BoardShortcuts.vue';
 import { createFilter, filterKey } from '@/components/board/filter';
 import { boardKey } from '@/components/card/board';
+import {
+	unwatch as unwatchProject,
+	watch as watchProject,
+} from '@/routes/projects';
 import CardDialog from '@/components/card/CardDialog.vue';
 import type {
 	BoardArchive,
@@ -31,6 +35,7 @@ const props = defineProps<{
 	archive?: BoardArchive;
 	destinations?: Destination[];
 	checklists?: BoardChecklist[];
+	watching: boolean;
 }>();
 
 provide(boardKey, {
@@ -48,6 +53,16 @@ provide(boardKey, {
 });
 
 provide(filterKey, createFilter(toRef(props, 'labels')));
+
+// Watching the board brings every card's updates to the bell.
+function toggleWatching() {
+	router.visit(
+		props.watching
+			? unwatchProject(props.project.id)
+			: watchProject(props.project.id),
+		{ preserveScroll: true, preserveState: true },
+	);
+}
 
 // Board or calendar, remembered per project.
 const view = useStorage<'board' | 'calendar'>(
@@ -120,6 +135,25 @@ const urlLabel = computed(() =>
 							{{ option.label }}
 						</button>
 					</div>
+					<button
+						type="button"
+						class="flex h-9 items-center gap-1.5 rounded-[var(--radius-sheet)] px-3 text-sm font-semibold transition-colors duration-(--dur-micro) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
+						:class="
+							watching
+								? 'bg-field-ink text-field'
+								: 'bg-current/10 hover:bg-current/15'
+						"
+						:aria-pressed="watching"
+						:title="
+							watching
+								? 'You get updates about every card on this board'
+								: 'Get updates about every card on this board'
+						"
+						@click="toggleWatching"
+					>
+						<PhEye class="size-4" />
+						{{ watching ? 'Watching' : 'Watch' }}
+					</button>
 					<BoardArchivePanel :archive="archive" />
 					<BoardShortcuts />
 				</div>

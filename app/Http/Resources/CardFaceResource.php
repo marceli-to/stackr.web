@@ -27,6 +27,8 @@ class CardFaceResource extends JsonResource
 			'title' => $this->title,
 			'has_description' => filled($this->description),
 			'is_template' => $this->is_template,
+			// Expects watchers loaded for the viewer only.
+			'watching' => $this->relationLoaded('watchers') && $this->watchers->isNotEmpty(),
 			'start_at' => $this->start_at,
 			'due_at' => $this->due_at,
 			'completed_at' => $this->completed_at,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { router } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 import {
 	PhArchive,
 	PhArrowCounterClockwise,
@@ -9,6 +9,7 @@ import {
 	PhCheck,
 	PhCopy,
 	PhCopySimple,
+	PhEye,
 	PhPaperclip,
 	PhPlus,
 	PhRectangle,
@@ -53,6 +54,7 @@ import {
 	PopoverTrigger,
 } from '@/components/ui/popover';
 import { getInitials } from '@/composables/useInitials';
+import { unwatch as unwatchCard, watch as watchCard } from '@/routes/cards';
 import type { CardDetail } from '@/types';
 
 const props = defineProps<{
@@ -248,6 +250,20 @@ function paste(event: ClipboardEvent) {
 // Archiving takes the card off the board and keeps it open; deleting is
 // only offered once it's archived, and asks once, in place.
 const confirmingDelete = ref(false);
+
+// Members hear about changes anyway; watching is for everyone else.
+const isMember = computed(() =>
+	card.value.members.includes(usePage().props.auth.user.id),
+);
+
+function toggleWatching() {
+	router.visit(
+		card.value.watching
+			? unwatchCard(card.value.id)
+			: watchCard(card.value.id),
+		keep,
+	);
+}
 
 function archive() {
 	router.patch(CardController.archive(card.value.id).url, {}, keep);
@@ -628,6 +644,29 @@ const sideButton =
 							>
 								Actions
 							</p>
+							<Button
+								variant="secondary"
+								:class="sideButton"
+								:aria-pressed="card.watching || isMember"
+								:disabled="isMember"
+								:title="
+									isMember
+										? 'Members of a card always hear about changes'
+										: undefined
+								"
+								@click="toggleWatching"
+							>
+								<PhEye />
+								{{
+									card.watching || isMember
+										? 'Watching'
+										: 'Watch'
+								}}
+								<PhCheck
+									v-if="card.watching || isMember"
+									class="ml-auto"
+								/>
+							</Button>
 							<Button
 								variant="secondary"
 								:class="sideButton"
