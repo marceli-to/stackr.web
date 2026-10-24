@@ -27,6 +27,7 @@ _Last updated: 2026-10-24_
 | 17. Card templates, copying checklists                 | ✅ done |
 | 18. Calendar view                                      | ✅ done |
 | 19. Keyboard shortcuts                                 | ✅ done |
+| 20. Card limits and collapsing lists                   | ✅ done |
 
 Everything is on `main`, pushed to GitHub (https://github.com/marceli-to/stackr.web) and deployed
 to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
@@ -185,6 +186,10 @@ to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
   card to the list holding focus (or the first), arrow keys between visible cards (`data-stack`,
   `data-card-id`), Enter opens, `?` (or the keyboard button) lists them. `busy()` skips them while
   typing or when a dialog, popover or menu is open.
+- **Card limits and collapsing:** "Card limit…" in the list menu sets `stacks.wip_limit` (shared,
+  1–999); the header then shows "3 / 5", red when over, and nothing is blocked. "Collapse list" is
+  personal (localStorage `stackr.collapsed.<project>`): the list shrinks to a narrow column with
+  its name on its side and the card count; click it to expand. Collapsed lists can still be dragged.
 - **Projects** have a name, an optional description, an optional link (`url`, http/https) shown
   on the board, and a colour. Editing and deleting happens from the ⋮ menu on the overview tiles.
 - **Landing page** (`pages/site/Welcome.vue`) for guests at `/`; signed-in users still go straight to
@@ -281,7 +286,7 @@ Same method as the kimiyuch projects (gotaticket/usverchauft):
 
 ## Next up
 
-Feature list (2026-10-24), being worked through in order (1–10 and 13 are done),
+Feature list (2026-10-24), being worked through in order (1–11 and 13 are done),
 then 13 with 4 (notifications with mentions; needs the scheduler decision first).
 
 **Cards**
@@ -299,7 +304,7 @@ then 13 with 4 (notifications with mentions; needs the scheduler decision first)
 8. ~~Search and filters: by text, label, member or due date ("my cards", "overdue").~~ Done.
 9. ~~Calendar view of cards with a due date.~~ Done.
 10. ~~Keyboard shortcuts: `n` new card, `Esc` close, arrow keys between cards, `/` search.~~ Done.
-11. WIP limits or collapsing a list (optional).
+11. ~~WIP limits or collapsing a list.~~ Done.
 12. Board backgrounds: an image as well as the project colour (optional).
 
 **People and notifications**

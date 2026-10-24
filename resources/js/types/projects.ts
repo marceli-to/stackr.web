@@ -183,6 +183,8 @@ export type BoardArchive = {
 export type BoardStack = {
 	id: number;
 	name: string;
+	/** How many cards the list should hold at most, or null. */
+	wip_limit: number | null;
 	cards: BoardCard[];
 };
 

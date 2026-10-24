@@ -92,6 +92,29 @@ class BoardTest extends TestCase
 		$this->assertSame('New', $stack->fresh()->name);
 	}
 
+	public function test_a_list_can_have_a_card_limit()
+	{
+		$stack = Stack::factory()->for($this->project)->create();
+
+		$this->actingAs($this->user)
+			->patch(route('stacks.limit', $stack), ['wip_limit' => 3])
+			->assertSessionHasNoErrors();
+		$this->assertSame(3, $stack->fresh()->wip_limit);
+
+		$this->actingAs($this->user)
+			->get(route('projects.show', $this->project))
+			->assertInertia(fn (Assert $page) => $page->where('stacks.0.wip_limit', 3));
+
+		$this->actingAs($this->user)
+			->patch(route('stacks.limit', $stack), ['wip_limit' => 0])
+			->assertSessionHasErrors('wip_limit');
+
+		$this->actingAs($this->user)
+			->patch(route('stacks.limit', $stack), ['wip_limit' => null])
+			->assertSessionHasNoErrors();
+		$this->assertNull($stack->fresh()->wip_limit);
+	}
+
 	public function test_lists_can_be_reordered()
 	{
 		$a = Stack::factory()->for($this->project)->create(['name' => 'A']);

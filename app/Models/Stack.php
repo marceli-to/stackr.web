@@ -21,11 +21,12 @@ use Illuminate\Support\Facades\Storage;
  * @property int $project_id
  * @property string $name
  * @property string $position
+ * @property int|null $wip_limit
  * @property CarbonImmutable|null $archived_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'position', 'archived_at'])]
+#[Fillable(['name', 'position', 'wip_limit', 'archived_at'])]
 class Stack extends Model
 {
 	/** @use HasFactory<StackFactory> */
@@ -38,6 +39,7 @@ class Stack extends Model
 	{
 		return [
 			'archived_at' => 'datetime',
+			'wip_limit' => 'integer',
 		];
 	}
 

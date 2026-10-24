@@ -8,7 +8,9 @@ use App\Actions\Stacks\DeleteStack;
 use App\Actions\Stacks\MoveStack;
 use App\Actions\Stacks\RenameStack;
 use App\Actions\Stacks\RestoreStack;
+use App\Actions\Stacks\SetStackLimit;
 use App\Http\Requests\MoveRequest;
+use App\Http\Requests\StackLimitRequest;
 use App\Http\Requests\StackRequest;
 use App\Models\Project;
 use App\Models\Stack;
@@ -37,6 +39,18 @@ class StackController extends Controller
 		Gate::authorize('update', $stack->project);
 
 		$renameStack->handle($stack, $request->validated('name'));
+
+		return back();
+	}
+
+	/**
+	 * Set or clear a list's card limit.
+	 */
+	public function limit(StackLimitRequest $request, Stack $stack, SetStackLimit $setStackLimit): RedirectResponse
+	{
+		Gate::authorize('update', $stack->project);
+
+		$setStackLimit->handle($stack, $request->filled('wip_limit') ? $request->integer('wip_limit') : null);
 
 		return back();
 	}

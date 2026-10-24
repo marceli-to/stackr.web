@@ -21,6 +21,7 @@ class StackResource extends JsonResource
 		return [
 			'id' => $this->id,
 			'name' => $this->name,
+			'wip_limit' => $this->wip_limit,
 			'cards' => CardFaceResource::collection($this->cards),
 		];
 	}
