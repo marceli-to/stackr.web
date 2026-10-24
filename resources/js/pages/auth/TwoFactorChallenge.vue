@@ -60,7 +60,7 @@ const toggleRecoveryMode = (clearErrors: () => void): void => {
                 #default="{ errors, processing, clearErrors }"
             >
                 <input type="hidden" name="code" :value="code" />
-                <div class="flex flex-col items-start space-y-3">
+                <div class="flex flex-col items-center space-y-3 text-center">
                     <div class="flex w-full items-center justify-center">
                         <InputOTP
                             id="otp"
@@ -83,7 +83,7 @@ const toggleRecoveryMode = (clearErrors: () => void): void => {
                 <Button type="submit" class="w-full" :disabled="processing"
                     >Continue</Button
                 >
-                <div class="text-sm text-muted-foreground">
+                <div class="text-center text-sm text-muted-foreground">
                     <span>or you can </span>
                     <button
                         type="button"
@@ -115,7 +115,7 @@ const toggleRecoveryMode = (clearErrors: () => void): void => {
                     >Continue</Button
                 >
 
-                <div class="text-sm text-muted-foreground">
+                <div class="text-center text-sm text-muted-foreground">
                     <span>or you can </span>
                     <button
                         type="button"

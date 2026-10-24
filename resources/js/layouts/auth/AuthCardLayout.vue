@@ -12,36 +12,36 @@ const name = usePage().props.name;
 </script>
 
 <template>
-    <div class="flex min-h-svh flex-col bg-background">
-        <header
-            class="flex h-14 shrink-0 items-center border-b border-border px-4 md:px-8"
+    <div
+        class="flex min-h-svh flex-col items-center justify-center bg-background px-4 py-12"
+    >
+        <div
+            class="w-full max-w-sm rounded-xl bg-sheet p-8 shadow-(--float-shadow) ring-1 ring-(--surface-edge) sm:p-10"
         >
             <Link
                 :href="home()"
-                class="flex items-center gap-2 rounded-sm"
+                class="mx-auto flex w-fit items-center gap-2 rounded-sm"
                 :aria-label="`${name} home`"
             >
-                <AppLogoIcon class="size-6 fill-current" />
-                <span class="font-display text-2xl leading-none font-bold">
+                <AppLogoIcon class="size-7 fill-current" />
+                <span class="font-display text-3xl leading-none font-bold">
                     {{ name }}
                 </span>
             </Link>
-        </header>
 
-        <main class="px-4 pt-8 pb-16 md:px-8">
-            <header class="mb-10 space-y-4">
-                <h1
-                    class="font-display text-(length:--text-poster) leading-[0.95] font-bold tracking-(--tracking-display)"
-                >
+            <header class="mt-8 mb-8 space-y-2 text-center">
+                <h1 class="text-xl font-semibold tracking-tight">
                     {{ title }}
                 </h1>
-                <p v-if="description" class="text-lg text-muted-foreground">
+                <p
+                    v-if="description"
+                    class="leading-snug text-balance text-muted-foreground"
+                >
                     {{ description }}
                 </p>
             </header>
-            <div class="max-w-xs">
-                <slot />
-            </div>
-        </main>
+
+            <slot />
+        </div>
     </div>
 </template>

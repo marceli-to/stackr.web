@@ -10,7 +10,6 @@ import { Spinner } from '@/components/ui/spinner';
 import { register } from '@/routes';
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
-import PasskeyVerify from '@/components/PasskeyVerify.vue';
 
 defineOptions({
     layout: {
@@ -31,8 +30,6 @@ defineProps<{
     <div v-if="status" class="mb-4 text-sm font-medium text-(--color-success)">
         {{ status }}
     </div>
-
-    <PasskeyVerify />
 
     <Form
         v-bind="store.form()"
@@ -81,11 +78,11 @@ defineProps<{
             </Button>
         </div>
 
-        <div class="grid gap-2 text-sm text-muted-foreground">
+        <div class="grid gap-2 text-center text-sm text-muted-foreground">
             <TextLink
                 v-if="canResetPassword"
                 :href="request()"
-                class="justify-self-start text-foreground"
+                class="justify-self-center text-foreground"
                 :tabindex="4"
             >
                 Forgot your password?
