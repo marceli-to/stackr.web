@@ -15,7 +15,8 @@ _Last updated: 2026-10-24_
 | 5. Design: "Field" (see below)                         | ✅ done |
 | 6. Card details (title, description, dates, labels, …) | ⏭ next  |
 
-Code lives on GitHub: https://github.com/marceli-to/stackr.web
+Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stackr.web
+(`design/field` and `feature/card-details` are merged into `main` and can be deleted.)
 
 ## Stack
 
@@ -104,7 +105,9 @@ Code lives on GitHub: https://github.com/marceli-to/stackr.web
 - `npm run dev` while you work. Without it, the site uses the last `npm run build`.
 - Checks: `php artisan test`, `vendor/bin/phpstan analyse --memory-limit=1G`, `vendor/bin/pint --test`,
   `npm run types:check`, `npm run check`
-- Account: `m@marceli.to`, email verified by hand in the database.
+- Account: `m@marceli.to`, email verified by hand in the database. For screenshots, a throwaway
+  user (`ledger-demo@stackr.test` / `password`) was created and deleted again each time.
+- Headless screenshots: puppeteer-core in `/tmp/pp` against the system Chrome (not part of the repo).
 - `.hallmark/` (untracked) is the Hallmark design skill's local log.
 
 ## Next up
@@ -115,7 +118,8 @@ Code lives on GitHub: https://github.com/marceli-to/stackr.web
    activity log, @mentions in comments, cover colours, image thumbnails (images are served in full
    size today).
 3. Show a short message instead of Inertia's full-page 403 overlay when a move is rejected.
-4. Playwright tests for drag & drop and the card dialog.
+4. Playwright tests for drag & drop and the card dialog. Dragging cards was not re-checked by hand
+   after cards became clickable (they open on click, drag still uses SortableJS).
 5. Production: certificate from the host, and set `APP_URL` (https), `APP_NAME=Stackr` and
    `SESSION_LIFETIME=720` in its `.env`. Make sure PHP's `upload_max_filesize` and `post_max_size`
    allow 20 MB uploads.
