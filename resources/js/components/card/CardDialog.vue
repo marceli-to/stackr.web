@@ -274,7 +274,9 @@ const sideButton =
 			</DialogClose>
 
 			<div class="p-6 sm:p-8">
-				<header class="mb-6 pr-10">
+				<header
+					class="-mx-6 mb-6 border-b border-(--surface-edge) px-6 pr-16 pb-6 sm:-mx-8 sm:mb-8 sm:px-8 sm:pr-18"
+				>
 					<label for="card-title" class="sr-only">Title</label>
 					<textarea
 						id="card-title"
@@ -300,8 +302,11 @@ const sideButton =
 					</p>
 				</header>
 
-				<div class="grid gap-8 md:grid-cols-[minmax(0,1fr)_11rem]">
-					<div class="min-w-0 space-y-8">
+				<div class="grid gap-8 md:grid-cols-[minmax(0,1fr)_12.5rem]">
+					<!-- Sections are split by hairlines -->
+					<div
+						class="min-w-0 divide-y divide-(--surface-edge) *:py-7 *:first:pt-0 *:last:pb-0"
+					>
 						<!-- Labels, members and dates, when the card has them -->
 						<div
 							v-if="
@@ -435,7 +440,9 @@ const sideButton =
 						<CardComments :card="card" />
 					</div>
 
-					<aside class="space-y-6">
+					<aside
+						class="space-y-6 border-t border-(--surface-edge) pt-6 md:border-t-0 md:border-l md:pt-0 md:pl-6"
+					>
 						<div class="space-y-1.5">
 							<p
 								class="text-sm font-semibold text-muted-foreground"
@@ -516,7 +523,9 @@ const sideButton =
 							/>
 						</div>
 
-						<div class="space-y-1.5">
+						<div
+							class="space-y-1.5 border-t border-(--surface-edge) pt-6"
+						>
 							<p
 								class="text-sm font-semibold text-muted-foreground"
 							>
