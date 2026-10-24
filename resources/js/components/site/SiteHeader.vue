@@ -27,6 +27,11 @@ import { home, login } from '@/routes';
 				class="text-sm/6 font-semibold text-(--color-ink-2) hover:text-(--color-ink) max-sm:hidden"
 				>Features</a
 			>
+			<a
+				href="/#agents"
+				class="text-sm/6 font-semibold text-(--color-ink-2) hover:text-(--color-ink) max-sm:hidden"
+				>Agents</a
+			>
 			<Link
 				:href="login()"
 				class="rounded-full px-3.5 py-1.5 text-sm/6 font-semibold text-(--color-ink) ring-1 ring-(--control-edge) hover:bg-(--color-paper-2)"

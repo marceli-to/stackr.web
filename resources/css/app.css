@@ -142,6 +142,14 @@
 	body {
 		@apply bg-background text-foreground;
 	}
+
+	/* The landing page glides to its sections. Only there: in the app it
+	   would also animate the jump to the top on every page change. */
+	@media (prefers-reduced-motion: no-preference) {
+		html:has([data-smooth-scroll]) {
+			scroll-behavior: smooth;
+		}
+	}
 }
 
 /* Toasts: white sheets like the menus, in the text face, with the icon in

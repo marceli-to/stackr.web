@@ -1,22 +1,32 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import {
+	PhArchive,
 	PhArrowRight,
+	PhBell,
+	PhCalendarBlank,
 	PhCalendarCheck,
 	PhChatCircleText,
+	PhCheck,
 	PhCheckSquare,
+	PhClockCounterClockwise,
+	PhCopySimple,
+	PhGauge,
 	PhHandGrabbing,
 	PhLink,
+	PhMagnifyingGlass,
+	PhPaintBrush,
 	PhPaperclip,
 	PhTag,
 	PhUsersThree,
+	PhX,
 } from '@phosphor-icons/vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import BoardMock from '@/components/site/BoardMock.vue';
 import SiteFooter from '@/components/site/SiteFooter.vue';
 import SiteHeader from '@/components/site/SiteHeader.vue';
 import { login, register } from '@/routes';
-import { solidProjectColors } from '@/types';
+import { projectColors, solidProjectColors } from '@/types';
 
 const repository = 'https://github.com/marceli-to/stackr.web';
 
@@ -29,12 +39,12 @@ const features = [
 	{
 		icon: PhUsersThree,
 		title: 'Invite your people',
-		body: 'Invite by email. People with an account join right away; everyone else gets a link to sign up.',
+		body: 'Invite by email, or turn on a join link and share it. People with an account join right away; everyone else signs up first.',
 	},
 	{
 		icon: PhCalendarCheck,
 		title: 'Dates that nudge',
-		body: 'Give a card a start and a due date. Cards due soon or overdue stand out on the board, and a tick marks them done.',
+		body: 'Give a card a start and a due date. Cards due soon or overdue stand out, and the people on a card get a reminder the day before.',
 	},
 	{
 		icon: PhTag,
@@ -44,12 +54,12 @@ const features = [
 	{
 		icon: PhCheckSquare,
 		title: 'Checklists',
-		body: 'Break a card into steps and tick them off. The board shows how many are done.',
+		body: 'Break a card into steps and tick them off. The board shows how many are done, and a new checklist can copy one you already have.',
 	},
 	{
 		icon: PhPaperclip,
 		title: 'Files and covers',
-		body: 'Drop files on a card or paste a screenshot, up to 20 MB each. The first image becomes the card’s cover.',
+		body: 'Drop files on a card or paste a screenshot, up to 20 MB each. The first image becomes the card’s cover, or pick a colour instead.',
 	},
 	{
 		icon: PhChatCircleText,
@@ -61,6 +71,69 @@ const features = [
 		title: 'A link for every card',
 		body: 'Every card has its own address. Send it, and it opens right on the board; the back button closes it again.',
 	},
+	{
+		icon: PhMagnifyingGlass,
+		title: 'Search and shortcuts',
+		body: 'Press / and type: the board narrows to the cards that match. n adds a card, the arrow keys move between cards, and ? lists the rest.',
+	},
+	{
+		icon: PhCalendarBlank,
+		title: 'Calendar',
+		body: 'Switch a board to a month of due dates. Drag a card to another day to move its date.',
+	},
+	{
+		icon: PhBell,
+		title: 'Notifications and mentions',
+		body: 'Mention someone with @ and they hear about it, in the app and by email if they like. Watch a card or a whole board to follow along.',
+	},
+	{
+		icon: PhCopySimple,
+		title: 'Templates',
+		body: 'Turn a card you make again and again into a template, and start new ones from it with its checklists, labels and files.',
+	},
+	{
+		icon: PhClockCounterClockwise,
+		title: 'A history on every card',
+		body: 'Each card keeps a log of what happened to it and who did it, between the comments.',
+	},
+	{
+		icon: PhArchive,
+		title: 'Archive, move, copy',
+		body: 'Archive cards and lists instead of deleting them, and bring them back later. Move or copy a card, even onto another board.',
+	},
+	{
+		icon: PhGauge,
+		title: 'Card limits',
+		body: 'Give a list a limit to keep work in progress in check; it turns red when there’s too much. Fold away the lists you don’t need right now.',
+	},
+	{
+		icon: PhPaintBrush,
+		title: 'Make it yours',
+		body: 'Eleven colours for your projects, five of them gradients, or a photo of your own behind the board.',
+	},
+];
+
+// What an agent may and may not do, for the agents section.
+const agentCan = [
+	'Read your boards, cards, checklists and comments',
+	'Create cards and edit them',
+	'Move cards from list to list',
+	'Tick off checklist items and add new ones',
+	'Comment, assign members and set labels',
+	'Archive cards',
+];
+
+const agentCannot = [
+	'Delete anything',
+	'Change a board’s settings',
+	'Invite or remove people',
+];
+
+const agentLog = [
+	'moved this from To do to Doing',
+	'ticked off “Draft the copy”',
+	'commented',
+	'moved this from Doing to Done',
 ];
 
 const facts = [
@@ -76,11 +149,11 @@ const facts = [
 		<title>A board for every project</title>
 		<meta
 			name="description"
-			content="Stackr is a small board for small teams: every project gets its own colour and its own board of lists and cards."
+			content="Stackr is a small board for small teams: every project gets its own colour and its own board of lists and cards, and AI agents can work them too."
 		/>
 	</Head>
 
-	<div class="bg-sheet text-(--color-ink)">
+	<div class="bg-sheet text-(--color-ink)" data-smooth-scroll>
 		<div
 			class="pointer-events-none absolute inset-x-0 top-0 h-[44rem] bg-linear-to-b from-(--color-paper-2) to-(--color-sheet)"
 		/>
@@ -106,7 +179,7 @@ const facts = [
 							A board for every project
 						</h1>
 						<p
-							class="mx-auto mt-6 max-w-[50ch] text-lg/8 text-pretty text-(--color-ink-2) sm:text-xl/8"
+							class="mx-auto mt-6 max-w-[50ch] text-lg/7 text-pretty text-(--color-ink-2) sm:text-xl/7.5"
 						>
 							Stackr is a small board for small teams. Every
 							project gets its own colour and its own board of
@@ -130,7 +203,7 @@ const facts = [
 								<PhArrowRight class="size-4" />
 							</Link>
 						</div>
-						<p class="mt-6 text-sm/6 text-(--color-ink-3)">
+						<p class="mt-6 text-sm/5.5 text-(--color-ink-3)">
 							Free, with no ads and no tracking. Hosted in
 							Switzerland.
 						</p>
@@ -146,17 +219,17 @@ const facts = [
 				>
 					<div class="mx-auto max-w-6xl px-6 lg:px-8">
 						<p
-							class="text-base/7 font-semibold text-(--color-label-sky)"
+							class="text-base/6 font-semibold text-(--color-label-sky)"
 						>
 							How it works
 						</p>
 						<h2
-							class="mt-2 max-w-[24ch] font-display text-5xl font-bold tracking-(--tracking-display) text-balance sm:text-6xl"
+							class="mt-2 max-w-[24ch] font-display text-5xl leading-[1.1] font-bold tracking-(--tracking-display) text-balance sm:text-6xl"
 						>
 							Projects, lists and cards
 						</h2>
 						<p
-							class="mt-6 max-w-[52ch] text-lg/8 text-pretty text-white/70"
+							class="mt-6 max-w-[52ch] text-lg/7 text-pretty text-white/70"
 						>
 							That’s the whole idea. A project is a board, a list
 							is a step, and a card is a piece of work. Everything
@@ -171,29 +244,32 @@ const facts = [
 								class="flex flex-col rounded-[var(--radius-tile)] bg-white/5 p-8 ring-1 ring-white/10"
 							>
 								<div class="flex items-center gap-x-3">
-									<span class="text-base/7 font-semibold"
+									<span class="text-base/6 font-semibold"
 										>Projects</span
 									>
 									<span
-										class="rounded-full px-2 text-sm/6 font-medium text-(--color-label-sky) ring-1 ring-(--color-label-sky)/50"
-										>6 colours</span
+										class="rounded-full px-2 text-sm/5.5 font-medium text-(--color-label-sky) ring-1 ring-(--color-label-sky)/50"
+										>{{
+											projectColors.length
+										}}
+										colours</span
 									>
 								</div>
 								<p
-									class="mt-4 text-sm/6 font-semibold text-white/90"
+									class="mt-4 text-sm/5.5 font-semibold text-white/90"
 								>
 									One board per project
 								</p>
 								<p
-									class="mt-2 text-base/7 text-pretty text-white/70"
+									class="mt-2 text-base/6 text-pretty text-white/70"
 								>
-									Give each project a name, a link and one of
-									six colours. The whole board stands on it,
-									so you always know where you are.
+									Give each project a name, a link and a
+									colour, or a photo. The whole board stands
+									on it, so you always know where you are.
 								</p>
 								<ul
 									class="mt-auto grid grid-cols-3 gap-2 pt-8"
-									aria-label="The six project colours"
+									aria-label="Six of the project colours"
 								>
 									<li
 										v-for="color in solidProjectColors"
@@ -211,21 +287,21 @@ const facts = [
 								class="flex flex-col rounded-[var(--radius-tile)] bg-white/5 p-8 ring-1 ring-white/10"
 							>
 								<div class="flex items-center gap-x-3">
-									<span class="text-base/7 font-semibold"
+									<span class="text-base/6 font-semibold"
 										>Lists</span
 									>
 									<span
-										class="rounded-full px-2 text-sm/6 font-medium text-(--color-label-sky) ring-1 ring-(--color-label-sky)/50"
+										class="rounded-full px-2 text-sm/5.5 font-medium text-(--color-label-sky) ring-1 ring-(--color-label-sky)/50"
 										>Drag &amp; drop</span
 									>
 								</div>
 								<p
-									class="mt-4 text-sm/6 font-semibold text-white/90"
+									class="mt-4 text-sm/5.5 font-semibold text-white/90"
 								>
 									One list per step
 								</p>
 								<p
-									class="mt-2 text-base/7 text-pretty text-white/70"
+									class="mt-2 text-base/6 text-pretty text-white/70"
 								>
 									To do, Doing, Done, or whatever your work
 									needs. Put the lists in order and drag the
@@ -263,21 +339,21 @@ const facts = [
 								class="flex flex-col rounded-[var(--radius-tile)] bg-white/5 p-8 ring-1 ring-white/10"
 							>
 								<div class="flex items-center gap-x-3">
-									<span class="text-base/7 font-semibold"
+									<span class="text-base/6 font-semibold"
 										>Cards</span
 									>
 									<span
-										class="rounded-full px-2 text-sm/6 font-medium text-(--color-label-sky) ring-1 ring-(--color-label-sky)/50"
+										class="rounded-full px-2 text-sm/5.5 font-medium text-(--color-label-sky) ring-1 ring-(--color-label-sky)/50"
 										>Click to open</span
 									>
 								</div>
 								<p
-									class="mt-4 text-sm/6 font-semibold text-white/90"
+									class="mt-4 text-sm/5.5 font-semibold text-white/90"
 								>
 									Everything about one task
 								</p>
 								<p
-									class="mt-2 text-base/7 text-pretty text-white/70"
+									class="mt-2 text-base/6 text-pretty text-white/70"
 								>
 									Open a card for its description, dates,
 									labels, members, checklists, files and
@@ -325,7 +401,7 @@ const facts = [
 						</div>
 
 						<p
-							class="mt-12 max-w-[60ch] text-base/7 text-pretty text-white/70"
+							class="mt-12 max-w-[60ch] text-base/6 text-pretty text-white/70"
 						>
 							Stackr has no realtime updates: what others change
 							shows up when you reload the page. It keeps the app
@@ -338,17 +414,18 @@ const facts = [
 				<section id="features" class="scroll-mt-8 py-24 sm:py-32">
 					<div class="mx-auto max-w-6xl px-6 lg:px-8">
 						<p
-							class="text-base/7 font-semibold text-(--color-field-cobalt) dark:text-(--color-label-blue)"
+							class="text-base/6 font-semibold text-(--color-field-cobalt) dark:text-(--color-label-blue)"
 						>
 							Features
 						</p>
 						<h2
-							class="mt-2 max-w-[30ch] font-display text-5xl font-bold tracking-(--tracking-display) text-balance sm:text-6xl"
+							class="mt-2 max-w-[30ch] font-display text-5xl leading-[1.1] font-bold tracking-(--tracking-display) text-balance sm:text-6xl"
 						>
-							Everything you need, nothing you don’t
+							Everything you need,<br />
+							nothing you don’t
 						</h2>
 						<p
-							class="mt-6 max-w-[48ch] text-lg/8 text-pretty text-(--color-ink-2)"
+							class="mt-6 max-w-[48ch] text-lg/7 text-pretty text-(--color-ink-2)"
 						>
 							No workspaces, no automations, no power-ups. Make a
 							project, add a few lists and get going.
@@ -362,7 +439,7 @@ const facts = [
 								:key="feature.title"
 							>
 								<dt
-									class="flex items-start gap-x-3 text-base/7 font-semibold"
+									class="flex items-start gap-x-3 text-base/6 font-semibold"
 								>
 									<component
 										:is="feature.icon"
@@ -371,12 +448,147 @@ const facts = [
 									{{ feature.title }}
 								</dt>
 								<dd
-									class="mt-1 pl-8 text-base/7 text-pretty text-(--color-ink-2)"
+									class="mt-1 pl-8 text-base/6 text-pretty text-(--color-ink-2)"
 								>
 									{{ feature.body }}
 								</dd>
 							</div>
 						</dl>
+					</div>
+				</section>
+
+				<!-- Agents -->
+				<section
+					id="agents"
+					class="scroll-mt-8 bg-[oklch(18%_0.012_262)] py-24 text-(--color-on-dark) sm:py-32 dark:bg-[oklch(12%_0.008_262)]"
+				>
+					<div
+						class="mx-auto grid max-w-6xl grid-cols-1 gap-x-16 gap-y-16 px-6 lg:grid-cols-2 lg:px-8"
+					>
+						<div>
+							<p
+								class="text-base/6 font-semibold text-(--color-label-sky)"
+							>
+								Agents
+							</p>
+							<h2
+								class="mt-2 max-w-[20ch] font-display text-5xl leading-[1.1] font-bold tracking-(--tracking-display) text-balance sm:text-6xl"
+							>
+								Let an agent do the busywork
+							</h2>
+							<p
+								class="mt-6 max-w-[48ch] text-lg/7 text-pretty text-white/70"
+							>
+								Stackr speaks MCP, the way AI agents like Claude
+								Code use other tools. Create a token in your
+								settings, paste one command, and your agent can
+								work your boards: pick up a card, do the work,
+								tick off the checklist, say what it did and move
+								the card to Done.
+							</p>
+							<p
+								class="mt-4 max-w-[48ch] text-base/6 text-pretty text-white/70"
+							>
+								It acts as you, only on your boards, and
+								everything it does is marked “via agent” in the
+								card’s history. Revoke the token and it’s out.
+							</p>
+
+							<div
+								class="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2"
+							>
+								<div>
+									<p
+										class="text-sm/5.5 font-semibold text-white/90"
+									>
+										It can
+									</p>
+									<ul class="mt-3 space-y-2">
+										<li
+											v-for="item in agentCan"
+											:key="item"
+											class="flex gap-x-2.5 text-sm/5.5 text-white/70"
+										>
+											<PhCheck
+												class="size-4 h-lh shrink-0 text-(--color-label-sky)"
+											/>
+											{{ item }}
+										</li>
+									</ul>
+								</div>
+								<div>
+									<p
+										class="text-sm/5.5 font-semibold text-white/90"
+									>
+										It can’t
+									</p>
+									<ul class="mt-3 space-y-2">
+										<li
+											v-for="item in agentCannot"
+											:key="item"
+											class="flex gap-x-2.5 text-sm/5.5 text-white/70"
+										>
+											<PhX
+												class="size-4 h-lh shrink-0 text-white/40"
+											/>
+											{{ item }}
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+
+						<!-- A prompt, and what it leaves on the card -->
+						<div
+							class="flex flex-col justify-center gap-4 self-center"
+							aria-hidden="true"
+						>
+							<div
+								class="ml-auto max-w-[34ch] rounded-[var(--radius-tile)] rounded-br-[4px] bg-white/10 px-4 py-3 text-base/6 text-white/90"
+							>
+								Take the top card in To do on the Website board,
+								do it, and move it to Done.
+							</div>
+
+							<div
+								class="rounded-[var(--radius-tile)] bg-sheet p-5 text-(--color-ink)"
+							>
+								<span
+									data-label="sky"
+									class="inline-block rounded-[3px] bg-label px-1.5 py-1 text-xs leading-none font-semibold text-label-ink"
+									>Copy</span
+								>
+								<p class="mt-2 font-semibold">
+									Write the About page
+								</p>
+								<ol class="mt-4 space-y-3">
+									<li
+										v-for="(line, index) in agentLog"
+										:key="line"
+										class="flex gap-2.5 text-sm"
+									>
+										<span
+											class="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-paper-2) text-xs font-semibold text-(--color-ink-3)"
+											>MS</span
+										>
+										<p class="pt-1">
+											<span class="font-semibold"
+												>Marcel</span
+											>
+											{{ line }}
+											<span class="text-(--color-ink-3)"
+												>{{ 4 - index }} min ago</span
+											>
+											<span
+												class="whitespace-nowrap text-(--color-ink-3)/70"
+											>
+												· via agent</span
+											>
+										</p>
+									</li>
+								</ol>
+							</div>
+						</div>
 					</div>
 				</section>
 
@@ -387,17 +599,17 @@ const facts = [
 					>
 						<div>
 							<p
-								class="text-base/7 font-semibold text-(--color-field-cobalt) dark:text-(--color-label-blue)"
+								class="text-base/6 font-semibold text-(--color-field-cobalt) dark:text-(--color-label-blue)"
 							>
 								Under the hood
 							</p>
 							<h2
-								class="mt-2 max-w-[30ch] font-display text-5xl font-bold tracking-(--tracking-display) text-balance sm:text-6xl"
+								class="mt-2 max-w-[30ch] font-display text-5xl leading-[1.1] font-bold tracking-(--tracking-display) text-balance sm:text-6xl"
 							>
 								Small, simple, and out of your way
 							</h2>
 							<p
-								class="mt-6 max-w-[48ch] text-lg/8 text-pretty text-(--color-ink-2)"
+								class="mt-6 max-w-[48ch] text-lg/7 text-pretty text-(--color-ink-2)"
 							>
 								Stackr is built with Laravel and Vue and runs on
 								a small server in Switzerland. Your boards are
@@ -414,7 +626,7 @@ const facts = [
 								:key="fact.label"
 								class="flex items-baseline justify-between gap-x-6 py-6 first:pt-0"
 							>
-								<dt class="text-base/7 text-(--color-ink-2)">
+								<dt class="text-base/6 text-(--color-ink-2)">
 									{{ fact.label }}
 								</dt>
 								<dd
@@ -426,7 +638,7 @@ const facts = [
 							<div
 								class="flex items-baseline justify-between gap-x-6 pt-6"
 							>
-								<dt class="text-base/7 text-(--color-ink-2)">
+								<dt class="text-base/6 text-(--color-ink-2)">
 									Source code
 								</dt>
 								<dd

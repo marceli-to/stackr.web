@@ -238,10 +238,13 @@ Still open there: a manual check, see "After the deploy" under "Next up".
 - **Landing page** (`pages/site/Welcome.vue`) for guests at `/`; signed-in users still go straight to
   `/projects`. Built like the kimiyu.ch app sites (wuff, croc): header with anchors and a "Log in" pill,
   hero with the app icon, a static board mock (`components/site/BoardMock.vue`), a dark "How it works"
-  band (projects, lists, cards), a 4×2 features grid, "Under the hood" facts, and the footer
+  band (projects, lists, cards), a 4×4 features grid, a dark "Agents" band (MCP: what an agent
+  can and can't do, a mock prompt and a card history marked "via agent"; nav link "Agents"),
+  "Under the hood" facts, and the footer
   "made with ❤️ by kimiyu.ch". `/legal` (`pages/site/Legal.vue`) is the small print: data, privacy
   (cookies, Hostpoint, mail, 30-day backups), deleting your account, no warranty, contact via GitHub
-  issues. Pages under `site/` get no app layout (`app.ts`). Both work in dark mode: the dark band and
+  issues. Pages under `site/` get no app layout (`app.ts`). The landing page scrolls smoothly to
+  its anchors (`data-smooth-scroll` → `html:has(...)` in `app.css`, off with reduced motion). Both work in dark mode: the dark band and
   the icon tile use a fixed dark colour, not `--color-ink` (which turns light in dark mode).
 - **Favicons** are linked as SVG + PNG (`?v=3`), not `.ico`: Herd answers `/favicon.ico` with a 404
   status, which browsers ignore. `favicon.ico` still exists for direct requests.
