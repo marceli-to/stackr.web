@@ -15,7 +15,7 @@ class StoreAttachments
 
 	/**
 	 * Stores the files on the card. The first image becomes the cover when
-	 * the card has none yet, as on Trello.
+	 * the card has none yet (image or colour), as on Trello.
 	 *
 	 * @param  list<UploadedFile>  $files
 	 */
@@ -41,7 +41,7 @@ class StoreAttachments
 			$attachment->save();
 			$this->recordActivity->handle($card, 'attached', ['name' => $attachment->name]);
 
-			if ($card->cover_attachment_id === null && $attachment->isImage()) {
+			if ($card->cover_attachment_id === null && $card->cover_color === null && $attachment->isImage()) {
 				$card->update(['cover_attachment_id' => $attachment->id]);
 			}
 		}

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\LabelColor;
 use Carbon\CarbonImmutable;
 use Database\Factories\CardFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -27,10 +28,11 @@ use Illuminate\Support\Facades\Storage;
  * @property CarbonImmutable|null $completed_at
  * @property CarbonImmutable|null $archived_at
  * @property int|null $cover_attachment_id
+ * @property LabelColor|null $cover_color
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['title', 'description', 'position', 'start_at', 'due_at', 'due_reminded_at', 'completed_at', 'archived_at', 'cover_attachment_id'])]
+#[Fillable(['title', 'description', 'position', 'start_at', 'due_at', 'due_reminded_at', 'completed_at', 'archived_at', 'cover_attachment_id', 'cover_color'])]
 class Card extends Model
 {
 	/** @use HasFactory<CardFactory> */
@@ -49,6 +51,7 @@ class Card extends Model
 			'due_reminded_at' => 'datetime',
 			'completed_at' => 'datetime',
 			'archived_at' => 'datetime',
+			'cover_color' => LabelColor::class,
 		];
 	}
 

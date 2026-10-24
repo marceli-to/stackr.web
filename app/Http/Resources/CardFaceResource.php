@@ -36,6 +36,7 @@ class CardFaceResource extends JsonResource
 				'width' => $this->cover->width,
 				'height' => $this->cover->height,
 			] : null,
+			'cover_color' => $this->cover_color,
 			'attachments_count' => $this->attachments_count ?? 0,
 			'comments_count' => $this->comments_count ?? 0,
 			'checklist' => $items->isEmpty() ? null : [

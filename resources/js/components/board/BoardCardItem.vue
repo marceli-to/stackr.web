@@ -80,8 +80,13 @@ function open() {
 		@click="open"
 		@keydown.enter.prevent="open"
 	>
+		<div
+			v-if="card.cover_color"
+			:data-label="card.cover_color"
+			class="h-8 bg-label"
+		/>
 		<img
-			v-if="card.cover"
+			v-else-if="card.cover"
 			:src="card.cover.url"
 			alt=""
 			:width="card.cover.width ?? undefined"

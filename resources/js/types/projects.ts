@@ -74,6 +74,7 @@ export type BoardCard = {
 	labels: number[];
 	members: number[];
 	cover: { url: string; width: number | null; height: number | null } | null;
+	cover_color: LabelColor | null;
 	attachments_count: number;
 	comments_count: number;
 	checklist: { done: number; total: number } | null;
@@ -142,6 +143,7 @@ export type CardDetail = {
 	labels: number[];
 	members: number[];
 	cover_attachment_id: number | null;
+	cover_color: LabelColor | null;
 	checklists: Checklist[];
 	attachments: CardAttachment[];
 	comments: CardComment[];

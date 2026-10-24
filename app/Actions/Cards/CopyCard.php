@@ -40,6 +40,7 @@ class CopyCard
 				'description' => $card->description,
 				'start_at' => $card->start_at,
 				'due_at' => $card->due_at,
+				'cover_color' => $card->cover_color,
 				'position' => FractionalIndex::forIndex($siblings, $index),
 			]);
 			$copy->stack()->associate($target);

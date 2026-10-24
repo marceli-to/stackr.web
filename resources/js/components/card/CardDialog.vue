@@ -9,6 +9,7 @@ import {
 	PhCopy,
 	PhPaperclip,
 	PhPlus,
+	PhRectangle,
 	PhTag,
 	PhTrash,
 	PhUploadSimple,
@@ -28,6 +29,7 @@ import {
 } from '@/components/card/board';
 import CardAttachments from '@/components/card/CardAttachments.vue';
 import CardChecklist from '@/components/card/CardChecklist.vue';
+import CardCoverPicker from '@/components/card/CardCoverPicker.vue';
 import CardComments from '@/components/card/CardComments.vue';
 import CardDatesPicker from '@/components/card/CardDatesPicker.vue';
 import CardDescription from '@/components/card/CardDescription.vue';
@@ -279,6 +281,12 @@ const sideButton =
 					class="h-full max-w-full object-contain"
 				/>
 			</div>
+
+			<div
+				v-else-if="card.cover_color"
+				:data-label="card.cover_color"
+				class="h-20 shrink-0 bg-label"
+			/>
 
 			<DialogClose
 				class="absolute top-3 right-3 flex size-9 items-center justify-center rounded-full bg-sheet/90 text-foreground hover:bg-(--color-paper-2) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
@@ -533,6 +541,12 @@ const sideButton =
 								<PhPaperclip />
 								Attachment
 							</Button>
+							<CardCoverPicker :card="card">
+								<Button variant="secondary" :class="sideButton">
+									<PhRectangle />
+									Cover
+								</Button>
+							</CardCoverPicker>
 							<input
 								ref="fileInput"
 								type="file"

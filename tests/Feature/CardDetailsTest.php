@@ -199,6 +199,34 @@ class CardDetailsTest extends TestCase
 		Storage::disk(Attachment::DISK)->assertMissing($photo->path);
 	}
 
+	public function test_a_colour_cover_and_an_image_cover_replace_each_other()
+	{
+		$this->actingAs($this->user)
+			->post(route('attachments.store', $this->card), ['files' => [UploadedFile::fake()->image('a.png')]]);
+		$image = $this->card->attachments()->sole();
+
+		$this->actingAs($this->user)
+			->patch(route('cards.update', $this->card), ['cover_color' => 'sky'])
+			->assertSessionHasNoErrors();
+		$this->assertSame('sky', $this->card->fresh()->cover_color?->value);
+		$this->assertNull($this->card->fresh()->cover_attachment_id);
+
+		// A new image doesn't push a colour cover aside...
+		$this->actingAs($this->user)
+			->post(route('attachments.store', $this->card), ['files' => [UploadedFile::fake()->image('b.png')]]);
+		$this->assertNull($this->card->fresh()->cover_attachment_id);
+
+		// ...but picking one does.
+		$this->actingAs($this->user)
+			->patch(route('cards.update', $this->card), ['cover_attachment_id' => $image->id]);
+		$this->assertNull($this->card->fresh()->cover_color);
+		$this->assertSame($image->id, $this->card->fresh()->cover_attachment_id);
+
+		$this->actingAs($this->user)
+			->patch(route('cards.update', $this->card), ['cover_color' => 'pink'])
+			->assertSessionHasErrors('cover_color');
+	}
+
 	public function test_only_images_of_this_card_can_be_the_cover()
 	{
 		$this->actingAs($this->user)

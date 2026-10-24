@@ -22,6 +22,7 @@ _Last updated: 2026-10-24_
 | 12. Move or copy a card from the dialog                | ✅ done |
 | 13. Activity log per card                              | ✅ done |
 | 14. Notifications (bell + email) and @mentions         | ✅ done |
+| 15. Colour covers                                      | ✅ done |
 
 Everything is on `main`, pushed to GitHub (https://github.com/marceli-to/stackr.web) and deployed
 to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
@@ -115,6 +116,9 @@ to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
   hosting works). Up to 20 files of 20 MB per upload; drop files on the open card, paste an image,
   or use the file picker. The first image becomes the cover; any image can be made the cover.
   Deleting a card, a list or a project removes its files (model events).
+  A card can have a colour cover instead (`cards.cover_color`, the 8 label colours): "Cover" in
+  the dialog (`CardCoverPicker.vue`) picks a colour or one of the card's images; choosing one
+  clears the other, and a new upload doesn't replace a colour cover.
 - **Search and filters** (`components/board/{BoardFilterBar.vue,filter.ts}`) work in the browser:
   the board already has every card. A search field (`/` focuses it, Esc clears it) matches the
   title and label names, every word has to match. The "Filter" popover picks members ("Cards
@@ -255,7 +259,7 @@ Same method as the kimiyuch projects (gotaticket/usverchauft):
 
 ## Next up
 
-Feature list (2026-10-24), being worked through in order (1–4, 8 and 13 are done),
+Feature list (2026-10-24), being worked through in order (1–5, 8 and 13 are done),
 then 13 with 4 (notifications with mentions; needs the scheduler decision first).
 
 **Cards**
@@ -264,7 +268,7 @@ then 13 with 4 (notifications with mentions; needs the scheduler decision first)
 2. ~~Move or copy a card from the dialog: to another list or another project, at a chosen position.~~ Done.
 3. ~~Activity log per card, shown together with the comments.~~ Done.
 4. ~~@mentions in comments, with a notification to the person mentioned.~~ Done.
-5. Cover colours: a plain colour cover as well as image covers.
+5. ~~Cover colours: a plain colour cover as well as image covers.~~ Done.
 6. Image thumbnails: covers and previews currently load images at full size.
 7. Card templates and duplicating a checklist.
 

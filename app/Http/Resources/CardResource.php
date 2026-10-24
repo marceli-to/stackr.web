@@ -52,6 +52,7 @@ class CardResource extends JsonResource
 			'labels' => $this->labels->pluck('id'),
 			'members' => $this->members->pluck('id'),
 			'cover_attachment_id' => $this->cover_attachment_id,
+			'cover_color' => $this->cover_color,
 			'checklists' => ChecklistResource::collection($this->checklists),
 			'attachments' => AttachmentResource::collection($this->attachments),
 			'comments' => $this->comments->map(fn (Comment $comment) => (new CommentResource($comment))->mentioning($names)),

@@ -22,6 +22,13 @@ class UpdateCard
 			unset($data['completed']);
 		}
 
+		// A card has one cover: a colour or an image.
+		if (($data['cover_color'] ?? null) !== null) {
+			$data['cover_attachment_id'] = null;
+		} elseif (($data['cover_attachment_id'] ?? null) !== null) {
+			$data['cover_color'] = null;
+		}
+
 		$card->fill($data);
 
 		// A new due date gets its own reminder.
