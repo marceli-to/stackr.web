@@ -20,6 +20,7 @@ _Last updated: 2026-10-24_
 | 10. Search and filters on the board                    | ✅ done |
 | 11. Archive for cards and lists                        | ✅ done |
 | 12. Move or copy a card from the dialog                | ✅ done |
+| 13. Activity log per card                              | ✅ done |
 
 Everything is on `main`, pushed to GitHub (https://github.com/marceli-to/stackr.web) and deployed
 to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
@@ -137,6 +138,13 @@ to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
   copied, the cover follows). Arriving on another board, `CarryCardOver` maps labels by name and
   colour (creating missing ones) and drops members who aren't on that board; a moved card's files
   move to `attachments/{new project}/{card}/`.
+- **Activity log:** `activities` (card, user, `type`, `data` json, `created_at` only). The actions
+  record through `RecordActivity` (the signed-in user is the actor): created, copied, moved
+  (between lists), moved_board, archived, restored, completed, reopened, due_set, due_removed,
+  member_added, member_removed, attached, checklist_added, item_completed. `data` keeps names
+  as they were. The dialog shows the newest 100 mixed in with the comments ("Comments and
+  activity"); `describeActivity()` in `card/board.ts` writes the sentences; "Hide details" is
+  remembered in localStorage.
 - **Projects** have a name, an optional description, an optional link (`url`, http/https) shown
   on the board, and a colour. Editing and deleting happens from the ⋮ menu on the overview tiles.
 - **Landing page** (`pages/site/Welcome.vue`) for guests at `/`; signed-in users still go straight to
@@ -232,14 +240,14 @@ Same method as the kimiyuch projects (gotaticket/usverchauft):
 
 ## Next up
 
-Feature list (2026-10-24), being worked through in order (1, 2 and 8 are done),
+Feature list (2026-10-24), being worked through in order (1–3 and 8 are done),
 then 13 with 4 (notifications with mentions; needs the scheduler decision first).
 
 **Cards**
 
 1. ~~Archive instead of delete: archive cards and lists, an archive view, restore.~~ Done.
 2. ~~Move or copy a card from the dialog: to another list or another project, at a chosen position.~~ Done.
-3. Activity log per card ("Amy moved this from To do to Doing"), shown together with the comments.
+3. ~~Activity log per card, shown together with the comments.~~ Done.
 4. @mentions in comments, with a notification to the person mentioned.
 5. Cover colours: a plain colour cover as well as image covers.
 6. Image thumbnails: covers and previews currently load images at full size.

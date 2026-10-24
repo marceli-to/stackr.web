@@ -11,7 +11,10 @@ use Illuminate\Support\Facades\Storage;
 
 class MoveCard
 {
-	public function __construct(private CarryCardOver $carryCardOver) {}
+	public function __construct(
+		private CarryCardOver $carryCardOver,
+		private RecordActivity $recordActivity,
+	) {}
 
 	/**
 	 * Places the card at the given index among the target list's other cards
@@ -20,9 +23,10 @@ class MoveCard
 	 */
 	public function handle(Card $card, Stack $target, int $index): void
 	{
-		$from = $card->stack->project_id;
+		$source = $card->stack;
+		$from = $source->project_id;
 
-		DB::transaction(function () use ($card, $target, $index, $from): void {
+		DB::transaction(function () use ($card, $target, $index, $source, $from): void {
 			$siblings = $target->cards()
 				->active()
 				->whereKeyNot($card->id)
@@ -37,6 +41,12 @@ class MoveCard
 			if ($target->project_id !== $from) {
 				$this->carryCardOver->handle($card, $target->project);
 				$this->moveFiles($card, $from, $target->project_id);
+				$this->recordActivity->handle($card, 'moved_board', [
+					'from' => $source->project->name,
+					'to' => $target->project->name,
+				]);
+			} elseif ($target->id !== $source->id) {
+				$this->recordActivity->handle($card, 'moved', ['from' => $source->name, 'to' => $target->name]);
 			}
 		});
 	}

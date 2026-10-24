@@ -2,6 +2,7 @@
 
 namespace App\Actions\Attachments;
 
+use App\Actions\Cards\RecordActivity;
 use App\Models\Attachment;
 use App\Models\Card;
 use App\Models\User;
@@ -10,6 +11,8 @@ use Illuminate\Support\Str;
 
 class StoreAttachments
 {
+	public function __construct(private RecordActivity $recordActivity) {}
+
 	/**
 	 * Stores the files on the card. The first image becomes the cover when
 	 * the card has none yet, as on Trello.
@@ -36,6 +39,7 @@ class StoreAttachments
 			$attachment->card()->associate($card);
 			$attachment->user()->associate($user);
 			$attachment->save();
+			$this->recordActivity->handle($card, 'attached', ['name' => $attachment->name]);
 
 			if ($card->cover_attachment_id === null && $attachment->isImage()) {
 				$card->update(['cover_attachment_id' => $attachment->id]);

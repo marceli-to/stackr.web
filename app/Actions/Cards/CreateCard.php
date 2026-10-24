@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 class CreateCard
 {
+	public function __construct(private RecordActivity $recordActivity) {}
+
 	/**
 	 * Adds a card to the bottom of the list.
 	 */
@@ -17,10 +19,14 @@ class CreateCard
 		return DB::transaction(function () use ($stack, $title): Card {
 			$last = $stack->cards()->reorder()->max('position');
 
-			return $stack->cards()->create([
+			$card = $stack->cards()->create([
 				'title' => $title,
 				'position' => FractionalIndex::between($last, null),
 			]);
+
+			$this->recordActivity->handle($card, 'created', ['stack' => $stack->name]);
+
+			return $card;
 		});
 	}
 }

@@ -6,9 +6,12 @@ use App\Models\Card;
 
 class UpdateCard
 {
+	public function __construct(private RecordActivity $recordActivity) {}
+
 	/**
 	 * Saves only the fields that were sent. `completed` is a flag; a card that
-	 * is already done keeps the time it was completed.
+	 * is already done keeps the time it was completed. Completion and the due
+	 * date go into the activity log.
 	 *
 	 * @param  array<string, mixed>  $data
 	 */
@@ -20,5 +23,15 @@ class UpdateCard
 		}
 
 		$card->update($data);
+
+		if ($card->wasChanged('completed_at')) {
+			$this->recordActivity->handle($card, $card->completed_at !== null ? 'completed' : 'reopened');
+		}
+
+		if ($card->wasChanged('due_at')) {
+			$this->recordActivity->handle($card, $card->due_at !== null ? 'due_set' : 'due_removed', array_filter([
+				'due' => $card->due_at?->toIso8601String(),
+			]));
+		}
 	}
 }

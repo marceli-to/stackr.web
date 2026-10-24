@@ -14,7 +14,10 @@ use Illuminate\Support\Str;
 
 class CopyCard
 {
-	public function __construct(private CarryCardOver $carryCardOver) {}
+	public function __construct(
+		private CarryCardOver $carryCardOver,
+		private RecordActivity $recordActivity,
+	) {}
 
 	/**
 	 * Copies the card into a list (on any of the user's boards) at the given
@@ -61,6 +64,8 @@ class CopyCard
 			if ($target->project_id !== $card->stack->project_id) {
 				$this->carryCardOver->handle($copy, $target->project);
 			}
+
+			$this->recordActivity->handle($copy, 'copied', ['from' => $card->title]);
 
 			return $copy;
 		});

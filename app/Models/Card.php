@@ -128,6 +128,16 @@ class Card extends Model
 	/**
 	 * Newest first.
 	 *
+	 * @return HasMany<Activity, $this>
+	 */
+	public function activities(): HasMany
+	{
+		return $this->hasMany(Activity::class)->latest('id');
+	}
+
+	/**
+	 * Newest first.
+	 *
 	 * @return HasMany<Comment, $this>
 	 */
 	public function comments(): HasMany

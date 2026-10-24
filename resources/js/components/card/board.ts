@@ -2,7 +2,14 @@ import { router } from '@inertiajs/vue3';
 import type { InjectionKey, Ref } from 'vue';
 import { inject } from 'vue';
 import { show } from '@/routes/projects';
-import type { Destination, Label, LabelColor, Member, Project } from '@/types';
+import type {
+	CardActivity,
+	Destination,
+	Label,
+	LabelColor,
+	Member,
+	Project,
+} from '@/types';
 
 /** What every card on a board can reach: the project, its labels and members. */
 export type BoardContext = {
@@ -137,4 +144,50 @@ export function fileSize(bytes: number): string {
 	}
 
 	return `${value.toFixed(value < 10 ? 1 : 0)} ${units[unit]}`;
+}
+
+/** What an activity entry says after the person's name. */
+export function describeActivity(activity: CardActivity): string {
+	const data = activity.data;
+	const self =
+		data.user_id !== undefined && data.user_id === activity.user?.id;
+
+	switch (activity.type) {
+		case 'created':
+			return `added this card to ${data.stack}`;
+		case 'copied':
+			return `copied this card from “${data.from}”`;
+		case 'moved':
+			return `moved this card from ${data.from} to ${data.to}`;
+		case 'moved_board':
+			return `moved this card from the board ${data.from} to ${data.to}`;
+		case 'archived':
+			return 'archived this card';
+		case 'restored':
+			return 'restored this card';
+		case 'completed':
+			return 'marked this card complete';
+		case 'reopened':
+			return 'marked this card incomplete';
+		case 'due_set':
+			return `set the due date to ${formatDate(String(data.due), true)}`;
+		case 'due_removed':
+			return 'removed the due date';
+		case 'member_added':
+			return self
+				? 'joined this card'
+				: `added ${data.name} to this card`;
+		case 'member_removed':
+			return self
+				? 'left this card'
+				: `removed ${data.name} from this card`;
+		case 'attached':
+			return `attached ${data.name}`;
+		case 'checklist_added':
+			return `added the checklist ${data.title}`;
+		case 'item_completed':
+			return `completed ${data.title}`;
+		default:
+			return 'changed this card';
+	}
 }

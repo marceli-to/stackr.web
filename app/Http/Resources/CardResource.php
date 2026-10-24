@@ -21,7 +21,12 @@ class CardResource extends JsonResource
 	{
 		// The board loads only what card faces need (e.g. checklist items
 		// without their titles), so the open card loads its own copies.
-		$this->resource->load(['checklists.items', 'attachments.user', 'comments.user']);
+		$this->resource->load([
+			'checklists.items',
+			'attachments.user',
+			'comments.user',
+			'activities' => fn ($query) => $query->with('user')->limit(100),
+		]);
 		$this->resource->loadMissing(['stack', 'labels', 'members']);
 
 		return [
@@ -46,6 +51,7 @@ class CardResource extends JsonResource
 			'checklists' => ChecklistResource::collection($this->checklists),
 			'attachments' => AttachmentResource::collection($this->attachments),
 			'comments' => CommentResource::collection($this->comments),
+			'activities' => ActivityResource::collection($this->activities),
 		];
 	}
 }

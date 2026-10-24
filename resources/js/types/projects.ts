@@ -115,6 +115,15 @@ export type CardComment = {
 	edited: boolean;
 };
 
+/** An entry in a card's activity log; `data` depends on the type. */
+export type CardActivity = {
+	id: number;
+	type: string;
+	data: Record<string, string | number | undefined>;
+	user: Member | null;
+	created_at: string;
+};
+
 /** An opened card: everything the card dialog shows. */
 export type CardDetail = {
 	id: number;
@@ -136,6 +145,7 @@ export type CardDetail = {
 	checklists: Checklist[];
 	attachments: CardAttachment[];
 	comments: CardComment[];
+	activities: CardActivity[];
 };
 
 /** A board a card can be moved or copied to. */

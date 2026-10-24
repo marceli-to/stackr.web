@@ -2,10 +2,13 @@
 
 namespace App\Actions\Checklists;
 
+use App\Actions\Cards\RecordActivity;
 use App\Models\ChecklistItem;
 
 class UpdateChecklistItem
 {
+	public function __construct(private RecordActivity $recordActivity) {}
+
 	/**
 	 * Renames the item, or ticks it off and back on. An item that is already
 	 * done keeps the time it was ticked off.
@@ -23,5 +26,9 @@ class UpdateChecklistItem
 		}
 
 		$item->save();
+
+		if ($item->wasChanged('completed_at') && $item->completed_at !== null) {
+			$this->recordActivity->handle($item->checklist->card, 'item_completed', ['title' => $item->title]);
+		}
 	}
 }
