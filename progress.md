@@ -150,7 +150,7 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
 
 ## Next up
 
-Feature list (2026-10-24). Suggested order: 21 first, then 8 (search and filters) and 1 (archive),
+Feature list (2026-10-24). Suggested order: 8 (search and filters) and 1 (archive) first,
 then 13 with 4 (notifications with mentions; needs the scheduler decision first).
 
 **Cards**
@@ -187,13 +187,11 @@ then 13 with 4 (notifications with mentions; needs the scheduler decision first)
 
 **Technical**
 
-21. Playwright tests for drag & drop and the card dialog. Dragging hasn't been re-checked by hand
-    since cards became clickable (they open on click, drag still uses SortableJS). SortableJS uses
-    native HTML5 drag, so mouse events don't move anything; puppeteer's `card.drag(target)` +
-    `target.drop(card)` does (Playwright: `dragTo`).
 22. Go-live: certificate from the host, and set `APP_URL` (https), `APP_NAME=Stackr`,
     `SESSION_LIFETIME=720` and the host's SMTP (`MAIL_MAILER=smtp`, host, port, user, password,
     `MAIL_FROM_ADDRESS`) in its `.env`. Make sure PHP's `upload_max_filesize` and `post_max_size`
     allow 20 MB uploads.
 
-Not planned: realtime updates (no long-running processes on shared hosting).
+Not planned: realtime updates (no long-running processes on shared hosting), and browser tests
+(Playwright): the user tests the UI by hand. After UI changes, list what to check by hand, especially
+drag & drop (cards open on click, drag uses SortableJS's native HTML5 drag).
