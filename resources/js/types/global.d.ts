@@ -1,6 +1,5 @@
 import type { Directive } from 'vue';
 import type { Auth } from '@/types/auth';
-import type { ProjectLink } from '@/types/projects';
 
 // Extend ImportMeta interface for Vite...
 declare module 'vite/client' {
@@ -20,8 +19,6 @@ declare module '@inertiajs/core' {
         sharedPageProps: {
             name: string;
             auth: Auth;
-            sidebarProjects: ProjectLink[];
-            sidebarOpen: boolean;
             [key: string]: unknown;
         };
     }

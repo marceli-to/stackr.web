@@ -48,7 +48,7 @@ class ProjectTest extends TestCase
             );
     }
 
-    public function test_the_sidebar_lists_the_users_projects_alphabetically()
+    public function test_the_overview_lists_the_users_projects_alphabetically()
     {
         $user = User::factory()->create();
         Project::factory()->ownedBy($user)->create(['name' => 'Beta']);
@@ -58,9 +58,9 @@ class ProjectTest extends TestCase
         $this->actingAs($user)
             ->get(route('projects.index'))
             ->assertInertia(fn (Assert $page) => $page
-                ->has('sidebarProjects', 2)
-                ->where('sidebarProjects.0.name', 'alpha')
-                ->where('sidebarProjects.1.name', 'Beta')
+                ->has('projects', 2)
+                ->where('projects.0.name', 'alpha')
+                ->where('projects.1.name', 'Beta')
             );
     }
 

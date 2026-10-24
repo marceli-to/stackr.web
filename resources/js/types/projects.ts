@@ -26,8 +26,6 @@ export type ProjectSummary = Project & {
     updated_at: string;
 };
 
-export type ProjectLink = Pick<Project, 'id' | 'name' | 'color'>;
-
 export type BoardCard = {
     id: number;
     title: string;

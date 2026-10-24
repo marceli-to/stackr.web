@@ -6,21 +6,22 @@ _Last updated: 2026-10-24_
 
 ## Where we are
 
-| Step                                                         | Status  |
-| ------------------------------------------------------------ | ------- |
-| 1. Data model (projects, members, lists, cards)              | ✅ done |
-| 2. Projects overview (create, rename, delete, sidebar)       | ✅ done |
-| 3. Board (lists + cards, drag & drop)                        | ✅ done |
-| 4. Branding (name, logo, indigo theme, login screen)         | ✅ done |
-| 5. Card details popup (title, description, due date, delete) | ⏭ next  |
+| Step                                                   | Status  |
+| ------------------------------------------------------ | ------- |
+| 1. Data model (projects, members, lists, cards)        | ✅ done |
+| 2. Projects overview (create, rename, delete)          | ✅ done |
+| 3. Board (lists + cards, drag & drop)                  | ✅ done |
+| 4. Branding (name, logo, login screen)                 | ✅ done |
+| 5. Design: "Field" (see below)                         | ✅ done |
+| 6. Card details (title, description, dates, labels, …) | ⏭ next  |
 
-Everything is committed on `main` and pushed to `origin`
-(https://github.com/marceli-to/stackr.web).
+Code lives on GitHub: https://github.com/marceli-to/stackr.web
 
 ## Stack
 
 - Laravel 13 + Inertia 3 + Vue 3 (TypeScript), from the official Vue starter kit (Fortify auth)
-- Tailwind 4, shadcn-vue components in `resources/js/components/ui`
+- Tailwind 4, shadcn-vue components in `resources/js/components/ui` (restyled), Phosphor icons
+  (`@phosphor-icons/vue`, bold by default via `app.provide('weight', 'bold')` in `app.ts`)
 - Wayfinder for typed routes (`resources/js/actions`, `resources/js/routes` are generated)
 - `vue-draggable-plus` (SortableJS) for drag & drop
 - Pest, PHPStan (level 7), Pint, vue-tsc, `vp check` for lint/format
@@ -43,21 +44,31 @@ Everything is committed on `main` and pushed to `origin`
 - **The screen updates first.** The board moves the item straight away and saves in the background
   (`resources/js/components/board/useBoardMove.ts`, `async` Inertia visits). Once all moves have
   finished it takes the server's order again, which also undoes a rejected move.
-- **Branding:** the name is "Stackr". The logo is three offset bars (a stack of cards) in
-  `AppLogoIcon.vue`; the favicons in `public/` use the same mark, white on an indigo rounded square.
-  Indigo is `--primary` in light and dark mode (`resources/css/app.css`); everything else stays neutral.
-  The starter kit's Repository/Documentation links are gone.
-- **Theme:** light indigo (`indigo-50`) behind everything — sidebar, auth pages, board lists — with
-  white surfaces on top using the shared `shadow-soft` utility (`app.css`): the content panel, the
-  login card, project cards. Ghost buttons inside lists hover in `indigo-100`. Dark mode stays neutral.
-- **Sidebar:** logo (links to projects, no hover background), "Your projects", and the user menu. The
-  user menu shows the name only — no avatar/initials; collapsed, it shows a person icon.
-- **Project page** shows just the heading and board. Editing and deleting a project happens from the ⋮
-  menu on the projects overview.
+- **Design "Field"** (chosen out of three directions explored with the Hallmark skill). Every project
+  stands on its own dark colour (cobalt, rust, moss, oxblood, lagoon, plum: `ProjectColor` enum,
+  `projects.color`); the board page, top bar included, is drenched in it, lists sit in a darker well
+  of it, cards are plain white. Everything else is neutral warm paper with ink.
+    - Tokens in `resources/css/tokens.css`, mapped onto shadcn's variables in `app.css`. Fields are
+      `[data-field="<colour>"]`, which set `--field`, `--field-well`, `--field-ink` (always white) and
+      the focus ring.
+    - Type: Antonio 700 (poster heads: `--text-poster`, board title `--text-board-title`, list names,
+      dialog titles, the wordmark) and Hanken Grotesk 400/600 for everything else, loaded via Bunny in
+      `vite.config.ts`.
+    - Shell: a slim top bar (logo → projects, the user's initials → menu). No sidebar, no breadcrumbs,
+      no project switcher.
+    - Overview: a wall of colour tiles that ends with a neutral "New project" tile.
+    - Controls: 4px corners, ink primary buttons, white inputs with an ink hairline (`--control-edge`),
+      white menus/dialogs/toasts with `--surface-edge` and `--float-shadow`, dark-grey focus ring.
+      Focus outlines need `focus-visible:outline-solid` (Tailwind 4's `outline-none` clears the style).
+- **Logo:** three offset bars (a stack of cards) in `AppLogoIcon.vue`; favicons in `public/` are the
+  same mark on an ink tile.
+- **Projects** have a name, an optional description, an optional link (`url`, http/https) shown
+  on the board, and a colour. Editing and deleting happens from the ⋮ menu on the overview tiles.
 - **No landing page:** `/` sends guests to the login and signed-in users to `/projects`.
-- **Favicons** are linked as SVG + PNG (`?v=2`), not `.ico`: Herd answers `/favicon.ico` with a 404
+- **Favicons** are linked as SVG + PNG (`?v=3`), not `.ico`: Herd answers `/favicon.ico` with a 404
   status, which browsers ignore. `favicon.ico` still exists for direct requests.
-- **Auth pages** use `AuthCardLayout.vue`: a white card on `bg-indigo-50` (neutral in dark mode).
+- **Auth pages** use `AuthCardLayout.vue`: a centred white card with the logo, title and fields.
+  Passkeys can be managed in Security settings but are not offered on the login screen.
   The login has no "Remember me"; instead sessions last 12 hours (`SESSION_LIFETIME=720`, set it in
   production's `.env` too, along with `APP_NAME=Stackr`).
 - `/dashboard` redirects to `/projects`, so Fortify's home setting and the old links keep working.
@@ -67,7 +78,8 @@ Everything is committed on `main` and pushed to `origin`
 - Backend: `app/Http/Controllers/{Project,Stack,Card}Controller.php`, `app/Policies/ProjectPolicy.php`,
   `app/Models/{Project,ProjectMembership,Stack,Card}.php`, `routes/web.php`
 - Frontend: `resources/js/pages/projects/{Index,Show}.vue`, `resources/js/components/board/*`,
-  `resources/js/components/projects/*`, `resources/js/components/NavProjects.vue`
+  `resources/js/components/projects/*`, `resources/js/components/AppTopBar.vue`,
+  `resources/js/layouts/{AppLayout,settings/Layout,auth/AuthCardLayout}.vue`
 - Tests: `tests/Feature/{ProjectTest,BoardTest,DashboardTest,HomeTest}.php`, `tests/Unit/FractionalIndexTest.php`
 
 ## Running it
@@ -78,6 +90,7 @@ Everything is committed on `main` and pushed to `origin`
 - Checks: `php artisan test`, `vendor/bin/phpstan analyse --memory-limit=1G`, `vendor/bin/pint --test`,
   `npm run types:check`, `npm run check`
 - Account: `m@marceli.to`, email verified by hand in the database.
+- `.hallmark/` (untracked) is the Hallmark design skill's local log.
 
 ## Next up
 
