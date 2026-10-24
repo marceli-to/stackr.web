@@ -17,7 +17,7 @@ class RecordActivity
 	{
 		$activity = new Activity(['type' => $type, 'data' => $data ?: null]);
 		$activity->card()->associate($card);
-		$activity->user_id = Auth::id();
+		$activity->user()->associate(Auth::user());
 		$activity->save();
 
 		return $activity;
