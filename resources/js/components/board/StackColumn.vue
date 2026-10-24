@@ -8,6 +8,7 @@ import CardController from '@/actions/App/Http/Controllers/CardController';
 import StackController from '@/actions/App/Http/Controllers/StackController';
 import AddCardForm from '@/components/board/AddCardForm.vue';
 import BoardCardItem from '@/components/board/BoardCardItem.vue';
+import { useFilter } from '@/components/board/filter';
 import { saveMove } from '@/components/board/useBoardMove';
 import { Button } from '@/components/ui/button';
 import {
@@ -33,6 +34,10 @@ const props = defineProps<{
 }>();
 
 const cards = defineModel<BoardCard[]>('cards', { required: true });
+
+// Filtered-out cards stay in the list, only hidden, so dropped cards still
+// land at the right index among all of the list's cards.
+const { shows } = useFilter();
 
 const renaming = ref(false);
 const deleteOpen = ref(false);
@@ -79,7 +84,7 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 
 <template>
 	<section
-		class="flex max-h-[calc(100svh-16rem)] w-72 shrink-0 flex-col rounded-[var(--radius-tile)] bg-field-well"
+		class="flex max-h-[calc(100svh-19.25rem)] w-72 shrink-0 flex-col rounded-[var(--radius-tile)] bg-field-well"
 		:aria-label="stack.name"
 	>
 		<header
@@ -155,7 +160,12 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 			@update="onCardMoved($event, false)"
 			@add="onCardMoved($event, true)"
 		>
-			<BoardCardItem v-for="card in cards" :key="card.id" :card="card" />
+			<BoardCardItem
+				v-for="card in cards"
+				v-show="shows(card)"
+				:key="card.id"
+				:card="card"
+			/>
 		</VueDraggable>
 
 		<AddCardForm :stack="stack" />

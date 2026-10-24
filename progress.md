@@ -17,6 +17,7 @@ _Last updated: 2026-10-24_
 | 7. Inviting members                                    | ✅ done |
 | 8. Production on stackr.kimiyu.ch (see "Production")   | ✅ done |
 | 9. Landing page and legal notice                       | ✅ done |
+| 10. Search and filters on the board                    | ✅ done |
 
 Everything is on `main`, pushed to GitHub (https://github.com/marceli-to/stackr.web) and deployed
 to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
@@ -110,6 +111,13 @@ to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
   hosting works). Up to 20 files of 20 MB per upload; drop files on the open card, paste an image,
   or use the file picker. The first image becomes the cover; any image can be made the cover.
   Deleting a card, a list or a project removes its files (model events).
+- **Search and filters** (`components/board/{BoardFilterBar.vue,filter.ts}`) work in the browser:
+  the board already has every card. A search field (`/` focuses it, Esc clears it) matches the
+  title and label names, every word has to match. The "Filter" popover picks members ("Cards
+  assigned to me", others, "No members"), labels ("No labels") and due dates (overdue, next day,
+  next week, none, complete). Any choice within a group matches; every group has to. Filtered-out
+  cards are hidden with `v-show`, not removed, so SortableJS still counts them and a drop saves
+  the right index. The filter survives opening a card (`preserveState`) but not a reload.
 - **Projects** have a name, an optional description, an optional link (`url`, http/https) shown
   on the board, and a colour. Editing and deleting happens from the ⋮ menu on the overview tiles.
 - **Landing page** (`pages/site/Welcome.vue`) for guests at `/`; signed-in users still go straight to
@@ -205,7 +213,7 @@ Same method as the kimiyuch projects (gotaticket/usverchauft):
 
 ## Next up
 
-Feature list (2026-10-24). Suggested order: 8 (search and filters) and 1 (archive) first,
+Feature list (2026-10-24). Suggested order: 1 (archive) next (8, search and filters, is done),
 then 13 with 4 (notifications with mentions; needs the scheduler decision first).
 
 **Cards**
@@ -220,9 +228,9 @@ then 13 with 4 (notifications with mentions; needs the scheduler decision first)
 
 **Board**
 
-8. Search and filters: by text, label, member or due date ("my cards", "overdue").
+8. ~~Search and filters: by text, label, member or due date ("my cards", "overdue").~~ Done.
 9. Calendar view of cards with a due date.
-10. Keyboard shortcuts: `n` new card, `Esc` close, arrow keys between cards, `/` search.
+10. Keyboard shortcuts: `n` new card, `Esc` close, arrow keys between cards (`/` search is done).
 11. WIP limits or collapsing a list (optional).
 12. Board backgrounds: an image as well as the project colour (optional).
 

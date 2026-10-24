@@ -3,6 +3,8 @@ import { Head } from '@inertiajs/vue3';
 import { PhLink } from '@phosphor-icons/vue';
 import { computed, provide, toRef } from 'vue';
 import Board from '@/components/board/Board.vue';
+import BoardFilterBar from '@/components/board/BoardFilterBar.vue';
+import { createFilter, filterKey } from '@/components/board/filter';
 import { boardKey } from '@/components/card/board';
 import CardDialog from '@/components/card/CardDialog.vue';
 import type { BoardStack, CardDetail, Label, Member, Project } from '@/types';
@@ -20,6 +22,8 @@ provide(boardKey, {
 	labels: toRef(props, 'labels'),
 	members: toRef(props, 'members'),
 });
+
+provide(filterKey, createFilter(toRef(props, 'labels')));
 
 // The link as people read it: no scheme, no trailing slash.
 const urlLabel = computed(() =>
@@ -49,7 +53,10 @@ const urlLabel = computed(() =>
 			</a>
 		</header>
 
-		<Board :project="project" :stacks="stacks" />
+		<div class="flex min-h-0 flex-1 flex-col gap-4">
+			<BoardFilterBar :stacks="stacks" />
+			<Board :project="project" :stacks="stacks" />
+		</div>
 	</div>
 
 	<CardDialog :card="card" />

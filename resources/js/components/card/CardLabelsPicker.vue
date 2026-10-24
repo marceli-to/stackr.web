@@ -4,7 +4,7 @@ import { PhCaretLeft, PhCheck, PhPencilSimple } from '@phosphor-icons/vue';
 import { ref } from 'vue';
 import CardLabelController from '@/actions/App/Http/Controllers/CardLabelController';
 import LabelController from '@/actions/App/Http/Controllers/LabelController';
-import { keep, useBoard } from '@/components/card/board';
+import { colorNames, keep, useBoard } from '@/components/card/board';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -67,17 +67,6 @@ function remove() {
 		});
 	}
 }
-
-const colorNames: Record<LabelColor, string> = {
-	green: 'Green',
-	yellow: 'Yellow',
-	orange: 'Orange',
-	red: 'Red',
-	purple: 'Purple',
-	blue: 'Blue',
-	sky: 'Sky',
-	gray: 'Gray',
-};
 </script>
 
 <template>

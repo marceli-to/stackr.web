@@ -2,7 +2,7 @@ import { router } from '@inertiajs/vue3';
 import type { InjectionKey, Ref } from 'vue';
 import { inject } from 'vue';
 import { show } from '@/routes/projects';
-import type { Label, Member, Project } from '@/types';
+import type { Label, LabelColor, Member, Project } from '@/types';
 
 /** What every card on a board can reach: the project, its labels and members. */
 export type BoardContext = {
@@ -22,6 +22,18 @@ export function useBoard(): BoardContext {
 
 	return board;
 }
+
+/** What a label without a name is called. */
+export const colorNames: Record<LabelColor, string> = {
+	green: 'Green',
+	yellow: 'Yellow',
+	orange: 'Orange',
+	red: 'Red',
+	purple: 'Purple',
+	blue: 'Blue',
+	sky: 'Sky',
+	gray: 'Gray',
+};
 
 /** Opens a card by putting ?card=<id> in the URL; only the card reloads. */
 export function openCard(projectId: number, cardId: number) {
