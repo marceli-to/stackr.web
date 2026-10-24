@@ -84,9 +84,7 @@ function plural(count: number, word: string) {
 			Projects
 		</h1>
 
-		<ul
-			class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,20rem),1fr))] gap-3"
-		>
+		<ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 			<li
 				v-for="project in projects"
 				:key="project.id"
@@ -103,7 +101,7 @@ function plural(count: number, word: string) {
 				<div class="flex items-start justify-between gap-2">
 					<Link
 						:href="show(project.key)"
-						class="min-w-0 font-display text-4xl leading-[0.95] font-bold tracking-(--tracking-display) break-words after:absolute after:inset-0 after:rounded-[var(--radius-tile)] focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-(--color-focus) focus-visible:after:outline-solid"
+						class="min-w-0 font-display text-4xl leading-[1.05] font-bold tracking-(--tracking-display) break-words after:absolute after:inset-0 after:rounded-[var(--radius-tile)] focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-(--color-focus) focus-visible:after:outline-solid"
 					>
 						{{ project.name }}
 					</Link>

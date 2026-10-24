@@ -90,7 +90,7 @@ Still open there: a manual check, see "After the deploy" under "Next up".
       into the bar. No sidebar, no breadcrumbs, no project switcher.
     - Board: lists show no card count (unless they have a card limit); the list menu (and every other ⋯ menu, e.g. on project tiles) uses horizontal dots. "Add a card" is card-height
       with a faint tint, "Add a list" has the list's well colour.
-    - Overview: a wall of 16:10 colour tiles that ends with a neutral "New project" tile.
+    - Overview: a wall of 16:10 colour tiles (1–4 per row: sm 2, lg 3, xl 4) that ends with a neutral "New project" tile.
     - Controls: 4px corners, ink primary buttons, white inputs with an ink hairline (`--control-edge`),
       white menus/dialogs/toasts with `--surface-edge` and `--float-shadow`, dark-grey focus ring.
       Focus outlines need `focus-visible:outline-solid` (Tailwind 4's `outline-none` clears the style).
