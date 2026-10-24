@@ -26,6 +26,7 @@ class CardUpdateRequest extends FormRequest
 			'start_at' => ['sometimes', 'nullable', 'date'],
 			'due_at' => ['sometimes', 'nullable', 'date', Rule::when($this->filled('start_at'), 'after_or_equal:start_at')],
 			'completed' => ['sometimes', 'boolean'],
+			'is_template' => ['sometimes', 'boolean'],
 			'cover_color' => ['sometimes', 'nullable', Rule::enum(LabelColor::class)],
 			'cover_attachment_id' => [
 				'sometimes', 'nullable', 'integer',

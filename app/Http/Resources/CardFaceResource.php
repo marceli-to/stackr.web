@@ -26,6 +26,7 @@ class CardFaceResource extends JsonResource
 			'id' => $this->id,
 			'title' => $this->title,
 			'has_description' => filled($this->description),
+			'is_template' => $this->is_template,
 			'start_at' => $this->start_at,
 			'due_at' => $this->due_at,
 			'completed_at' => $this->completed_at,

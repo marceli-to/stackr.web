@@ -42,6 +42,7 @@ class CardResource extends JsonResource
 			'due_at' => $this->due_at,
 			'completed_at' => $this->completed_at,
 			// Off the board: archived itself, or in an archived list.
+			'is_template' => $this->is_template,
 			'archived' => $this->archived_at !== null || $this->stack->archived_at !== null,
 			'created_at' => $this->created_at,
 			'stack' => $this->stack->only('id', 'name'),

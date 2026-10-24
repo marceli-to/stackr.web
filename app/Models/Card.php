@@ -29,10 +29,11 @@ use Illuminate\Support\Facades\Storage;
  * @property CarbonImmutable|null $archived_at
  * @property int|null $cover_attachment_id
  * @property LabelColor|null $cover_color
+ * @property bool $is_template
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['title', 'description', 'position', 'start_at', 'due_at', 'due_reminded_at', 'completed_at', 'archived_at', 'cover_attachment_id', 'cover_color'])]
+#[Fillable(['title', 'description', 'position', 'start_at', 'due_at', 'due_reminded_at', 'completed_at', 'archived_at', 'cover_attachment_id', 'cover_color', 'is_template'])]
 class Card extends Model
 {
 	/** @use HasFactory<CardFactory> */
@@ -52,6 +53,7 @@ class Card extends Model
 			'completed_at' => 'datetime',
 			'archived_at' => 'datetime',
 			'cover_color' => LabelColor::class,
+			'is_template' => 'boolean',
 		];
 	}
 

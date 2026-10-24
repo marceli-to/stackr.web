@@ -3,6 +3,7 @@ import {
 	PhCalendarBlank,
 	PhChatCircle,
 	PhCheckSquare,
+	PhCopySimple,
 	PhPaperclip,
 	PhTextAlignLeft,
 } from '@phosphor-icons/vue';
@@ -97,6 +98,13 @@ function open() {
 		/>
 
 		<div class="px-3 py-2.5">
+			<p
+				v-if="card.is_template"
+				class="mb-2 inline-flex items-center gap-1 rounded-[3px] bg-(--color-paper-2) px-1.5 py-0.5 text-xs font-semibold text-muted-foreground"
+			>
+				<PhCopySimple class="size-3.5" />
+				Template
+			</p>
 			<ul v-if="cardLabels.length > 0" class="mb-2 flex flex-wrap gap-1">
 				<li
 					v-for="label in cardLabels"

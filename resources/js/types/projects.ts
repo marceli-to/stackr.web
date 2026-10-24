@@ -68,6 +68,7 @@ export type BoardCard = {
 	id: number;
 	title: string;
 	has_description: boolean;
+	is_template: boolean;
 	start_at: string | null;
 	due_at: string | null;
 	completed_at: string | null;
@@ -136,6 +137,7 @@ export type CardDetail = {
 	start_at: string | null;
 	due_at: string | null;
 	completed_at: string | null;
+	is_template: boolean;
 	/** Archived itself, or in an archived list. */
 	archived: boolean;
 	created_at: string;
@@ -150,6 +152,14 @@ export type CardDetail = {
 	attachments: CardAttachment[];
 	comments: CardComment[];
 	activities: CardActivity[];
+};
+
+/** A checklist on the board whose items a new checklist can copy. */
+export type BoardChecklist = {
+	id: number;
+	title: string;
+	card: string;
+	items_count: number;
 };
 
 /** A board a card can be moved or copied to. */

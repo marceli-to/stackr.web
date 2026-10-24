@@ -33,6 +33,27 @@ class CardController extends Controller
 	}
 
 	/**
+	 * Start a card from one of the board's templates, at the bottom of a list,
+	 * and open it.
+	 */
+	public function fromTemplate(Stack $stack, Card $card, CopyCard $copyCard): RedirectResponse
+	{
+		Gate::authorize('update', $stack->project);
+
+		abort_unless($card->is_template && $card->stack->project_id === $stack->project_id, 404);
+
+		$copy = $copyCard->handle(
+			$card,
+			$stack,
+			$stack->cards()->active()->count(),
+			$card->title,
+			['checklists', 'labels', 'members', 'attachments'],
+		);
+
+		return to_route('projects.show', [$stack->project, 'card' => $copy->id]);
+	}
+
+	/**
 	 * Move a card within its list, into another list, or onto another of the
 	 * user's boards. A card that leaves the board also leaves the dialog.
 	 */

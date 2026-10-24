@@ -44,6 +44,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::delete('stacks/{stack}', [StackController::class, 'destroy'])->name('stacks.destroy');
 
 	Route::post('stacks/{stack}/cards', [CardController::class, 'store'])->name('cards.store');
+	Route::post('stacks/{stack}/cards/from/{card}', [CardController::class, 'fromTemplate'])->name('cards.from-template');
 	Route::patch('cards/{card}/move', [CardController::class, 'move'])->name('cards.move');
 	Route::patch('cards/{card}', [CardController::class, 'update'])->name('cards.update');
 	Route::post('cards/{card}/copy', [CardController::class, 'copy'])->name('cards.copy');

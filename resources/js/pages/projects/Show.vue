@@ -10,6 +10,7 @@ import { boardKey } from '@/components/card/board';
 import CardDialog from '@/components/card/CardDialog.vue';
 import type {
 	BoardArchive,
+	BoardChecklist,
 	BoardStack,
 	CardDetail,
 	Destination,
@@ -26,6 +27,7 @@ const props = defineProps<{
 	card: CardDetail | null;
 	archive?: BoardArchive;
 	destinations?: Destination[];
+	checklists?: BoardChecklist[];
 }>();
 
 provide(boardKey, {
@@ -33,6 +35,13 @@ provide(boardKey, {
 	labels: toRef(props, 'labels'),
 	members: toRef(props, 'members'),
 	destinations: toRef(props, 'destinations'),
+	checklists: toRef(props, 'checklists'),
+	templates: computed(() =>
+		props.stacks
+			.flatMap((stack) => stack.cards)
+			.filter((card) => card.is_template)
+			.map(({ id, title }) => ({ id, title })),
+	),
 });
 
 provide(filterKey, createFilter(toRef(props, 'labels')));

@@ -24,6 +24,7 @@ _Last updated: 2026-10-24_
 | 14. Notifications (bell + email) and @mentions         | ✅ done |
 | 15. Colour covers                                      | ✅ done |
 | 16. Image thumbnails                                   | ✅ done |
+| 17. Card templates, copying checklists                 | ✅ done |
 
 Everything is on `main`, pushed to GitHub (https://github.com/marceli-to/stackr.web) and deployed
 to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
@@ -169,6 +170,11 @@ to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
   whole names, case-insensitive, longest first). Typing `@` in a comment suggests members
   (`components/card/MentionTextarea.vue`). New mentions notify (edits only notify people
   mentioned for the first time); `CommentResource` wraps them in `<span class="mention">`.
+- **Templates:** "Make template" in the card dialog sets `cards.is_template`; the card shows a
+  "Template" badge and a banner. Lists get a template button next to "Add a card" when the board
+  has templates; `cards.from-template` copies one (everything but comments, via `CopyCard`) to the
+  bottom of the list and opens it. "Add a checklist" can copy the items (unticked) of any checklist
+  on the board (`copy_from`, the lazy `checklists` prop).
 - **Projects** have a name, an optional description, an optional link (`url`, http/https) shown
   on the board, and a colour. Editing and deleting happens from the ⋮ menu on the overview tiles.
 - **Landing page** (`pages/site/Welcome.vue`) for guests at `/`; signed-in users still go straight to
@@ -265,7 +271,7 @@ Same method as the kimiyuch projects (gotaticket/usverchauft):
 
 ## Next up
 
-Feature list (2026-10-24), being worked through in order (1–6, 8 and 13 are done),
+Feature list (2026-10-24), being worked through in order (1–8 and 13 are done),
 then 13 with 4 (notifications with mentions; needs the scheduler decision first).
 
 **Cards**
@@ -276,7 +282,7 @@ then 13 with 4 (notifications with mentions; needs the scheduler decision first)
 4. ~~@mentions in comments, with a notification to the person mentioned.~~ Done.
 5. ~~Cover colours: a plain colour cover as well as image covers.~~ Done.
 6. ~~Image thumbnails: covers and previews currently load images at full size.~~ Done.
-7. Card templates and duplicating a checklist.
+7. ~~Card templates and duplicating a checklist.~~ Done.
 
 **Board**
 

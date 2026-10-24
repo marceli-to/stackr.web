@@ -3,6 +3,7 @@ import type { InjectionKey, Ref } from 'vue';
 import { inject } from 'vue';
 import { show } from '@/routes/projects';
 import type {
+	BoardChecklist,
 	CardActivity,
 	Destination,
 	Label,
@@ -18,6 +19,10 @@ export type BoardContext = {
 	members: Ref<Member[]>;
 	/** The user's boards, loaded when a card is moved or copied. */
 	destinations: Ref<Destination[] | undefined>;
+	/** The board's checklists, loaded when a checklist is added. */
+	checklists: Ref<BoardChecklist[] | undefined>;
+	/** The board's template cards. */
+	templates: Ref<{ id: number; title: string }[]>;
 };
 
 export const boardKey: InjectionKey<BoardContext> = Symbol('board');
@@ -155,6 +160,8 @@ export function describeActivity(activity: CardActivity): string {
 	switch (activity.type) {
 		case 'created':
 			return `added this card to ${data.stack}`;
+		case 'from_template':
+			return `created this card from the template “${data.from}”`;
 		case 'copied':
 			return `copied this card from “${data.from}”`;
 		case 'moved':

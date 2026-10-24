@@ -22,7 +22,8 @@ class CopyCard
 	/**
 	 * Copies the card into a list (on any of the user's boards) at the given
 	 * index. Title, description and dates always come along; $keep picks
-	 * the rest: checklists, labels, members, attachments. Comments stay.
+	 * the rest: checklists, labels, members, attachments. Comments stay, and
+	 * the copy is never a template itself.
 	 *
 	 * @param  list<string>  $keep
 	 */
@@ -66,7 +67,7 @@ class CopyCard
 				$this->carryCardOver->handle($copy, $target->project);
 			}
 
-			$this->recordActivity->handle($copy, 'copied', ['from' => $card->title]);
+			$this->recordActivity->handle($copy, $card->is_template ? 'from_template' : 'copied', ['from' => $card->title]);
 
 			return $copy;
 		});

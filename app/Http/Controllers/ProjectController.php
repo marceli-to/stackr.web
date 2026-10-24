@@ -16,6 +16,7 @@ use App\Http\Resources\MemberResource;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\ProjectTileResource;
 use App\Http\Resources\StackResource;
+use App\Models\Checklist;
 use App\Models\Project;
 use App\Models\Stack;
 use App\Models\User;
@@ -101,6 +102,18 @@ class ProjectController extends Controller
 			'destinations' => Inertia::optional(fn () => DestinationResource::collection(
 				$request->user()?->projects()->with(['stacks' => fn ($query) => $query->active()->withCount(['cards' => fn ($query) => $query->active()])])->orderBy('name')->get() ?? [],
 			)),
+			// Checklists to copy items from, loaded when adding one.
+			'checklists' => Inertia::optional(fn () => Checklist::query()
+				->whereIn('card_id', $project->cards()->select('cards.id'))
+				->with('card:id,title')
+				->withCount('items')
+				->get()
+				->map(fn (Checklist $checklist): array => [
+					'id' => $checklist->id,
+					'title' => $checklist->title,
+					'card' => $checklist->card->title,
+					'items_count' => $checklist->items_count,
+				])),
 			'archive' => Inertia::optional(fn () => [
 				'cards' => ArchivedCardResource::collection(
 					$project->cards()->whereNotNull('cards.archived_at')->with('stack:id,name')->latest('cards.archived_at')->get(),

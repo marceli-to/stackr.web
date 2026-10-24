@@ -6,6 +6,7 @@ use App\Actions\Checklists\CreateChecklist;
 use App\Actions\Checklists\DeleteChecklist;
 use App\Actions\Checklists\RenameChecklist;
 use App\Http\Requests\ChecklistRequest;
+use App\Http\Requests\ChecklistStoreRequest;
 use App\Models\Card;
 use App\Models\Checklist;
 use Illuminate\Http\RedirectResponse;
@@ -16,11 +17,13 @@ class ChecklistController extends Controller
 	/**
 	 * Add a checklist to a card.
 	 */
-	public function store(ChecklistRequest $request, Card $card, CreateChecklist $createChecklist): RedirectResponse
+	public function store(ChecklistStoreRequest $request, Card $card, CreateChecklist $createChecklist): RedirectResponse
 	{
 		Gate::authorize('update', $card->stack->project);
 
-		$createChecklist->handle($card, $request->validated('title'));
+		$copyFrom = $request->filled('copy_from') ? Checklist::query()->find($request->integer('copy_from')) : null;
+
+		$createChecklist->handle($card, $request->validated('title'), $copyFrom);
 
 		return back();
 	}

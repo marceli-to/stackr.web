@@ -6,7 +6,9 @@ import {
 	PhArrowRight,
 	PhCalendarBlank,
 	PhCheckSquare,
+	PhCheck,
 	PhCopy,
+	PhCopySimple,
 	PhPaperclip,
 	PhPlus,
 	PhRectangle,
@@ -57,7 +59,7 @@ const props = defineProps<{
 	card: CardDetail | null;
 }>();
 
-const { project, labels, members } = useBoard();
+const { project, labels, members, checklists } = useBoard();
 
 // The dialog closes at once and keeps showing the last card while it fades
 // out; the URL catches up in the background.
@@ -146,14 +148,33 @@ const dueWord = {
 	later: '',
 };
 
-// Checklists
+// Checklists, optionally copying another one's items.
 const checklistTitle = ref('Checklist');
 const checklistOpen = ref(false);
+const copyFrom = ref<number | null>(null);
+
+watch(checklistOpen, (isOpen) => {
+	if (isOpen) {
+		copyFrom.value = null;
+		router.reload({ only: ['checklists'] });
+	}
+});
+
+watch(copyFrom, (id) => {
+	const source = checklists.value?.find((checklist) => checklist.id === id);
+
+	if (source) {
+		checklistTitle.value = source.title;
+	}
+});
 
 function addChecklist() {
 	router.post(
 		ChecklistController.store(card.value.id).url,
-		{ title: checklistTitle.value.trim() || 'Checklist' },
+		{
+			title: checklistTitle.value.trim() || 'Checklist',
+			copy_from: copyFrom.value,
+		},
 		{
 			...keep,
 			onSuccess: () => {
@@ -296,6 +317,17 @@ const sideButton =
 			</DialogClose>
 
 			<div class="p-6 sm:p-8">
+				<div
+					v-if="card.is_template && !card.archived"
+					class="-mx-6 -mt-6 mb-6 flex items-center gap-2.5 bg-(--color-paper-2) px-6 py-3 pr-16 text-sm sm:-mx-8 sm:-mt-8 sm:px-8 sm:pr-18"
+				>
+					<PhCopySimple class="size-4 shrink-0" />
+					<p>
+						<span class="font-semibold">This is a template.</span>
+						Start new cards from it with the template button next to
+						“Add a card”.
+					</p>
+				</div>
 				<div
 					v-if="card.archived"
 					class="-mx-6 -mt-6 mb-6 flex items-center gap-2.5 bg-(--color-paper-2) px-6 py-3 pr-16 text-sm sm:-mx-8 sm:-mt-8 sm:px-8 sm:pr-18"
@@ -529,6 +561,35 @@ const sideButton =
 												v-focus
 											/>
 										</div>
+										<div
+											v-if="checklists?.length"
+											class="grid gap-2"
+										>
+											<label
+												for="checklist-copy"
+												class="text-sm font-semibold"
+												>Copy items from</label
+											>
+											<select
+												id="checklist-copy"
+												v-model="copyFrom"
+												class="h-9 w-full rounded-[var(--radius-sheet)] bg-sheet px-2.5 text-[0.9375rem] ring-1 focus-field ring-(--control-edge) outline-hidden ring-inset dark:bg-(--color-paper-2)"
+											>
+												<option :value="null">
+													Nothing, start empty
+												</option>
+												<option
+													v-for="checklist in checklists"
+													:key="checklist.id"
+													:value="checklist.id"
+												>
+													{{ checklist.title }} ({{
+														checklist.card
+													}},
+													{{ checklist.items_count }})
+												</option>
+											</select>
+										</div>
 										<Button type="submit">Add</Button>
 									</form>
 								</PopoverContent>
@@ -567,6 +628,25 @@ const sideButton =
 							>
 								Actions
 							</p>
+							<Button
+								variant="secondary"
+								:class="sideButton"
+								:aria-pressed="card.is_template"
+								@click="
+									update({ is_template: !card.is_template })
+								"
+							>
+								<PhCopySimple />
+								{{
+									card.is_template
+										? 'Template'
+										: 'Make template'
+								}}
+								<PhCheck
+									v-if="card.is_template"
+									class="ml-auto"
+								/>
+							</Button>
 							<CardMoveCopy :card="card" mode="move">
 								<Button variant="secondary" :class="sideButton">
 									<PhArrowRight />
