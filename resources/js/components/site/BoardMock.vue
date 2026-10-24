@@ -94,7 +94,7 @@ const lists: { name: string; cards: MockCard[] }[] = [
 			<span class="size-2.5 rounded-full bg-(--color-paper-3)" />
 		</div>
 
-		<div data-field="cobalt" class="bg-field text-field-ink">
+		<div data-field="cobalt" class="field-fill text-field-ink">
 			<!-- Top bar -->
 			<div
 				class="flex items-center justify-between border-b border-white/10 px-5 py-3"

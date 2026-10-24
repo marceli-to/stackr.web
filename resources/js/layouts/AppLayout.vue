@@ -31,7 +31,7 @@ const background = computed(() =>
 		class="flex min-h-svh flex-col"
 		:data-field="field"
 		:class="[
-			field ? 'bg-field text-field-ink' : 'bg-background',
+			field ? 'field-fill text-field-ink' : 'bg-background',
 			background ? 'bg-cover bg-fixed bg-center' : '',
 		]"
 		:style="background"

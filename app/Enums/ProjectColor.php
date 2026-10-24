@@ -3,8 +3,9 @@
 namespace App\Enums;
 
 /**
- * The colour a project's board stands on. A new project without a chosen
- * colour takes the one after the user's latest project.
+ * The colour a project's board stands on: six solid colours, then five
+ * gradients that blend two of them. A new project without a chosen colour
+ * takes the one after the user's latest project.
  */
 enum ProjectColor: string
 {
@@ -14,6 +15,11 @@ enum ProjectColor: string
 	case Oxblood = 'oxblood';
 	case Lagoon = 'lagoon';
 	case Plum = 'plum';
+	case Dusk = 'dusk';
+	case Ember = 'ember';
+	case Tide = 'tide';
+	case Grove = 'grove';
+	case Fig = 'fig';
 
 	public function next(): self
 	{

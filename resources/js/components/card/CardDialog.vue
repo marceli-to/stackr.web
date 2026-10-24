@@ -310,7 +310,7 @@ const sideButton =
 			<div
 				v-if="cover"
 				:data-field="project.color"
-				class="relative flex h-48 shrink-0 justify-center bg-field"
+				class="relative flex h-48 shrink-0 justify-center field-fill"
 			>
 				<img
 					:src="cover.thumb_url ?? cover.url"

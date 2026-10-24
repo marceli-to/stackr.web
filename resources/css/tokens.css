@@ -100,9 +100,16 @@
 	--color-field-plum: oklch(35% 0.095 340);
 }
 
-/* A field sets its colour, the well its lists sit in and a focus ring that
-   shows on it. Every field is dark, so its ink is always white. */
+/* A field sets its colour, its fill, the well its lists sit in and a focus
+   ring that shows on it. Every field is dark, so its ink is always white.
+   A solid field's fill is a faint sheen, lighter at the top left; a
+   gradient field blends two colours, and its --field is their middle. */
 [data-field] {
+	--field-fill: linear-gradient(
+		135deg,
+		color-mix(in oklab, var(--field) 90%, white),
+		color-mix(in oklab, var(--field) 88%, black)
+	);
 	--field-well: color-mix(in oklab, var(--field) 82%, black);
 	--field-ink: var(--color-on-dark);
 	--ring: var(--field-ink);
@@ -124,6 +131,40 @@
 }
 [data-field='plum'] {
 	--field: var(--color-field-plum);
+}
+[data-field='dusk'] {
+	--field-from: var(--color-field-cobalt);
+	--field-to: var(--color-field-plum);
+}
+[data-field='ember'] {
+	--field-from: var(--color-field-oxblood);
+	--field-to: var(--color-field-rust);
+}
+[data-field='tide'] {
+	--field-from: var(--color-field-lagoon);
+	--field-to: var(--color-field-cobalt);
+}
+[data-field='grove'] {
+	--field-from: var(--color-field-moss);
+	--field-to: var(--color-field-lagoon);
+}
+[data-field='fig'] {
+	--field-from: var(--color-field-plum);
+	--field-to: var(--color-field-oxblood);
+}
+:is(
+	[data-field='dusk'],
+	[data-field='ember'],
+	[data-field='tide'],
+	[data-field='grove'],
+	[data-field='fig']
+) {
+	--field: color-mix(in oklab, var(--field-from) 50%, var(--field-to));
+	--field-fill: linear-gradient(
+		135deg in oklch,
+		var(--field-from),
+		var(--field-to)
+	);
 }
 
 [data-label='green'] {

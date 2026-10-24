@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { projectColors } from '@/types';
+import { gradientProjectColors, solidProjectColors } from '@/types';
 import type { Project, ProjectColor } from '@/types';
 
 // Creates a project, or edits `project` when one is given.
@@ -32,6 +32,11 @@ const colorNames: Record<ProjectColor, string> = {
 	oxblood: 'Oxblood',
 	lagoon: 'Lagoon',
 	plum: 'Plum',
+	dusk: 'Dusk',
+	ember: 'Ember',
+	tide: 'Tide',
+	grove: 'Grove',
+	fig: 'Fig',
 };
 
 const open = defineModel<boolean>('open', { required: true });
@@ -168,7 +173,7 @@ const form = computed(() =>
 					<div class="flex items-center gap-3">
 						<div
 							:data-field="project.color"
-							class="h-14 w-24 shrink-0 rounded-[var(--radius-sheet)] bg-field bg-cover bg-center"
+							class="h-14 w-24 shrink-0 rounded-[var(--radius-sheet)] field-fill bg-cover bg-center"
 							:style="
 								project.background_url
 									? {
@@ -217,12 +222,19 @@ const form = computed(() =>
 
 				<fieldset class="grid gap-2">
 					<legend class="mb-2 text-sm font-medium">Colour</legend>
-					<div class="flex flex-wrap gap-2">
+					<div
+						v-for="row in [
+							solidProjectColors,
+							gradientProjectColors,
+						]"
+						:key="row[0]"
+						class="flex flex-wrap gap-2"
+					>
 						<label
-							v-for="color in projectColors"
+							v-for="color in row"
 							:key="color"
 							:data-field="color"
-							class="relative size-10 cursor-pointer rounded-[var(--radius-sheet)] bg-field focus-visible:outline-solid has-checked:outline-2 has-checked:outline-offset-2 has-checked:outline-foreground has-checked:outline-solid has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-(--color-focus) has-focus-visible:outline-solid"
+							class="relative size-10 cursor-pointer rounded-[var(--radius-sheet)] field-fill focus-visible:outline-solid has-checked:outline-2 has-checked:outline-offset-2 has-checked:outline-foreground has-checked:outline-solid has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-(--color-focus) has-focus-visible:outline-solid"
 						>
 							<input
 								type="radio"

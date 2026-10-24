@@ -91,7 +91,7 @@ function plural(count: number, word: string) {
 				v-for="project in projects"
 				:key="project.id"
 				:data-field="project.color"
-				class="relative flex aspect-[16/10] flex-col rounded-[var(--radius-tile)] bg-field bg-cover bg-center p-5 text-field-ink"
+				class="relative flex aspect-[16/10] flex-col rounded-[var(--radius-tile)] field-fill bg-cover bg-center p-5 text-field-ink"
 				:style="
 					project.background_url
 						? {

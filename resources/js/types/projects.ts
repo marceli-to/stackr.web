@@ -1,12 +1,26 @@
 export type ProjectRole = 'owner' | 'member';
 
-export const projectColors = [
+export const solidProjectColors = [
 	'cobalt',
 	'rust',
 	'moss',
 	'oxblood',
 	'lagoon',
 	'plum',
+] as const;
+
+/** Each blends two of the solid colours. */
+export const gradientProjectColors = [
+	'dusk',
+	'ember',
+	'tide',
+	'grove',
+	'fig',
+] as const;
+
+export const projectColors = [
+	...solidProjectColors,
+	...gradientProjectColors,
 ] as const;
 
 export type ProjectColor = (typeof projectColors)[number];

@@ -16,7 +16,7 @@ import BoardMock from '@/components/site/BoardMock.vue';
 import SiteFooter from '@/components/site/SiteFooter.vue';
 import SiteHeader from '@/components/site/SiteHeader.vue';
 import { login, register } from '@/routes';
-import { projectColors } from '@/types';
+import { solidProjectColors } from '@/types';
 
 const repository = 'https://github.com/marceli-to/stackr.web';
 
@@ -196,10 +196,10 @@ const facts = [
 									aria-label="The six project colours"
 								>
 									<li
-										v-for="color in projectColors"
+										v-for="color in solidProjectColors"
 										:key="color"
 										:data-field="color"
-										class="flex aspect-[16/10] items-end rounded-[var(--radius-sheet)] bg-field p-2 text-xs font-semibold capitalize"
+										class="flex aspect-[16/10] items-end rounded-[var(--radius-sheet)] field-fill p-2 text-xs font-semibold capitalize"
 									>
 										{{ color }}
 									</li>

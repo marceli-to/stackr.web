@@ -31,6 +31,7 @@ _Last updated: 2026-10-24_
 | 21. Board background photos                            | ✅ done |
 | 22. Watching cards and boards                          | ✅ done |
 | 23. Calmer board chrome (one bar, ⋯ menu)              | ✅ done |
+| 24. Gradient project colours                           | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 **Production is behind:** https://stackr.kimiyu.ch still runs `59a7b69` (2026-10-24, before steps
@@ -66,9 +67,11 @@ Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stac
   finished it takes the server's order again, which also undoes a rejected move. A rejected or
   failed move shows one error toast instead of Inertia's full-page error overlay.
 - **Design "Field"** (chosen out of three directions explored with the Hallmark skill). Every project
-  stands on its own dark colour (cobalt, rust, moss, oxblood, lagoon, plum: `ProjectColor` enum,
-  `projects.color`); the board page, top bar included, is drenched in it, lists sit in a darker well
-  of it, cards are plain white. Everything else is neutral warm paper with ink.
+  stands on its own dark colour (cobalt, rust, moss, oxblood, lagoon, plum, or one of five gradients
+  blending two of them: dusk, ember, tide, grove, fig; `ProjectColor` enum, `projects.color`); the
+  board page, top bar included, is drenched in it, lists sit in a darker well of it, cards are plain
+  white. Solid colours carry a faint diagonal sheen; the `field-fill` utility paints a field's
+  `--field-fill` (sheen or gradient), and a gradient's `--field` is its two colours' midpoint. Everything else is neutral warm paper with ink.
     - Tokens in `resources/css/tokens.css`, mapped onto shadcn's variables in `app.css`. Fields are
       `[data-field="<colour>"]`, which set `--field`, `--field-well`, `--field-ink` (always white) and
       the focus ring.

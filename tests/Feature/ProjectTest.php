@@ -117,6 +117,17 @@ class ProjectTest extends TestCase
 		$this->assertSame(ProjectColor::Plum, Project::firstWhere('name', 'Plum one')->color);
 	}
 
+	public function test_a_project_can_stand_on_a_gradient()
+	{
+		$user = User::factory()->create();
+
+		$this->actingAs($user)
+			->post(route('projects.store'), ['name' => 'Dusky', 'color' => 'dusk'])
+			->assertSessionHasNoErrors();
+
+		$this->assertSame(ProjectColor::Dusk, Project::firstWhere('name', 'Dusky')->color);
+	}
+
 	public function test_a_project_can_have_a_url()
 	{
 		$user = User::factory()->create();

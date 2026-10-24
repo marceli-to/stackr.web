@@ -228,6 +228,13 @@
 	padding: 0 0.2em;
 }
 
+/* The field's colour plus its sheen or gradient; an inline photo
+   background-image replaces the fill. */
+@utility field-fill {
+	background-color: var(--field);
+	background-image: var(--field-fill);
+}
+
 @utility focus-field {
 	&:focus-visible {
 		outline: none;
