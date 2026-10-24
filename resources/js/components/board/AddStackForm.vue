@@ -61,7 +61,7 @@ const open = ref(false);
         <Button
             v-else
             variant="ghost"
-            class="h-11 w-full justify-start rounded-[var(--radius-tile)] border-2 border-dashed border-current/35 text-inherit hover:border-current/70 hover:bg-transparent hover:text-inherit"
+            class="h-11 w-full justify-start rounded-[var(--radius-tile)] border-2 border-current/30 text-inherit hover:border-current/60 hover:bg-transparent hover:text-inherit"
             @click="open = true"
         >
             <Plus />

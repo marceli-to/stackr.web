@@ -22,21 +22,16 @@ const passwordInput = useTemplateRef('passwordInput');
 </script>
 
 <template>
-    <div class="space-y-6">
+    <div class="space-y-6 border-t border-border pt-10">
         <Heading
             variant="small"
             title="Delete account"
             description="Delete your account and all of its resources"
         />
-        <div
-            class="space-y-4 rounded-sm border border-destructive/30 bg-destructive/5 p-4"
-        >
-            <div class="relative space-y-0.5 text-destructive">
-                <p class="font-medium">Warning</p>
-                <p class="text-sm">
-                    Please proceed with caution, this cannot be undone.
-                </p>
-            </div>
+        <div class="space-y-4">
+            <p class="text-muted-foreground">
+                Please proceed with caution, this cannot be undone.
+            </p>
             <Dialog>
                 <DialogTrigger as-child>
                     <Button variant="destructive" data-test="delete-user-button"

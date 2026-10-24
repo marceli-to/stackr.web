@@ -1,26 +1,19 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { ChevronDown, ChevronsUpDown, LayoutGrid } from '@lucide/vue';
+import { ChevronDown } from '@lucide/vue';
 import { computed } from 'vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import UserMenuContent from '@/components/UserMenuContent.vue';
-import { index, show } from '@/routes/projects';
-import type { Project } from '@/types';
+import { index } from '@/routes/projects';
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
-const projects = computed(() => page.props.sidebarProjects);
-const current = computed(
-    () => (page.props.project as Project | undefined) ?? null,
-);
 </script>
 
 <template>
@@ -42,59 +35,14 @@ const current = computed(
             <DropdownMenuTrigger as-child>
                 <Button
                     variant="ghost"
-                    class="min-w-0 gap-1.5 px-2 text-inherit hover:bg-current/10 hover:text-inherit"
-                    data-test="project-switcher"
-                >
-                    <span class="truncate">{{
-                        current?.name ?? 'Projects'
-                    }}</span>
-                    <ChevronsUpDown class="opacity-70" />
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" class="w-64">
-                <DropdownMenuItem
-                    v-for="project in projects"
-                    :key="project.id"
-                    as-child
-                >
-                    <Link
-                        :href="show(project.id)"
-                        class="w-full"
-                        :aria-current="
-                            current?.id === project.id ? 'page' : undefined
-                        "
-                        :class="{ 'font-semibold': current?.id === project.id }"
-                    >
-                        <span
-                            :data-field="project.color"
-                            class="size-3.5 shrink-0 rounded-[2px] bg-field"
-                            aria-hidden="true"
-                        />
-                        <span class="truncate">{{ project.name }}</span>
-                    </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator v-if="projects.length > 0" />
-                <DropdownMenuItem as-child>
-                    <Link :href="index()" class="w-full">
-                        <LayoutGrid />
-                        All projects
-                    </Link>
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-
-        <DropdownMenu>
-            <DropdownMenuTrigger as-child>
-                <Button
-                    variant="ghost"
-                    class="ml-auto gap-1.5 px-2 text-inherit hover:bg-current/10 hover:text-inherit"
+                    class="ml-auto gap-1.5 px-2 text-inherit hover:bg-current/10 hover:text-inherit data-[state=open]:bg-current/10"
                     data-test="user-menu-button"
                 >
                     <span class="max-w-40 truncate">{{ user.name }}</span>
                     <ChevronDown class="opacity-70" />
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" class="w-56">
+            <DropdownMenuContent align="end" class="w-64">
                 <UserMenuContent :user="user" />
             </DropdownMenuContent>
         </DropdownMenu>

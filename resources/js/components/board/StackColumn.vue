@@ -130,7 +130,7 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
                     <Button
                         variant="ghost"
                         size="icon"
-                        class="size-8 text-inherit hover:bg-current/10 hover:text-inherit"
+                        class="size-8 text-inherit hover:bg-current/10 hover:text-inherit data-[state=open]:bg-current/10"
                         :aria-label="`Actions for ${stack.name}`"
                     >
                         <EllipsisVertical />

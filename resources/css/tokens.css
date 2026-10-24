@@ -35,6 +35,15 @@
     --font-body: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
     --font-figure: var(--font-body);
 
+    /* Menus are white sheets with a hairline edge, like the cards. */
+    --menu-bg: var(--color-sheet);
+    --menu-ink: var(--color-ink);
+    --menu-hover: var(--color-paper-2);
+    --menu-rule: var(--color-rule);
+    --menu-danger: var(--color-error);
+    --menu-shadow:
+        0 0 0 1px var(--color-rule), 0 14px 32px -12px oklch(20% 0.02 262 / 0.3);
+
     --radius-tile: 6px;
     --radius-sheet: 4px;
     --tracking-display: -0.005em;
@@ -51,6 +60,9 @@
     --color-ink-3: oklch(70% 0.008 90);
     --color-focus: oklch(70% 0.15 262);
     --color-error: oklch(68% 0.17 27);
+    --menu-hover: var(--color-paper-3);
+    --menu-shadow:
+        0 0 0 1px var(--color-rule), 0 14px 32px -12px oklch(4% 0.01 262 / 0.7);
 
     --color-field-cobalt: oklch(39% 0.15 262);
     --color-field-signal: oklch(60% 0.17 42);

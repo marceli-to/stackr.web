@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import Heading from '@/components/Heading.vue';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { toUrl } from '@/lib/utils';
 import { edit as editAppearance } from '@/routes/appearance';
@@ -29,43 +27,33 @@ const { isCurrentOrParentUrl } = useCurrentUrl();
 </script>
 
 <template>
-    <div class="px-4 py-6">
+    <div class="px-4 pt-8 pb-16 md:px-8">
         <Heading
             title="Settings"
             description="Manage your profile and account settings"
         />
 
-        <div class="flex flex-col lg:flex-row lg:space-x-12">
-            <aside class="w-full max-w-xl lg:w-48">
-                <nav
-                    class="flex flex-col space-y-1 space-x-0"
-                    aria-label="Settings"
+        <div class="grid gap-8 lg:grid-cols-[12rem_minmax(0,1fr)] lg:gap-16">
+            <nav
+                class="flex gap-1 self-start overflow-x-auto border-b border-border lg:flex-col lg:gap-0 lg:border-b-0 lg:border-l"
+                aria-label="Settings"
+            >
+                <Link
+                    v-for="item in sidebarNavItems"
+                    :key="toUrl(item.href)"
+                    :href="item.href"
+                    :aria-current="
+                        isCurrentOrParentUrl(item.href) ? 'page' : undefined
+                    "
+                    class="-mb-px shrink-0 border-b-2 border-transparent px-3 py-2.5 text-muted-foreground hover:text-foreground aria-[current=page]:border-foreground aria-[current=page]:font-semibold aria-[current=page]:text-foreground lg:mb-0 lg:-ml-px lg:border-b-0 lg:border-l-2 lg:px-4"
                 >
-                    <Button
-                        v-for="item in sidebarNavItems"
-                        :key="toUrl(item.href)"
-                        variant="ghost"
-                        :class="[
-                            'w-full justify-start',
-                            { 'bg-muted': isCurrentOrParentUrl(item.href) },
-                        ]"
-                        as-child
-                    >
-                        <Link :href="item.href">
-                            <component :is="item.icon" class="h-4 w-4" />
-                            {{ item.title }}
-                        </Link>
-                    </Button>
-                </nav>
-            </aside>
+                    {{ item.title }}
+                </Link>
+            </nav>
 
-            <Separator class="my-6 lg:hidden" />
-
-            <div class="flex-1 md:max-w-2xl">
-                <section class="max-w-xl space-y-12">
-                    <slot />
-                </section>
-            </div>
+            <section class="max-w-xl space-y-14">
+                <slot />
+            </section>
         </div>
     </div>
 </template>
