@@ -54,7 +54,7 @@ function onStackMoved(event: DraggableEvent<BoardStack>) {
 </script>
 
 <template>
-	<div class="flex min-h-0 flex-1 gap-5 overflow-x-auto pb-6">
+	<div class="flex min-h-0 flex-1 gap-5 overflow-x-auto pb-6 select-none">
 		<VueDraggable
 			v-model="board"
 			:animation="150"

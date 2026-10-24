@@ -13,13 +13,14 @@ defineProps<{
 const page = usePage();
 
 // A project's page stands on the project's colour, top bar included, or
-// on its photo under a slight veil that keeps the white text readable.
+// on its photo under a dark veil, deepening downwards, that keeps the
+// white text readable.
 const project = computed(() => page.props.project as Project | undefined);
 const field = computed(() => project.value?.color);
 const background = computed(() =>
 	project.value?.background_url
 		? {
-				backgroundImage: `linear-gradient(rgb(0 0 0 / 0.28), rgb(0 0 0 / 0.28)), url("${project.value.background_url}")`,
+				backgroundImage: `linear-gradient(rgb(0 0 0 / 0.45), rgb(0 0 0 / 0.7)), url("${project.value.background_url}")`,
 			}
 		: undefined,
 );

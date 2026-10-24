@@ -205,8 +205,9 @@ Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stac
   (`ProjectBackgroundController`, `SetBackground`): JPEG/PNG/WebP up to 20 MB, shrunk to 2400px
   WebP when wider, stored privately under `backgrounds/{project}/` and served to members only
   (`projects.background`, `?v=<file name>` so it caches for good). The board page stands on it
-  under a 28% black veil; overview tiles show it under their colour. Lists and cards keep their
-  opaque wells, so they stay readable.
+  under a black veil that deepens downwards (45% → 70%); overview tiles show it under their colour.
+  Lists and cards keep their opaque wells, so they stay readable; the top bar's search field is
+  frosted (`backdrop-blur`) so it holds up over a busy photo.
 - **Watching:** `card_watchers` and `project_watchers` (pivots). "Watch" in the card dialog's Actions
   and as "Watch board" in the ⋯ menu (`cards.watch` / `projects.watch`, DELETE to stop); cards you watch show
   an eye. `NotifyWatchers` sends `CardUpdated` (bell only, never email: moves would flood inboxes)

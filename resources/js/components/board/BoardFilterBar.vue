@@ -67,7 +67,7 @@ const row =
 			<label>
 				<span class="sr-only">Search cards</span>
 				<PhMagnifyingGlass
-					class="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 opacity-70"
+					class="pointer-events-none absolute top-1/2 left-2.5 z-10 size-4 -translate-y-1/2 opacity-70"
 				/>
 				<input
 					ref="search"
@@ -75,7 +75,7 @@ const row =
 					type="search"
 					placeholder="Search cards"
 					aria-keyshortcuts="/"
-					class="h-9 w-full rounded-[var(--radius-sheet)] bg-current/10 pr-9 pl-8 text-[0.9375rem] outline-hidden transition-colors duration-(--dur-micro) placeholder:text-current/60 hover:bg-current/15 focus:bg-current/15 [&::-webkit-search-cancel-button]:hidden"
+					class="h-9 w-full rounded-[var(--radius-sheet)] bg-current/15 pr-9 pl-8 text-[0.9375rem] outline-hidden backdrop-blur-md transition-colors duration-(--dur-micro) placeholder:text-current/70 hover:bg-current/20 focus:bg-current/20 [&::-webkit-search-cancel-button]:hidden"
 					@keydown.esc="escape"
 				/>
 			</label>
