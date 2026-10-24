@@ -35,7 +35,7 @@ const { isCurrentOrParentUrl } = useCurrentUrl();
 
         <div class="grid gap-8 lg:grid-cols-[12rem_minmax(0,1fr)] lg:gap-16">
             <nav
-                class="flex gap-1 self-start overflow-x-auto border-b border-border lg:flex-col lg:gap-0 lg:border-b-0 lg:border-l"
+                class="flex gap-1 self-start overflow-x-auto border-border shadow-[inset_0_-2px_0_var(--color-border)] lg:flex-col lg:gap-0 lg:overflow-visible lg:border-l-2 lg:shadow-none"
                 aria-label="Settings"
             >
                 <Link
@@ -45,7 +45,7 @@ const { isCurrentOrParentUrl } = useCurrentUrl();
                     :aria-current="
                         isCurrentOrParentUrl(item.href) ? 'page' : undefined
                     "
-                    class="-mb-px shrink-0 border-b-2 border-transparent px-3 py-2.5 text-muted-foreground hover:text-foreground aria-[current=page]:border-foreground aria-[current=page]:font-semibold aria-[current=page]:text-foreground lg:mb-0 lg:-ml-px lg:border-b-0 lg:border-l-2 lg:px-4"
+                    class="shrink-0 border-b-2 border-transparent px-3 py-2.5 text-muted-foreground hover:text-foreground aria-[current=page]:border-foreground aria-[current=page]:font-semibold aria-[current=page]:text-foreground lg:-ml-0.5 lg:border-b-0 lg:border-l-2 lg:px-4"
                 >
                     {{ item.title }}
                 </Link>

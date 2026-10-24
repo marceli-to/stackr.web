@@ -78,3 +78,9 @@ textarea {
         scroll-behavior: auto !important;
     }
 }
+
+/* Tailwind 4 resets buttons to the default cursor; every button here is a pointer. */
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+}

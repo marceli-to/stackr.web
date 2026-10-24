@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { Form } from '@inertiajs/vue3';
-import {
-    PhDotsThreeVertical,
-    PhPencilSimple,
-    PhTrash,
-} from '@phosphor-icons/vue';
+import { PhDotsThree, PhPencilSimple, PhTrash } from '@phosphor-icons/vue';
 import { nextTick, ref, useTemplateRef } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 import type { DraggableEvent } from 'vue-draggable-plus';
@@ -116,17 +112,10 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
             </Form>
             <h3
                 v-else
-                class="flex min-w-0 flex-1 items-baseline gap-2 px-1"
+                class="min-w-0 flex-1 truncate px-1 pb-0.5 font-display text-2xl leading-tight font-bold"
                 @dblclick="startRename"
             >
-                <span
-                    class="truncate pb-0.5 font-display text-2xl leading-tight font-bold"
-                >
-                    {{ stack.name }}
-                </span>
-                <span class="num text-sm opacity-75">
-                    {{ cards.length }}
-                </span>
+                {{ stack.name }}
             </h3>
 
             <DropdownMenu>
@@ -137,7 +126,7 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
                         class="size-8 text-inherit hover:bg-current/10 hover:text-inherit data-[state=open]:bg-current/10"
                         :aria-label="`Actions for ${stack.name}`"
                     >
-                        <PhDotsThreeVertical />
+                        <PhDotsThree />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -161,7 +150,7 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
             group="cards"
             :animation="150"
             ghost-class="opacity-40"
-            class="flex min-h-2 flex-col gap-2.5 overflow-y-auto px-2.5 py-1"
+            class="flex min-h-2 flex-col gap-3 overflow-y-auto px-2.5 py-1"
             :data-stack-id="stack.id"
             @update="onCardMoved($event, false)"
             @add="onCardMoved($event, true)"

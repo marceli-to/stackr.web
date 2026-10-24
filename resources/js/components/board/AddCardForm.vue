@@ -21,7 +21,7 @@ function submitOnEnter(event: KeyboardEvent) {
 </script>
 
 <template>
-    <div class="px-2.5 pt-1.5 pb-2.5">
+    <div class="px-2.5 pt-2 pb-2.5">
         <!-- Stays open after adding, so several cards can be typed in a row. -->
         <Form
             v-if="open"
@@ -38,7 +38,7 @@ function submitOnEnter(event: KeyboardEvent) {
                 maxlength="500"
                 placeholder="Card title"
                 aria-label="Card title"
-                class="block w-full resize-none rounded-[var(--radius-sheet)] bg-sheet px-3 py-2.5 text-[0.9375rem] text-foreground outline-hidden placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
+                class="block w-full resize-none rounded-[var(--radius-sheet)] bg-sheet px-3 py-2.5 text-[0.9375rem] text-foreground focus-field outline-hidden placeholder:text-muted-foreground"
                 v-focus
                 @keydown.enter="submitOnEnter"
                 @keydown.esc="open = false"
@@ -71,7 +71,7 @@ function submitOnEnter(event: KeyboardEvent) {
             v-else
             variant="ghost"
             size="sm"
-            class="w-full justify-start text-inherit opacity-85 hover:bg-current/10 hover:text-inherit hover:opacity-100"
+            class="h-auto w-full justify-start bg-current/10 px-3 py-2.5 text-[0.9375rem] leading-snug text-inherit opacity-85 hover:bg-current/15 hover:text-inherit hover:opacity-100 has-[>svg]:px-3"
             @click="open = true"
         >
             <PhPlus />

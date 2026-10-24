@@ -20,7 +20,7 @@ const editing = ref<number | null>(null);
 const editBody = ref('');
 
 const fieldClass =
-    'block w-full resize-y rounded-[var(--radius-sheet)] bg-sheet px-3 py-2 text-base shadow-xs ring-1 ring-(--control-edge) outline-hidden ring-inset placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring focus-visible:outline-solid sm:text-[0.9375rem] dark:bg-(--color-paper-2)';
+    'focus-field block w-full resize-y rounded-[var(--radius-sheet)] bg-sheet px-3 py-2 text-base shadow-xs ring-1 ring-(--control-edge) outline-hidden ring-inset placeholder:text-muted-foreground sm:text-[0.9375rem] dark:bg-(--color-paper-2)';
 
 function post() {
     if (!body.value.trim()) {

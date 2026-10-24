@@ -30,7 +30,7 @@ const open = ref(false);
                 maxlength="255"
                 placeholder="List name"
                 aria-label="List name"
-                class="block w-full rounded-[var(--radius-sheet)] bg-sheet px-3 py-2 text-[0.9375rem] text-foreground outline-hidden placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
+                class="block w-full rounded-[var(--radius-sheet)] bg-sheet px-3 py-2 text-[0.9375rem] text-foreground focus-field outline-hidden placeholder:text-muted-foreground"
                 v-focus
                 @keydown.esc="open = false"
             />
@@ -61,7 +61,7 @@ const open = ref(false);
         <Button
             v-else
             variant="ghost"
-            class="h-11 w-full justify-start rounded-[var(--radius-tile)] border-2 border-current/30 text-inherit hover:border-current/60 hover:bg-transparent hover:text-inherit"
+            class="h-11 w-full justify-start rounded-[var(--radius-tile)] bg-field-well text-inherit hover:bg-field-well/75 hover:text-inherit"
             @click="open = true"
         >
             <PhPlus />

@@ -52,15 +52,22 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
     - Tokens in `resources/css/tokens.css`, mapped onto shadcn's variables in `app.css`. Fields are
       `[data-field="<colour>"]`, which set `--field`, `--field-well`, `--field-ink` (always white) and
       the focus ring.
-    - Type: Antonio 700 (poster heads: `--text-poster`, board title `--text-board-title`, list names,
-      dialog titles, the wordmark) and Hanken Grotesk 400/600 for everything else, loaded via Bunny in
+    - Type: Antonio 700 (poster heads: `--text-poster`, list names, dialog titles, the wordmark and
+      the board name in the top bar) and Hanken Grotesk 400/600 for everything else, loaded via Bunny in
       `vite.config.ts`.
-    - Shell: a slim top bar (logo → projects, the user's initials → menu). No sidebar, no breadcrumbs,
-      no project switcher.
+    - Shell: a slim top bar (logo → projects, the user's initials → menu). On a board the wordmark
+      gives way to the board's name next to the icon; the board has no big title of its own (only a
+      hidden `h1`). No sidebar, no breadcrumbs, no project switcher.
+    - Board: lists show no card count; the list menu is a horizontal ⋯. "Add a card" is card-height
+      with a faint tint, "Add a list" has the list's well colour.
     - Overview: a wall of colour tiles that ends with a neutral "New project" tile.
     - Controls: 4px corners, ink primary buttons, white inputs with an ink hairline (`--control-edge`),
       white menus/dialogs/toasts with `--surface-edge` and `--float-shadow`, dark-grey focus ring.
       Focus outlines need `focus-visible:outline-solid` (Tailwind 4's `outline-none` clears the style).
+      Text fields don't get the outline: the `focus-field` utility (`app.css`) swaps it for a soft
+      halo, `--field-focus` in `tokens.css`. Every enabled button has `cursor: pointer` (`base.css`).
+    - Card dialog: no colour strip unless there's a cover; on open it focuses the sheet, not the
+      close button, so no ring shows after a click.
 - **Logo:** three offset bars (a stack of cards) in `AppLogoIcon.vue`; favicons in `public/` are the
   same mark on an ink tile.
 - **Cards** open in a dialog from the board; the URL carries `?card=<id>`, so a card can be linked

@@ -76,6 +76,13 @@ function close(isOpen: boolean) {
     }
 }
 
+// Focus the sheet itself on open, not the close button, so a mouse user
+// doesn't land on a focus ring. Tab still starts inside the dialog.
+function focusSheet(event: Event) {
+    event.preventDefault();
+    (event.target as HTMLElement | null)?.focus({ preventScroll: true });
+}
+
 const card = computed(() => shown.value as CardDetail);
 
 const cardLabels = computed(() =>
@@ -234,7 +241,8 @@ const sideButton =
         <DialogContent
             v-if="shown"
             :show-close-button="false"
-            class="max-h-[calc(100svh-2rem)] gap-0 overflow-y-auto p-0 sm:max-w-4xl sm:p-0"
+            class="max-h-[calc(100svh-2rem)] gap-0 overflow-y-auto p-0 outline-hidden sm:max-w-4xl sm:p-0"
+            @open-auto-focus="focusSheet"
             @dragenter.prevent="dragEnter"
             @dragover.prevent
             @dragleave="dragLeave"
@@ -247,12 +255,11 @@ const sideButton =
             </DialogDescription>
 
             <div
+                v-if="cover"
                 :data-field="project.color"
-                class="relative flex shrink-0 justify-center bg-field"
-                :class="cover ? 'h-48' : 'h-3'"
+                class="relative flex h-48 shrink-0 justify-center bg-field"
             >
                 <img
-                    v-if="cover"
                     :src="cover.url"
                     alt=""
                     class="h-full max-w-full object-contain"
@@ -260,7 +267,7 @@ const sideButton =
             </div>
 
             <DialogClose
-                class="absolute top-3 right-3 flex size-9 items-center justify-center rounded-full bg-sheet/90 text-foreground shadow-xs ring-1 ring-(--surface-edge) hover:bg-sheet focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
+                class="absolute top-3 right-3 flex size-9 items-center justify-center rounded-full bg-sheet/90 text-foreground hover:bg-(--color-paper-2) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
                 aria-label="Close"
             >
                 <PhX class="size-4" />
@@ -275,7 +282,7 @@ const sideButton =
                         name="title"
                         rows="1"
                         maxlength="500"
-                        class="-mx-1.5 block [field-sizing:content] w-[calc(100%+0.75rem)] resize-none rounded-[var(--radius-sheet)] bg-transparent px-1.5 py-0.5 font-display text-3xl leading-tight font-bold tracking-(--tracking-display) outline-hidden hover:bg-(--color-paper-2) focus-visible:bg-sheet focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-solid"
+                        class="-mx-1.5 block [field-sizing:content] w-[calc(100%+0.75rem)] resize-none rounded-[var(--radius-sheet)] bg-transparent px-1.5 py-0.5 font-display text-3xl leading-tight font-bold tracking-(--tracking-display) focus-field outline-hidden hover:bg-(--color-paper-2) focus-visible:bg-sheet"
                         @blur="saveTitle"
                         @keydown.enter.prevent="
                             ($event.target as HTMLElement).blur()
@@ -553,7 +560,7 @@ const sideButton =
 
             <div
                 v-if="dragDepth > 0"
-                class="pointer-events-none absolute inset-2 z-10 flex flex-col items-center justify-center gap-2 rounded-[var(--radius-tile)] border-2 border-foreground/40 bg-sheet/90 text-lg font-semibold"
+                class="pointer-events-none fixed inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-[var(--radius-tile)] bg-sheet/90 text-lg font-semibold"
             >
                 <PhUploadSimple class="size-8" />
                 Drop files to attach them

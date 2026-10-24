@@ -30,13 +30,10 @@ const urlLabel = computed(() =>
 <template>
     <Head :title="props.project.name" />
 
-    <div class="flex h-full min-h-0 flex-1 flex-col gap-14 px-4 pt-8 md:px-8">
-        <header class="space-y-3">
-            <h1
-                class="max-w-[28ch] font-display text-(length:--text-board-title) leading-[0.95] font-bold tracking-(--tracking-display)"
-            >
-                {{ project.name }}
-            </h1>
+    <div class="flex h-full min-h-0 flex-1 flex-col gap-8 px-4 pt-8 md:px-8">
+        <h1 class="sr-only">{{ project.name }}</h1>
+
+        <header v-if="project.description || project.url" class="space-y-3">
             <p v-if="project.description" class="max-w-[60ch] text-lg">
                 {{ project.description }}
             </p>

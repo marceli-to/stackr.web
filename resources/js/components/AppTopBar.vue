@@ -13,22 +13,36 @@ import { index } from '@/routes/projects';
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
+
+// On a board the bar carries the project's name instead of the wordmark.
+const project = computed(
+    () => page.props.project as { name: string } | undefined,
+);
 </script>
 
 <template>
     <header
-        class="flex h-14 shrink-0 items-center gap-2 border-b border-current/15 px-4 md:px-8"
+        class="flex h-14 shrink-0 items-center gap-2 border-b border-current/15 px-3 md:px-5"
     >
         <Link
             :href="index()"
             class="mr-2 flex items-center gap-2 rounded-sm"
             aria-label="Stackr, all projects"
         >
-            <AppLogoIcon class="size-6 fill-current" />
-            <span class="font-display text-2xl leading-none font-bold">
+            <AppLogoIcon class="size-5 fill-current" />
+            <span
+                v-if="!project"
+                class="font-display text-xl leading-none font-bold"
+            >
                 {{ page.props.name }}
             </span>
         </Link>
+        <span
+            v-if="project"
+            class="min-w-0 truncate font-display text-xl leading-normal font-bold"
+        >
+            {{ project.name }}
+        </span>
 
         <DropdownMenu>
             <DropdownMenuTrigger as-child>

@@ -220,3 +220,10 @@
 .card-prose hr {
     border-color: var(--color-rule);
 }
+
+@utility focus-field {
+    &:focus-visible {
+        outline: none;
+        box-shadow: var(--field-focus);
+    }
+}

@@ -7,7 +7,6 @@
     --text-md: 1rem;
     --text-poster: clamp(3rem, 2rem + 3.5vw, 5.5rem);
     /* A board's title: a step below the poster, so the lists lead. */
-    --text-board-title: clamp(2.25rem, 1.75rem + 2vw, 3.75rem);
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     --dur-micro: 120ms;
     --dur-short: 220ms;
@@ -42,6 +41,11 @@
     --surface-edge: oklch(18% 0.012 262 / 0.1);
     --overlay: oklch(15% 0.012 262 / 0.45);
     --float-shadow: 0 24px 48px -20px oklch(15% 0.02 262 / 0.35);
+
+    /* Focus on text fields: a soft halo and a firmer edge, not an outline. */
+    --field-focus:
+        inset 0 0 0 1px oklch(18% 0.012 262 / 0.22),
+        0 0 0 3px oklch(18% 0.012 262 / 0.04);
 
     /* Menus are white sheets with a hairline edge, like the cards. */
     --menu-bg: var(--color-sheet);
@@ -81,6 +85,9 @@
     --color-focus: oklch(78% 0.008 90);
     --color-error: oklch(68% 0.17 27);
     --color-success: oklch(72% 0.13 150);
+    --field-focus:
+        inset 0 0 0 1px oklch(95% 0.005 90 / 0.24),
+        0 0 0 3px oklch(95% 0.005 90 / 0.05);
     --menu-hover: var(--color-paper-3);
     --menu-shadow:
         0 0 0 1px var(--color-rule), 0 14px 32px -12px oklch(4% 0.01 262 / 0.7);

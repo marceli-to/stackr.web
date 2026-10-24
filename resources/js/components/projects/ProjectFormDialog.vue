@@ -94,7 +94,7 @@ const form = computed(() =>
                         rows="3"
                         maxlength="2000"
                         :value="project?.description ?? ''"
-                        class="w-full min-w-0 rounded-[var(--radius-sheet)] bg-sheet px-3 py-2 text-base shadow-xs ring-1 ring-(--control-edge) outline-hidden ring-inset placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring focus-visible:outline-solid sm:text-[0.9375rem] dark:bg-(--color-paper-2)"
+                        class="w-full min-w-0 rounded-[var(--radius-sheet)] bg-sheet px-3 py-2 text-base shadow-xs ring-1 focus-field ring-(--control-edge) outline-hidden ring-inset placeholder:text-muted-foreground sm:text-[0.9375rem] dark:bg-(--color-paper-2)"
                     />
                     <InputError :message="errors.description" />
                 </div>
