@@ -16,9 +16,10 @@ _Last updated: 2026-10-24_
 | 6. Card details (title, description, dates, labels, …) | ✅ done |
 | 7. Inviting members                                    | ✅ done |
 | 8. Production on stackr.kimiyu.ch (see "Production")   | ✅ done |
+| 9. Landing page and legal notice                       | ✅ done |
 
 Everything is on `main`, pushed to GitHub (https://github.com/marceli-to/stackr.web) and deployed
-to https://stackr.kimiyu.ch (last deploy `aa410d4`, 2026-10-24).
+to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
 (`design/field` and `feature/card-details` are merged into `main` and can be deleted.)
 
 ## Stack
@@ -149,6 +150,8 @@ to https://stackr.kimiyu.ch (last deploy `aa410d4`, 2026-10-24).
   `resources/js/components/card/*` (dialog, pickers, sections; `board.ts` holds the shared helpers),
   `resources/js/components/projects/*`, `resources/js/components/AppTopBar.vue`,
   `resources/js/layouts/{AppLayout,settings/Layout,auth/AuthCardLayout}.vue`
+- Landing page and legal notice: `resources/js/pages/site/{Welcome,Legal}.vue`,
+  `resources/js/components/site/{SiteHeader,SiteFooter,BoardMock}.vue`
 - Tests: `tests/Feature/{ProjectTest,ProjectMembersTest,BoardTest,CardDetailsTest,DashboardTest,HomeTest}.php`, `tests/Unit/FractionalIndexTest.php`
 
 ## Production
@@ -190,11 +193,14 @@ Same method as the kimiyuch projects (gotaticket/usverchauft):
 - Herd serves it at https://stackr.web.test (the Webroot folder is parked in Herd; secured with
   `herd secure stackr.web`, `APP_URL` is https).
 - `npm run dev` while you work. Without it, the site uses the last `npm run build`.
-- Checks: `php artisan test`, `vendor/bin/phpstan analyse --memory-limit=1G`, `vendor/bin/pint --test`,
-  `npm run types:check`, `npm run check`
+- Checks: `php artisan test`, `vendor/bin/phpstan analyse --memory-limit=1G`, `composer format:check`,
+  `npm run types:check`, `npm run check`. Then `npm run build` (the build is committed) and
+  `./deploy.sh` when asked to deploy.
 - Account: `m@marceli.to`, email verified by hand in the database. For screenshots, a throwaway
   user (`ledger-demo@stackr.test` / `password`) was created and deleted again each time.
 - Headless screenshots: puppeteer-core in `/tmp/pp` against the system Chrome (not part of the repo).
+  Dragging needs `card.drag(target)` + `target.drop(card)` (SortableJS uses native HTML5 drag).
+  Check new pages with `prefers-color-scheme: dark` too: the app follows the system setting.
 - `.hallmark/` (untracked) is the Hallmark design skill's local log.
 
 ## Next up
