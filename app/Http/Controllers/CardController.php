@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CardRequest;
+use App\Http\Requests\CardUpdateRequest;
 use App\Http\Requests\MoveRequest;
 use App\Models\Card;
 use App\Models\Stack;
@@ -11,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 class CardController extends Controller
 {
@@ -65,5 +67,39 @@ class CardController extends Controller
         });
 
         return back();
+    }
+
+    /**
+     * Change a card's title, description, dates, completion or cover.
+     */
+    public function update(CardUpdateRequest $request, Card $card): RedirectResponse
+    {
+        Gate::authorize('update', $card->stack->project);
+
+        $data = $request->safe()->except('completed');
+
+        if ($request->has('completed')) {
+            $data['completed_at'] = $request->boolean('completed') ? ($card->completed_at ?? now()) : null;
+        }
+
+        $card->update($data);
+
+        return back();
+    }
+
+    /**
+     * Delete a card with everything on it, and close it.
+     */
+    public function destroy(Card $card): RedirectResponse
+    {
+        $project = $card->stack->project;
+
+        Gate::authorize('update', $project);
+
+        $card->delete();
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('Card deleted.')]);
+
+        return to_route('projects.show', $project);
     }
 }

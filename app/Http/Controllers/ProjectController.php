@@ -6,9 +6,12 @@ use App\Enums\ProjectColor;
 use App\Enums\ProjectRole;
 use App\Http\Requests\ProjectRequest;
 use App\Models\Card;
+use App\Models\Label;
 use App\Models\Project;
 use App\Models\ProjectMembership;
 use App\Models\Stack;
+use App\Models\User;
+use App\Support\CardData;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -70,23 +73,39 @@ class ProjectController extends Controller
     /**
      * Show a project's board.
      */
-    public function show(Project $project): Response
+    public function show(Request $request, Project $project): Response
     {
         Gate::authorize('view', $project);
 
-        $project->load('stacks.cards');
+        $project->load([
+            'labels',
+            'members',
+            'stacks.cards' => fn ($query) => $query->withCount(['attachments', 'comments']),
+            'stacks.cards.labels:id',
+            'stacks.cards.members:id',
+            'stacks.cards.cover',
+            'stacks.cards.checklists.items:id,checklist_id,completed_at',
+        ]);
+
+        // ?card=<id> opens a card; it has to be on this board.
+        $open = $request->integer('card') ?: null;
+        $card = $open !== null
+            ? $project->stacks->flatMap(fn (Stack $stack) => $stack->cards)->firstWhere('id', $open)
+            : null;
+
+        /** @var User $user */
+        $user = $request->user();
 
         return Inertia::render('projects/Show', [
             'project' => $project->only('id', 'name', 'description', 'url', 'color'),
+            'labels' => $project->labels->map(fn (Label $label) => CardData::label($label)),
+            'members' => $project->members->map(fn (User $member) => $member->only('id', 'name')),
             'stacks' => $project->stacks->map(fn (Stack $stack) => [
                 'id' => $stack->id,
                 'name' => $stack->name,
-                'cards' => $stack->cards->map(fn (Card $card) => [
-                    'id' => $card->id,
-                    'title' => $card->title,
-                    'due_at' => $card->due_at,
-                ]),
+                'cards' => $stack->cards->map(fn (Card $card) => CardData::face($card)),
             ]),
+            'card' => $card !== null ? CardData::detail($card, $user) : null,
         ]);
     }
 

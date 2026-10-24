@@ -52,6 +52,18 @@
     --menu-shadow:
         0 0 0 1px var(--color-rule), 0 14px 32px -12px oklch(20% 0.02 262 / 0.3);
 
+    /* Labels sit on white cards in both modes, so they keep their light
+       colours and dark text in dark mode too. */
+    --color-label-ink: oklch(20% 0.02 262);
+    --color-label-green: oklch(80% 0.13 148);
+    --color-label-yellow: oklch(88% 0.14 95);
+    --color-label-orange: oklch(81% 0.13 62);
+    --color-label-red: oklch(74% 0.14 25);
+    --color-label-purple: oklch(76% 0.1 305);
+    --color-label-blue: oklch(75% 0.11 255);
+    --color-label-sky: oklch(84% 0.08 215);
+    --color-label-gray: oklch(85% 0.008 262);
+
     --radius-tile: 6px;
     --radius-sheet: 4px;
     --tracking-display: -0.005em;
@@ -105,4 +117,29 @@
 }
 [data-field='plum'] {
     --field: var(--color-field-plum);
+}
+
+[data-label='green'] {
+    --label: var(--color-label-green);
+}
+[data-label='yellow'] {
+    --label: var(--color-label-yellow);
+}
+[data-label='orange'] {
+    --label: var(--color-label-orange);
+}
+[data-label='red'] {
+    --label: var(--color-label-red);
+}
+[data-label='purple'] {
+    --label: var(--color-label-purple);
+}
+[data-label='blue'] {
+    --label: var(--color-label-blue);
+}
+[data-label='sky'] {
+    --label: var(--color-label-sky);
+}
+[data-label='gray'] {
+    --label: var(--color-label-gray);
 }

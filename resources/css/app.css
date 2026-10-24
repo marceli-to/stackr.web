@@ -5,7 +5,7 @@
  * nav: a slim top bar (logo and user menu), replacing the sidebar · signature: the board drenched in its project's colour under a poster-size name · states: empty (projects, list), error (forms)
  * axes: light/display-condensed/chromatic-cobalt · posture: drenched on a board, restrained on paper · contrast: pass · v2.0.0 */
 /* Hallmark · pre-emit critique: P3 H3 E3 S3 R3 V3 · weakest: R, a drenched page can drown its content, so lists sit in a darker well of the field and cards stay plain white */
-/* Hallmark · waive 26b · AppTopBar.vue renders the shared Button, whose disabled styling lives in components/ui/button/index.ts · the user menu is the only button in the top bar and it is never disabled */
+/* Hallmark · waive 26b · AppTopBar.vue and BoardCardItem.vue render no form control, and the shared Button keeps its disabled styling in components/ui/button/index.ts · the user menu trigger and a card on the board are never disabled */
 /* Hallmark · dismissed 41 · the menu panel is the white sheet with ink text (--menu-ink), the same pair the cards use */
 @import 'tailwindcss';
 
@@ -27,6 +27,8 @@
     --color-field: var(--field);
     --color-field-ink: var(--field-ink);
     --color-field-well: var(--field-well);
+    --color-label: var(--label);
+    --color-label-ink: var(--color-label-ink);
 
     --shadow-soft: 0 0 0 1px var(--color-rule);
 
@@ -157,4 +159,64 @@
 }
 [data-sonner-toast][data-type='error'] [data-icon] {
     color: var(--color-error);
+}
+
+/* Markdown from card descriptions and comments. */
+.card-prose {
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+}
+.card-prose > * + * {
+    margin-top: 0.75em;
+}
+.card-prose :where(h1, h2, h3, h4) {
+    font-weight: 600;
+    line-height: 1.25;
+}
+.card-prose h1 {
+    font-size: 1.25rem;
+}
+.card-prose h2 {
+    font-size: 1.125rem;
+}
+.card-prose :where(ul, ol) {
+    padding-left: 1.25rem;
+}
+.card-prose ul {
+    list-style: disc;
+}
+.card-prose ol {
+    list-style: decimal;
+}
+.card-prose li + li {
+    margin-top: 0.25em;
+}
+.card-prose a {
+    text-decoration: underline;
+    text-decoration-color: var(--color-rule);
+    text-underline-offset: 0.2em;
+}
+.card-prose a:hover {
+    text-decoration-color: currentColor;
+}
+.card-prose :not(pre) > code {
+    border-radius: 3px;
+    background: var(--color-paper-2);
+    padding: 0.1em 0.3em;
+    font-size: 0.875em;
+}
+.card-prose pre {
+    overflow-x: auto;
+    border-radius: var(--radius-sheet);
+    background: var(--color-paper-2);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+}
+.card-prose blockquote {
+    border-left: 2px solid var(--color-rule);
+    padding-left: 0.875rem;
+    color: var(--color-ink-3);
+}
+.card-prose hr {
+    border-color: var(--color-rule);
 }

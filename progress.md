@@ -62,6 +62,18 @@ Code lives on GitHub: https://github.com/marceli-to/stackr.web
       Focus outlines need `focus-visible:outline-solid` (Tailwind 4's `outline-none` clears the style).
 - **Logo:** three offset bars (a stack of cards) in `AppLogoIcon.vue`; favicons in `public/` are the
   same mark on an ink tile.
+- **Cards** open in a dialog from the board; the URL carries `?card=<id>`, so a card can be linked
+  and the browser's back button closes it. Opening reloads only the `card` prop. A card has:
+  title, Markdown description (rendered on the server with `Str::markdown`, raw HTML stripped,
+  unsafe links dropped), start and due dates plus a "complete" tick, labels (per project, 8 colours,
+  `LabelColor`), members (project members), checklists with items, attachments and comments
+  (authors edit/delete their own). Shaping lives in `app/Support/CardData.php` (`face()` for the
+  board, `detail()` for the dialog).
+- **Attachments** are stored privately on the `local` disk under `attachments/{project}/{card}/` and
+  served by `AttachmentController@show` to project members only (no `storage:link`, so shared
+  hosting works). Up to 20 files of 20 MB per upload; drop files on the open card, paste an image,
+  or use the file picker. The first image becomes the cover; any image can be made the cover.
+  Deleting a card, a list or a project removes its files (model events).
 - **Projects** have a name, an optional description, an optional link (`url`, http/https) shown
   on the board, and a colour. Editing and deleting happens from the ⋮ menu on the overview tiles.
 - **No landing page:** `/` sends guests to the login and signed-in users to `/projects`.
@@ -77,10 +89,13 @@ Code lives on GitHub: https://github.com/marceli-to/stackr.web
 
 - Backend: `app/Http/Controllers/{Project,Stack,Card}Controller.php`, `app/Policies/ProjectPolicy.php`,
   `app/Models/{Project,ProjectMembership,Stack,Card}.php`, `routes/web.php`
+- Card backend: `app/Http/Controllers/{Card,Label,CardLabel,CardMember,Checklist,ChecklistItem,Attachment,Comment}Controller.php`,
+  `app/Models/{Label,Checklist,ChecklistItem,Attachment,Comment}.php`, `app/Support/CardData.php`
 - Frontend: `resources/js/pages/projects/{Index,Show}.vue`, `resources/js/components/board/*`,
+  `resources/js/components/card/*` (dialog, pickers, sections; `board.ts` holds the shared helpers),
   `resources/js/components/projects/*`, `resources/js/components/AppTopBar.vue`,
   `resources/js/layouts/{AppLayout,settings/Layout,auth/AuthCardLayout}.vue`
-- Tests: `tests/Feature/{ProjectTest,BoardTest,DashboardTest,HomeTest}.php`, `tests/Unit/FractionalIndexTest.php`
+- Tests: `tests/Feature/{ProjectTest,BoardTest,CardDetailsTest,DashboardTest,HomeTest}.php`, `tests/Unit/FractionalIndexTest.php`
 
 ## Running it
 
@@ -94,12 +109,13 @@ Code lives on GitHub: https://github.com/marceli-to/stackr.web
 
 ## Next up
 
-1. **Card details popup:** click a card to edit its title and description, set a due date, or delete it.
-   The `cards` table already has `description` and `due_at`.
-2. Show a short message instead of Inertia's full-page 403 overlay when a move is rejected.
-3. Playwright tests for drag & drop. The one-off check in `/tmp` was thrown away; proper tests need
-   their own database and `.env`.
-4. Later: invite members to a project (the data model already supports it), labels, archiving, search.
-   The header layout's search button is a starter-kit leftover that does nothing yet.
+1. Invite members to a project (the data model supports it; card members only list people who are
+   already on the project).
+2. Card details, round two: move or copy a card from the dialog, archive instead of delete, an
+   activity log, @mentions in comments, cover colours, image thumbnails (images are served in full
+   size today).
+3. Show a short message instead of Inertia's full-page 403 overlay when a move is rejected.
+4. Playwright tests for drag & drop and the card dialog.
 5. Production: certificate from the host, and set `APP_URL` (https), `APP_NAME=Stackr` and
-   `SESSION_LIFETIME=720` in its `.env`.
+   `SESSION_LIFETIME=720` in its `.env`. Make sure PHP's `upload_max_filesize` and `post_max_size`
+   allow 20 MB uploads.

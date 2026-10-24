@@ -1,6 +1,13 @@
 <?php
 
+use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\CardController;
+use App\Http\Controllers\CardLabelController;
+use App\Http\Controllers\CardMemberController;
+use App\Http\Controllers\ChecklistController;
+use App\Http\Controllers\ChecklistItemController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LabelController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\StackController;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +28,32 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('stacks/{stack}/cards', [CardController::class, 'store'])->name('cards.store');
     Route::patch('cards/{card}/move', [CardController::class, 'move'])->name('cards.move');
+    Route::patch('cards/{card}', [CardController::class, 'update'])->name('cards.update');
+    Route::delete('cards/{card}', [CardController::class, 'destroy'])->name('cards.destroy');
+
+    Route::post('projects/{project}/labels', [LabelController::class, 'store'])->name('labels.store');
+    Route::patch('labels/{label}', [LabelController::class, 'update'])->name('labels.update');
+    Route::delete('labels/{label}', [LabelController::class, 'destroy'])->name('labels.destroy');
+    Route::post('cards/{card}/labels/{label}', [CardLabelController::class, 'store'])->name('cards.labels.store');
+    Route::delete('cards/{card}/labels/{label}', [CardLabelController::class, 'destroy'])->name('cards.labels.destroy');
+
+    Route::post('cards/{card}/members/{user}', [CardMemberController::class, 'store'])->name('cards.members.store');
+    Route::delete('cards/{card}/members/{user}', [CardMemberController::class, 'destroy'])->name('cards.members.destroy');
+
+    Route::post('cards/{card}/checklists', [ChecklistController::class, 'store'])->name('checklists.store');
+    Route::patch('checklists/{checklist}', [ChecklistController::class, 'update'])->name('checklists.update');
+    Route::delete('checklists/{checklist}', [ChecklistController::class, 'destroy'])->name('checklists.destroy');
+    Route::post('checklists/{checklist}/items', [ChecklistItemController::class, 'store'])->name('checklist-items.store');
+    Route::patch('checklist-items/{item}', [ChecklistItemController::class, 'update'])->name('checklist-items.update');
+    Route::delete('checklist-items/{item}', [ChecklistItemController::class, 'destroy'])->name('checklist-items.destroy');
+
+    Route::post('cards/{card}/attachments', [AttachmentController::class, 'store'])->name('attachments.store');
+    Route::get('attachments/{attachment}', [AttachmentController::class, 'show'])->name('attachments.show');
+    Route::delete('attachments/{attachment}', [AttachmentController::class, 'destroy'])->name('attachments.destroy');
+
+    Route::post('cards/{card}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::patch('comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+    Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 });
 
 require __DIR__.'/settings.php';

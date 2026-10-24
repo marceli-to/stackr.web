@@ -1,29 +1,30 @@
 <script setup lang="ts">
-import { Head, setLayoutProps } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import { PhLink } from '@phosphor-icons/vue';
-import { computed, watchEffect } from 'vue';
+import { computed, provide, toRef } from 'vue';
 import Board from '@/components/board/Board.vue';
-import { index, show } from '@/routes/projects';
-import type { BoardStack, Project } from '@/types';
+import { boardKey } from '@/components/card/board';
+import CardDialog from '@/components/card/CardDialog.vue';
+import type { BoardStack, CardDetail, Label, Member, Project } from '@/types';
 
 const props = defineProps<{
     project: Project;
     stacks: BoardStack[];
+    labels: Label[];
+    members: Member[];
+    card: CardDetail | null;
 }>();
+
+provide(boardKey, {
+    project: toRef(props, 'project'),
+    labels: toRef(props, 'labels'),
+    members: toRef(props, 'members'),
+});
 
 // The link as people read it: no scheme, no trailing slash.
 const urlLabel = computed(() =>
     props.project.url?.replace(/^https?:\/\//, '').replace(/\/$/, ''),
 );
-
-watchEffect(() => {
-    setLayoutProps({
-        breadcrumbs: [
-            { title: 'Projects', href: index() },
-            { title: props.project.name, href: show(props.project.id) },
-        ],
-    });
-});
 </script>
 
 <template>
@@ -53,4 +54,6 @@ watchEffect(() => {
 
         <Board :project="project" :stacks="stacks" />
     </div>
+
+    <CardDialog :card="card" />
 </template>

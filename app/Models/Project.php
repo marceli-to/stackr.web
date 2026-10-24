@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @property int $id
@@ -36,6 +37,24 @@ class Project extends Model
         return [
             'color' => ProjectColor::class,
         ];
+    }
+
+    /**
+     * The database removes the project's rows; its files go here.
+     */
+    protected static function booted(): void
+    {
+        static::deleting(function (Project $project): void {
+            Storage::disk(Attachment::DISK)->deleteDirectory("attachments/{$project->id}");
+        });
+    }
+
+    /**
+     * @return HasMany<Label, $this>
+     */
+    public function labels(): HasMany
+    {
+        return $this->hasMany(Label::class)->orderBy('id');
     }
 
     /**

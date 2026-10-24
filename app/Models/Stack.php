@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * A list of cards on a project's board.
@@ -25,6 +26,20 @@ class Stack extends Model
 {
     /** @use HasFactory<StackFactory> */
     use HasFactory;
+
+    /**
+     * The database removes the list's cards; their files go here.
+     */
+    protected static function booted(): void
+    {
+        static::deleting(function (Stack $stack): void {
+            foreach ($stack->cards()->pluck('id') as $cardId) {
+                Storage::disk(Attachment::DISK)->deleteDirectory(
+                    Attachment::directoryFor($stack->project_id, $cardId),
+                );
+            }
+        });
+    }
 
     /**
      * @return BelongsTo<Project, $this>
