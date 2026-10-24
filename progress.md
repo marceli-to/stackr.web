@@ -36,7 +36,7 @@ _Last updated: 2026-10-24_
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 Production (https://stackr.kimiyu.ch) runs `635b56a` (deployed 2026-10-24, all migrations run).
-Still open there: the `schedule:run` cron line and a manual check, see "After the deploy" under "Next up".
+Still open there: a manual check, see "After the deploy" under "Next up".
 (`design/field` and `feature/card-details` are merged into `main` and can be deleted.)
 
 ## Stack
@@ -302,9 +302,9 @@ Same method as the kimiyuch projects (gotaticket/usverchauft):
   wallaby's `.env`).
 - **Crontab** (append-only, the account hosts many other sites):
   `* * * * * cd ~/www/stackr.kimiyu.ch && php85 artisan queue:work --stop-when-empty` and
-  `0 3 * * * … php85 artisan app:backup-database`. **To add at the next deploy** (agreed
-  2026-10-24): `* * * * * cd ~/www/stackr.kimiyu.ch && /usr/local/php85/bin/php artisan schedule:run`
-  for the due-date reminders (`routes/console.php`).
+  `0 3 * * * … php85 artisan app:backup-database` and (since 2026-10-24)
+  `* * * * * … php85 artisan schedule:run` for the due-date reminders (`routes/console.php`).
+  Before editing it, save a copy (`crontab -l > ~/crontab.backup-<date>`).
 - **Backups:** `app:backup-database` writes a consistent snapshot (`VACUUM INTO`), gzipped, to
   `storage/app/private/database_*.sqlite.gz` and deletes ones older than 30 days. Attachments live
   next to it in `storage/app/private/attachments` and aren't in the database backup.
@@ -338,11 +338,9 @@ Feature list (2026-10-24). 1–14 are done (one commit each on 2026-10-24); 15�
 
 **After the deploy of 2026-10-24** (production is on `635b56a`):
 
-- Append to the server crontab (agreed 2026-10-24, ask before touching the server):
-  `* * * * * cd ~/www/stackr.kimiyu.ch && /usr/local/php85/bin/php artisan schedule:run`
-  (due-date reminders every 15 minutes). Without it, everything else still works.
 - Check by hand on production: drag & drop with a filter on, the archive panel, move to another
-  board, the bell, an email for an assignment (the queue cron sends it), a background photo upload.
+  board, the bell, an email for an assignment (the queue cron sends it), a background photo upload,
+  the join link, a due-date reminder (the `schedule:run` cron is in).
 
 **Cards**
 
@@ -365,7 +363,7 @@ Feature list (2026-10-24). 1–14 are done (one commit each on 2026-10-24); 15�
 **People and notifications**
 
 13. ~~Notifications: in-app bell plus email when you're assigned, mentioned, or a due date is near.~~
-    Done; production needs the `schedule:run` cron line (see "Production").
+    Done; production runs it via the `schedule:run` cron line (see "Production").
 14. ~~Watching a card or board, to get notified about changes.~~ Done (bell only).
 15. Avatars: upload a profile picture instead of initials.
 16. Hand over ownership: the owner can't leave a project, and there's no way to pass it on.
