@@ -97,7 +97,7 @@ const view = useStorage<'board' | 'calendar'>(
 <template>
 	<Head :title="props.project.name" />
 
-	<div class="flex h-full min-h-0 flex-1 flex-col gap-8 px-4 pt-8 md:px-8">
+	<div class="flex h-full min-h-0 flex-1 flex-col gap-8 px-3 pt-8 md:px-5">
 		<h1 class="sr-only">{{ project.name }}</h1>
 
 		<div class="flex min-h-0 flex-1 flex-col">

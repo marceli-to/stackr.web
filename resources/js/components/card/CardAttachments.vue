@@ -60,7 +60,7 @@ function extension(name: string): string {
 			Uploading… {{ uploading }}%
 		</p>
 
-		<ul class="space-y-2 pl-7.5">
+		<ul class="space-y-4 pl-7.5">
 			<li
 				v-for="attachment in card.attachments"
 				:key="attachment.id"
@@ -70,7 +70,7 @@ function extension(name: string): string {
 					:href="attachment.url"
 					target="_blank"
 					rel="noopener"
-					class="flex h-16 w-24 shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-sheet)] bg-(--color-paper-3) text-sm font-semibold text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
+					class="flex h-12 w-18 shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-sheet)] bg-(--color-paper-3) text-xs font-semibold text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
 					:aria-label="`Open ${attachment.name}`"
 				>
 					<img
@@ -87,7 +87,7 @@ function extension(name: string): string {
 						:href="attachment.url"
 						target="_blank"
 						rel="noopener"
-						class="block truncate font-semibold hover:underline"
+						class="block truncate text-sm font-semibold hover:underline"
 						>{{ attachment.name }}</a
 					>
 					<p
