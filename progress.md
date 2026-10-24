@@ -13,7 +13,8 @@ _Last updated: 2026-10-24_
 | 3. Board (lists + cards, drag & drop)                  | ✅ done |
 | 4. Branding (name, logo, login screen)                 | ✅ done |
 | 5. Design: "Field" (see below)                         | ✅ done |
-| 6. Card details (title, description, dates, labels, …) | ⏭ next  |
+| 6. Card details (title, description, dates, labels, …) | ✅ done |
+| 7. Inviting members                                    | ✅ done |
 
 Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stackr.web
 (`design/field` and `feature/card-details` are merged into `main` and can be deleted.)
@@ -70,6 +71,19 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
       close button, so no ring shows after a click.
 - **Logo:** three offset bars (a stack of cards) in `AppLogoIcon.vue`; favicons in `public/` are the
   same mark on an ink tile.
+- **Members & invitations:** the board's top bar shows the other members as an avatar stack (your own
+  initials are the account menu); the owner also gets an "Invite" button pinned bottom right. Both
+  open the members dialog (`components/projects/ProjectMembers.vue`). Only the owner invites (by email) and
+  removes members; anyone else can leave; the owner can't leave. An address with an account is added
+  right away and gets `AddedToProjectMail`; any other address gets a `project_invitations` row and
+  `ProjectInvitationMail` with `/invitations/{token}` (valid 14 days, inviting again renews it).
+  Guests opening the link go to register (or login) with the email filled in and come back via
+  `url.intended`; accepting also marks the email verified when it matches. Removing a member also
+  takes them off the project's cards.
+- **Mail:** sent right away, not queued (shared hosting, no worker). Templates are Laravel's published
+  markdown mail (`resources/views/vendor/mail`, warm paper/ink colours, the logo as
+  `public/mail-logo.png` because mail clients don't show SVG) plus `resources/views/mail/`.
+  Locally `.env` points at Mailhog (SMTP 1025, inbox at http://127.0.0.1:8025).
 - **Cards** open in a dialog from the board; the URL carries `?card=<id>`, so a card can be linked
   and the browser's back button closes it. Opening reloads only the `card` prop. A card has:
   title, Markdown description (rendered on the server with `Str::markdown`, raw HTML stripped,
@@ -103,7 +117,7 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
   `resources/js/components/card/*` (dialog, pickers, sections; `board.ts` holds the shared helpers),
   `resources/js/components/projects/*`, `resources/js/components/AppTopBar.vue`,
   `resources/js/layouts/{AppLayout,settings/Layout,auth/AuthCardLayout}.vue`
-- Tests: `tests/Feature/{ProjectTest,BoardTest,CardDetailsTest,DashboardTest,HomeTest}.php`, `tests/Unit/FractionalIndexTest.php`
+- Tests: `tests/Feature/{ProjectTest,ProjectMembersTest,BoardTest,CardDetailsTest,DashboardTest,HomeTest}.php`, `tests/Unit/FractionalIndexTest.php`
 
 ## Running it
 
@@ -119,14 +133,13 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
 
 ## Next up
 
-1. Invite members to a project (the data model supports it; card members only list people who are
-   already on the project).
-2. Card details, round two: move or copy a card from the dialog, archive instead of delete, an
+1. Card details, round two: move or copy a card from the dialog, archive instead of delete, an
    activity log, @mentions in comments, cover colours, image thumbnails (images are served in full
    size today).
-3. Show a short message instead of Inertia's full-page 403 overlay when a move is rejected.
-4. Playwright tests for drag & drop and the card dialog. Dragging cards was not re-checked by hand
+2. Show a short message instead of Inertia's full-page 403 overlay when a move is rejected.
+3. Playwright tests for drag & drop and the card dialog. Dragging cards was not re-checked by hand
    after cards became clickable (they open on click, drag still uses SortableJS).
-5. Production: certificate from the host, and set `APP_URL` (https), `APP_NAME=Stackr` and
-   `SESSION_LIFETIME=720` in its `.env`. Make sure PHP's `upload_max_filesize` and `post_max_size`
+4. Production: certificate from the host, and set `APP_URL` (https), `APP_NAME=Stackr`,
+   `SESSION_LIFETIME=720` and the host's SMTP (`MAIL_MAILER=smtp`, host, port, user, password,
+   `MAIL_FROM_ADDRESS`) in its `.env`. Make sure PHP's `upload_max_filesize` and `post_max_size`
    allow 20 MB uploads.

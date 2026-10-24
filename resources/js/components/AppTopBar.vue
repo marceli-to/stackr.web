@@ -2,6 +2,7 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
+import ProjectMembers from '@/components/projects/ProjectMembers.vue';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -44,24 +45,28 @@ const project = computed(
             {{ project.name }}
         </span>
 
-        <DropdownMenu>
-            <DropdownMenuTrigger as-child>
-                <button
-                    type="button"
-                    class="relative ml-auto flex size-9 items-center justify-center rounded-full text-sm font-semibold ring-1 ring-current/35 transition-colors duration-(--dur-micro) ring-inset hover:bg-current/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid data-[state=open]:bg-current/10"
-                    :aria-label="`Account menu for ${user.name}`"
-                    data-test="user-menu-button"
-                >
-                    {{ getInitials(user.name) }}
-                    <span
-                        class="absolute top-1/2 left-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden"
-                        aria-hidden="true"
-                    />
-                </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" class="w-64">
-                <UserMenuContent :user="user" />
-            </DropdownMenuContent>
-        </DropdownMenu>
+        <div class="ml-auto flex shrink-0 items-center gap-3">
+            <ProjectMembers v-if="project" />
+
+            <DropdownMenu>
+                <DropdownMenuTrigger as-child>
+                    <button
+                        type="button"
+                        class="relative flex size-9 items-center justify-center rounded-full bg-current/15 text-sm font-semibold transition-colors duration-(--dur-micro) hover:bg-current/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid data-[state=open]:bg-current/25"
+                        :aria-label="`Account menu for ${user.name}`"
+                        data-test="user-menu-button"
+                    >
+                        {{ getInitials(user.name) }}
+                        <span
+                            class="absolute top-1/2 left-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden"
+                            aria-hidden="true"
+                        />
+                    </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" class="w-64">
+                    <UserMenuContent :user="user" />
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </div>
     </header>
 </template>

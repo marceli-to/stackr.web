@@ -50,6 +50,19 @@ export type Member = {
     name: string;
 };
 
+/** Someone on the project, as the members dialog lists them. */
+export type ProjectMember = Member & {
+    email: string;
+    role: 'owner' | 'member';
+};
+
+/** An emailed invitation nobody has accepted yet. */
+export type ProjectInvitation = {
+    id: number;
+    email: string;
+    expired: boolean;
+};
+
 /** A card as its face on the board shows it. */
 export type BoardCard = {
     id: number;

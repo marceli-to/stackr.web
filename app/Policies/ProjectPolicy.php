@@ -31,4 +31,12 @@ class ProjectPolicy
     {
         return $project->roleOf($user) === ProjectRole::Owner;
     }
+
+    /**
+     * Only the owner invites people and removes members.
+     */
+    public function manageMembers(User $user, Project $project): bool
+    {
+        return $project->roleOf($user) === ProjectRole::Owner;
+    }
 }

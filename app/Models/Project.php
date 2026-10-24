@@ -69,6 +69,14 @@ class Project extends Model
     }
 
     /**
+     * @return HasMany<ProjectInvitation, $this>
+     */
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(ProjectInvitation::class)->orderBy('email');
+    }
+
+    /**
      * @return HasMany<Stack, $this>
      */
     public function stacks(): HasMany

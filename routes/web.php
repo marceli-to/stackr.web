@@ -9,17 +9,26 @@ use App\Http\Controllers\ChecklistItemController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectInvitationController;
+use App\Http\Controllers\ProjectMemberController;
 use App\Http\Controllers\StackController;
 use Illuminate\Support\Facades\Route;
 
 // No landing page: guests go to the login, signed-in users to their projects.
 Route::get('/', fn () => to_route(auth()->check() ? 'projects.index' : 'login'))->name('home');
 
+// Invitation links work signed out too: guests sign up or log in first and come back.
+Route::get('invitations/{token}', [ProjectInvitationController::class, 'show'])->name('invitations.show');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     // Fortify sends users here after login; projects are the home screen.
     Route::redirect('dashboard', '/projects')->name('dashboard');
 
     Route::resource('projects', ProjectController::class)->except(['create', 'edit']);
+
+    Route::post('projects/{project}/members', [ProjectMemberController::class, 'store'])->name('projects.members.store');
+    Route::delete('projects/{project}/members/{user}', [ProjectMemberController::class, 'destroy'])->name('projects.members.destroy');
+    Route::delete('invitations/{invitation}', [ProjectInvitationController::class, 'destroy'])->name('invitations.destroy');
 
     Route::post('projects/{project}/stacks', [StackController::class, 'store'])->name('stacks.store');
     Route::patch('stacks/{stack}', [StackController::class, 'update'])->name('stacks.update');

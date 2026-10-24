@@ -12,6 +12,7 @@ import { store } from '@/routes/register';
 
 defineProps<{
     passwordRules: string;
+    email?: string | null;
 }>();
 
 defineOptions({
@@ -56,6 +57,7 @@ defineOptions({
                     :tabindex="2"
                     autocomplete="email"
                     name="email"
+                    :default-value="email ?? undefined"
                     placeholder="email@example.com"
                 />
                 <InputError :message="errors.email" />

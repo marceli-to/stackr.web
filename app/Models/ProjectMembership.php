@@ -16,6 +16,7 @@ use Illuminate\Support\Carbon;
  * @property ProjectRole $role
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read User $user
  */
 class ProjectMembership extends Pivot
 {
@@ -41,5 +42,13 @@ class ProjectMembership extends Pivot
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

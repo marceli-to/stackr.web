@@ -8,6 +8,7 @@ use App\Http\Requests\ProjectRequest;
 use App\Models\Card;
 use App\Models\Label;
 use App\Models\Project;
+use App\Models\ProjectInvitation;
 use App\Models\ProjectMembership;
 use App\Models\Stack;
 use App\Models\User;
@@ -16,6 +17,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -79,7 +81,6 @@ class ProjectController extends Controller
 
         $project->load([
             'labels',
-            'members',
             'stacks.cards' => fn ($query) => $query->withCount(['attachments', 'comments']),
             'stacks.cards.labels:id',
             'stacks.cards.members:id',
@@ -95,11 +96,29 @@ class ProjectController extends Controller
 
         /** @var User $user */
         $user = $request->user();
+        $manages = $user->can('manageMembers', $project);
 
         return Inertia::render('projects/Show', [
             'project' => $project->only('id', 'name', 'description', 'url', 'color'),
             'labels' => $project->labels->map(fn (Label $label) => CardData::label($label)),
-            'members' => $project->members->map(fn (User $member) => $member->only('id', 'name')),
+            'members' => ProjectMembership::with('user')->where('project_id', $project->id)->get()
+                ->sortBy(fn (ProjectMembership $membership) => [
+                    $membership->role !== ProjectRole::Owner,
+                    Str::lower($membership->user->name),
+                ])
+                ->values()
+                ->map(fn (ProjectMembership $membership) => [
+                    ...$membership->user->only('id', 'name', 'email'),
+                    'role' => $membership->role,
+                ]),
+            'invitations' => $manages
+                ? $project->invitations()->get()->map(fn (ProjectInvitation $invitation) => [
+                    'id' => $invitation->id,
+                    'email' => $invitation->email,
+                    'expired' => $invitation->isExpired(),
+                ])
+                : [],
+            'canManageMembers' => $manages,
             'stacks' => $project->stacks->map(fn (Stack $stack) => [
                 'id' => $stack->id,
                 'name' => $stack->name,

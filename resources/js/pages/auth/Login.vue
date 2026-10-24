@@ -21,6 +21,7 @@ defineOptions({
 defineProps<{
     status?: string;
     canResetPassword: boolean;
+    email?: string | null;
 }>();
 </script>
 
@@ -44,6 +45,7 @@ defineProps<{
                     id="email"
                     type="email"
                     name="email"
+                    :default-value="email ?? undefined"
                     required
                     v-focus
                     :tabindex="1"
