@@ -18,29 +18,29 @@ defineProps<{
 
 <template>
     <div
-        class="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10"
+        class="flex min-h-svh flex-col items-center justify-center gap-6 bg-indigo-50 p-6 md:p-10 dark:bg-muted"
     >
-        <div class="flex w-full max-w-md flex-col gap-6">
+        <div class="flex w-full max-w-sm flex-col gap-6">
             <Link
                 :href="home()"
                 class="flex items-center gap-2 self-center font-medium"
             >
                 <div class="flex h-9 w-9 items-center justify-center">
-                    <AppLogoIcon
-                        class="size-9 fill-current text-black dark:text-white"
-                    />
+                    <AppLogoIcon class="size-9 fill-current text-primary" />
                 </div>
             </Link>
 
             <div class="flex flex-col gap-6">
-                <Card class="rounded-xl">
-                    <CardHeader class="px-10 pt-8 pb-0 text-center">
+                <Card
+                    class="gap-8 rounded-2xl py-8 shadow-[0_1px_2px_rgb(0_0_0/0.04),0_8px_24px_-6px_rgb(0_0_0/0.08)]"
+                >
+                    <CardHeader class="px-8 text-center">
                         <CardTitle class="text-xl">{{ title }}</CardTitle>
                         <CardDescription>
                             {{ description }}
                         </CardDescription>
                     </CardHeader>
-                    <CardContent class="px-10 py-8">
+                    <CardContent class="px-8">
                         <slot />
                     </CardContent>
                 </Card>

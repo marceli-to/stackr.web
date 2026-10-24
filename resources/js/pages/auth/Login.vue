@@ -4,7 +4,6 @@ import InputError from '@/components/InputError.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
 import TextLink from '@/components/TextLink.vue';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
@@ -61,17 +60,7 @@ defineProps<{
             </div>
 
             <div class="grid gap-2">
-                <div class="flex items-center justify-between">
-                    <Label for="password">Password</Label>
-                    <TextLink
-                        v-if="canResetPassword"
-                        :href="request()"
-                        class="text-sm"
-                        :tabindex="5"
-                    >
-                        Forgot your password?
-                    </TextLink>
-                </div>
+                <Label for="password">Password</Label>
                 <PasswordInput
                     id="password"
                     name="password"
@@ -83,17 +72,10 @@ defineProps<{
                 <InputError :message="errors.password" />
             </div>
 
-            <div class="flex items-center justify-between">
-                <Label for="remember" class="flex items-center space-x-3">
-                    <Checkbox id="remember" name="remember" :tabindex="3" />
-                    <span>Remember me</span>
-                </Label>
-            </div>
-
             <Button
                 type="submit"
                 class="mt-4 w-full"
-                :tabindex="4"
+                :tabindex="3"
                 :disabled="processing"
                 data-test="login-button"
             >
@@ -102,9 +84,19 @@ defineProps<{
             </Button>
         </div>
 
-        <div class="text-center text-sm text-muted-foreground">
-            Don't have an account?
-            <TextLink :href="register()" :tabindex="5">Sign up</TextLink>
+        <div class="grid gap-2 text-center text-sm text-muted-foreground">
+            <TextLink
+                v-if="canResetPassword"
+                :href="request()"
+                class="justify-self-center text-foreground"
+                :tabindex="4"
+            >
+                Forgot your password?
+            </TextLink>
+            <div>
+                Don't have an account?
+                <TextLink :href="register()" :tabindex="5">Sign up</TextLink>
+            </div>
         </div>
     </Form>
 </template>

@@ -2,7 +2,7 @@
 
 A Trello clone: projects, each with its own board of lists and cards.
 
-_Last updated: 2026-10-23_
+_Last updated: 2026-10-24_
 
 ## Where we are
 
@@ -11,7 +11,8 @@ _Last updated: 2026-10-23_
 | 1. Data model (projects, members, lists, cards)              | ✅ done |
 | 2. Projects overview (create, rename, delete, sidebar)       | ✅ done |
 | 3. Board (lists + cards, drag & drop)                        | ✅ done |
-| 4. Card details popup (title, description, due date, delete) | ⏭ next  |
+| 4. Branding (name, logo, indigo, login screen)               | ✅ done |
+| 5. Card details popup (title, description, due date, delete) | ⏭ next  |
 
 Everything is committed on `main` and pushed to `origin`
 (https://github.com/marceli-to/stackr.web).
@@ -42,6 +43,13 @@ Everything is committed on `main` and pushed to `origin`
 - **The screen updates first.** The board moves the item straight away and saves in the background
   (`resources/js/components/board/useBoardMove.ts`, `async` Inertia visits). Once all moves have
   finished it takes the server's order again, which also undoes a rejected move.
+- **Branding:** the name is "Stackr". The logo is three offset bars (a stack of cards) in
+  `AppLogoIcon.vue`; the favicons in `public/` use the same mark, white on an indigo rounded square.
+  Indigo is `--primary` in light and dark mode (`resources/css/app.css`); everything else stays neutral.
+  The starter kit's Repository/Documentation links are gone.
+- **Auth pages** use `AuthCardLayout.vue`: a white card on `bg-indigo-50` (neutral in dark mode).
+  The login has no "Remember me"; instead sessions last 12 hours (`SESSION_LIFETIME=720`, set it in
+  production's `.env` too, along with `APP_NAME=Stackr`).
 - `/dashboard` redirects to `/projects`, so Fortify's home setting and the old links keep working.
 
 ## Where things are
@@ -68,5 +76,4 @@ Everything is committed on `main` and pushed to `origin`
 3. Playwright tests for drag & drop. The one-off check in `/tmp` was thrown away; proper tests need
    their own database and `.env`.
 4. Later: invite members to a project (the data model already supports it), labels, archiving, search.
-5. Branding: the app still shows "Laravel" as its name and logo, and the sidebar still has the starter
-   kit's Repository and Documentation links.
+   The header layout's search button is a starter-kit leftover that does nothing yet.
