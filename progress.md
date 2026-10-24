@@ -33,6 +33,7 @@ _Last updated: 2026-10-24_
 | 23. Calmer board chrome (one bar, ⋯ menu)              | ✅ done |
 | 24. Gradient project colours                           | ✅ done |
 | 25. Project keys in URLs, join links                   | ✅ done |
+| 26. MCP server for agents (Settings → Agents)          | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 Production (https://stackr.kimiyu.ch) runs `29a39f7` (deployed 2026-10-24, all migrations run).
@@ -82,8 +83,11 @@ Still open there: a manual check, see "After the deploy" under "Next up".
     - Shell: a slim top bar in three columns: logo (→ projects) and, on a board, the board's name
       left; the board's search centred; member avatars and the ⋯ app menu right
       (`components/AppMenu.vue`, a tinted circle like the avatar, with a yellow dot while anything is
-      unread). The user's initials (account menu, opens upwards) sit fixed in the bottom-left corner.
-      On a board both menus are frosted glass in the project's colour with white ink (`menu-glass`
+      unread) on a board. There the user's initials (account menu, opens upwards) sit fixed in the
+      bottom-left corner. Off the boards (projects overview, settings) there's one menu instead: the
+      initials top right (`components/AccountMenu.vue`) with notifications, settings and log out,
+      and the unread dot on the initials. Page titles there are `text-4xl` / `md:text-[2.75rem]`,
+      not poster size. On a board both menus are frosted glass in the project's colour with white ink (`menu-glass`
       utility; the menu is teleported, so it carries its own `data-field`), like the frosted search.
       The board has no toolbar row and no big title of its own (only a hidden `h1`); it teleports
       its search (`#topbar-search`) and its own `AppMenu` with the board items (`#topbar-actions`)
@@ -246,6 +250,22 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   The login has no "Remember me"; instead sessions last 12 hours (`SESSION_LIFETIME=720`, set it in
   production's `.env` too, along with `APP_NAME=Stackr`).
 - `/dashboard` redirects to `/projects`, so Fortify's home setting and the old links keep working.
+- **Agents (MCP).** `laravel/mcp` serves `App\Mcp\Servers\StackrServer` at `POST /mcp`
+  (`routes/ai.php`, plain HTTP requests, so it works on shared hosting), behind `auth:sanctum` and
+  `throttle:120,1`. Agents send a Sanctum personal access token as `Authorization: Bearer …`.
+  Tokens are made and revoked in Settings → Agents (`AgentController`, behind the password
+  confirmation like Security). They never expire, act as their user on all of that user's boards,
+  and are shown once (flashed as `agentToken`) together with a filled-in `claude mcp add` command
+  and a `.mcp.json` snippet. There are 15 tools in `app/Mcp/Tools`: list_projects, get_board,
+  get_card, create_card, update_card, move_card, add_comment, add_checklist, add_checklist_item,
+  tick_checklist_item, assign_member, unassign_member, add_label, remove_label, archive_card.
+  There's no deleting, no board settings and no inviting. Tools call the same actions as the
+  controllers. Permissions: `App\Mcp\Boards` only finds things on the user's own boards (other
+  boards read as "not found") and runs the same `ProjectPolicy` check. Validation reuses the form
+  requests' rules. Lists, members and labels can be named by name (any case) or id; an ambiguous
+  name asks for the id. Archived cards and lists and templates are invisible to agents.
+  `activities.via_agent` and `comments.via_agent` are set when the request came in on a token
+  (`App\Support\Agent::acting()`), and the card's timeline shows a faint "· via agent".
 
 - **Code layout:** controllers stay thin: authorize (`Gate::authorize`), take a form request,
   call one action, toast (`$this->toast()` on the base `Controller`), redirect. Every write is an
@@ -274,11 +294,14 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   textarea; `board.ts` holds the shared helpers and `describeActivity()`),
   `resources/js/components/projects/*`, `resources/js/components/{AppTopBar,AppMenu,NotificationsDialog}.vue`,
   `resources/js/layouts/{AppLayout,settings/Layout,auth/AuthCardLayout}.vue`
+- Agents: `routes/ai.php`, `app/Mcp/{Servers/StackrServer,Boards,Shapes}.php`, `app/Mcp/Tools/*`,
+  `app/Http/Controllers/Settings/AgentController.php`, `app/Actions/Agents/*`,
+  `resources/js/pages/settings/Agents.vue`, `resources/js/components/CodeSnippet.vue`
 - Landing page and legal notice: `resources/js/pages/site/{Welcome,Legal}.vue`,
   `resources/js/components/site/{SiteHeader,SiteFooter,BoardMock}.vue`
 - Tests: `tests/Feature/*Test.php` (one file per area: Project, ProjectMembers, Board, CardDetails, Archive,
   MoveCopyCard, Activity, Notification, Watch, Template, Thumbnail, Background, …), `tests/Unit/FractionalIndexTest.php`
-  (162 tests on 2026-10-24)
+  (193 tests on 2026-10-24, including `McpTest` and `Settings/AgentTokensTest`)
 
 ## Production
 
@@ -376,13 +399,14 @@ Feature list (2026-10-24). 1–14 are done (one commit each on 2026-10-24); 15�
 
 **Agents**
 
-20. MCP server so AI agents (Claude Code etc.) can work a board: read the cards in a list, update
+20. ~~MCP server so AI agents (Claude Code etc.) can work a board: read the cards in a list, update
     a card, comment, move it (e.g. To do → Pending → Done). Plan: `laravel/mcp` with an HTTP
     server at `/mcp` (plain requests, so it runs on shared hosting), personal access tokens via
     Sanctum (create/revoke in settings, sent as a Bearer header), tools that call the existing
     actions (so permissions, activity log and notifications behave the same): list projects,
     get board, get card, create card, update card, add comment, move card (list by name),
-    tick checklist items. Activity shows the token's user; maybe mark it "via agent".
+    tick checklist items. Activity shows the token's user; maybe mark it "via agent".~~
+    Done, see "Agents (MCP)" under "Decisions made".
 
 Not planned: realtime updates (no long-running processes on shared hosting), and browser tests
 (Playwright): the user tests the UI by hand. After UI changes, list what to check by hand, especially

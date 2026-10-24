@@ -24,6 +24,7 @@ class ActivityResource extends JsonResource
 			'type' => $this->type,
 			'data' => (object) ($this->data ?? []),
 			'user' => $this->user?->only('id', 'name'),
+			'via_agent' => $this->via_agent,
 			'created_at' => $this->created_at,
 		];
 	}

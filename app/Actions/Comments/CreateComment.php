@@ -7,6 +7,7 @@ use App\Models\Card;
 use App\Models\Comment;
 use App\Models\User;
 use App\Notifications\MentionedInComment;
+use App\Support\Agent;
 use App\Support\Mentions;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
@@ -21,7 +22,7 @@ class CreateComment
 	 */
 	public function handle(Card $card, User $author, string $body): Comment
 	{
-		$comment = new Comment(['body' => $body]);
+		$comment = new Comment(['body' => $body, 'via_agent' => Agent::acting()]);
 		$comment->card()->associate($card);
 		$comment->user()->associate($author);
 		$comment->save();

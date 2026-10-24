@@ -170,6 +170,12 @@ function remove(comment: CardComment) {
 							class="ml-1 whitespace-nowrap text-muted-foreground"
 							>{{ timeAgo(entry.activity.created_at) }}</time
 						>
+						<span
+							v-if="entry.activity.via_agent"
+							class="whitespace-nowrap text-muted-foreground/70"
+						>
+							· via agent</span
+						>
 					</p>
 				</li>
 				<li v-else class="flex gap-2.5">
@@ -196,6 +202,11 @@ function remove(comment: CardComment) {
 								v-if="entry.comment.edited"
 								class="text-muted-foreground"
 								>(edited)</span
+							>
+							<span
+								v-if="entry.comment.via_agent"
+								class="text-muted-foreground/70"
+								>· via agent</span
 							>
 						</p>
 

@@ -5,6 +5,7 @@ namespace App\Actions\Cards;
 use App\Models\Activity;
 use App\Models\Card;
 use App\Support\ActivityText;
+use App\Support\Agent;
 use Illuminate\Support\Facades\Auth;
 
 class RecordActivity
@@ -20,7 +21,7 @@ class RecordActivity
 	 */
 	public function handle(Card $card, string $type, array $data = []): Activity
 	{
-		$activity = new Activity(['type' => $type, 'data' => $data ?: null]);
+		$activity = new Activity(['type' => $type, 'data' => $data ?: null, 'via_agent' => Agent::acting()]);
 		$activity->card()->associate($card);
 		$activity->user()->associate(Auth::user());
 		$activity->save();

@@ -41,6 +41,7 @@ class CommentResource extends JsonResource
 			'body_html' => Mentions::highlight((string) Markdown::toHtml($this->body), $this->names),
 			'user' => $this->user?->only('id', 'name'),
 			'mine' => $this->user_id === $request->user()?->id,
+			'via_agent' => $this->via_agent,
 			'created_at' => $this->created_at,
 			'edited' => $this->updated_at?->gt($this->created_at->addSecond()) ?? false,
 		];

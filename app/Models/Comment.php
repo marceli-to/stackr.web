@@ -12,12 +12,23 @@ use Illuminate\Support\Carbon;
  * @property int $card_id
  * @property int|null $user_id
  * @property string $body
+ * @property bool $via_agent
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['body'])]
+#[Fillable(['body', 'via_agent'])]
 class Comment extends Model
 {
+	/**
+	 * @return array<string, string>
+	 */
+	protected function casts(): array
+	{
+		return [
+			'via_agent' => 'boolean',
+		];
+	}
+
 	/**
 	 * @return BelongsTo<Card, $this>
 	 */

@@ -31,6 +31,8 @@ defineProps<Props>();
 	</DropdownMenuLabel>
 	<DropdownMenuSeparator />
 	<DropdownMenuGroup>
+		<!-- Room for the page's own items, e.g. notifications. -->
+		<slot />
 		<DropdownMenuItem :as-child="true">
 			<Link class="block w-full cursor-pointer" :href="edit()" prefetch>
 				<PhGearSix class="mr-2 h-4 w-4" />

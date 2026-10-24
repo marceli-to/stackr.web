@@ -79,7 +79,7 @@ function plural(count: number, word: string) {
 
 	<div class="flex h-full flex-1 flex-col gap-10 px-4 pt-8 pb-12 md:px-8">
 		<h1
-			class="font-display text-(length:--text-poster) leading-[0.95] font-bold tracking-(--tracking-display)"
+			class="font-display text-4xl leading-[1.05] font-bold tracking-(--tracking-display) md:text-[2.75rem]"
 		>
 			Projects
 		</h1>

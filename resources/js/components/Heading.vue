@@ -16,7 +16,7 @@ withDefaults(defineProps<Props>(), {
 			:class="
 				variant === 'small'
 					? 'text-xl font-semibold tracking-tight'
-					: 'font-display text-(length:--text-poster) leading-[0.95] font-bold tracking-(--tracking-display)'
+					: 'font-display text-4xl leading-[1.05] font-bold tracking-(--tracking-display) md:text-[2.75rem]'
 			"
 		>
 			{{ title }}

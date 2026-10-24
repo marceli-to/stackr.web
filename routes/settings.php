@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Settings\AgentController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
 use Illuminate\Auth\Middleware\RequirePassword;
@@ -25,6 +26,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 		->name('user-password.update');
 
 	Route::inertia('settings/appearance', 'settings/Appearance')->name('appearance.edit');
+
+	// A token can do anything on the user's boards, so minting one asks for the password.
+	Route::get('settings/agents', [AgentController::class, 'edit'])
+		->middleware(RequirePassword::class)
+		->name('agents.edit');
+	Route::post('settings/agents/tokens', [AgentController::class, 'store'])
+		->middleware(RequirePassword::class)
+		->name('agents.tokens.store');
+	Route::delete('settings/agents/tokens/{token}', [AgentController::class, 'destroy'])->name('agents.tokens.destroy');
 });
 
 Route::get('.well-known/passkey-endpoints', function () {

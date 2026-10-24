@@ -135,6 +135,8 @@ export type CardComment = {
 	body_html: string;
 	user: Member | null;
 	mine: boolean;
+	/** Written by an agent with one of the author's tokens. */
+	via_agent: boolean;
 	created_at: string;
 	edited: boolean;
 };
@@ -145,6 +147,8 @@ export type CardActivity = {
 	type: string;
 	data: Record<string, string | number | undefined>;
 	user: Member | null;
+	/** Done by an agent with one of the user's tokens. */
+	via_agent: boolean;
 	created_at: string;
 };
 

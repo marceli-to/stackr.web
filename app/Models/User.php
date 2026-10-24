@@ -16,6 +16,9 @@ use Illuminate\Support\Carbon;
 use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\PasskeyAuthenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Sanctum\HasApiTokens;
+use Laravel\Sanctum\PersonalAccessToken;
+use Laravel\Sanctum\TransientToken;
 
 /**
  * @property int $id
@@ -35,6 +38,9 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
 {
+	/** @use HasApiTokens<PersonalAccessToken|TransientToken> */
+	use HasApiTokens;
+
 	/** @use HasFactory<UserFactory> */
 	use HasFactory, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
 

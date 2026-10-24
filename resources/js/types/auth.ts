@@ -28,3 +28,18 @@ export type TwoFactorConfigContent = {
 	description: string;
 	buttonText: string;
 };
+
+/** A personal access token for an agent, as Settings → Agents lists it. */
+export type AgentToken = {
+	id: number;
+	name: string;
+	created_at_diff: string | null;
+	last_used_at_diff: string | null;
+};
+
+/** A token just created; the plain text is flashed once. */
+export type NewAgentToken = {
+	id: number;
+	name: string;
+	token: string;
+};

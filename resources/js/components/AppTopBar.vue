@@ -2,7 +2,7 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
-import AppMenu from '@/components/AppMenu.vue';
+import AccountMenu from '@/components/AccountMenu.vue';
 import ProjectMembers from '@/components/projects/ProjectMembers.vue';
 import {
 	DropdownMenu,
@@ -57,12 +57,13 @@ const project = computed(
 			<ProjectMembers v-if="project" />
 			<!-- A board teleports its own menu, with its actions, in here. -->
 			<div v-if="project" id="topbar-actions" class="contents" />
-			<AppMenu v-else />
+			<AccountMenu v-else />
 		</div>
 	</header>
 
-	<!-- Your account waits in the bottom-left corner, out of the board's way. -->
-	<div class="fixed bottom-4 left-3 z-10 md:left-5">
+	<!-- On a board your account waits in the bottom-left corner, out of the
+	board's way; elsewhere it's the menu in the top bar. -->
+	<div v-if="project" class="fixed bottom-4 left-3 z-10 md:left-5">
 		<DropdownMenu>
 			<DropdownMenuTrigger as-child>
 				<button
@@ -78,13 +79,12 @@ const project = computed(
 					/>
 				</button>
 			</DropdownMenuTrigger>
-			<!-- Frosted in the project's colour on a board, like the ⋯ menu. -->
+			<!-- Frosted in the project's colour, like the ⋯ menu. -->
 			<DropdownMenuContent
 				side="top"
 				align="start"
-				:data-field="project?.color"
-				class="w-64"
-				:class="{ 'menu-glass': project }"
+				:data-field="project.color"
+				class="w-64 menu-glass"
 			>
 				<UserMenuContent :user="user" />
 			</DropdownMenuContent>

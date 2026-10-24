@@ -17,9 +17,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $user_id
  * @property string $type
  * @property array<string, mixed>|null $data
+ * @property bool $via_agent
  * @property CarbonImmutable|null $created_at
  */
-#[Fillable(['type', 'data'])]
+#[Fillable(['type', 'data', 'via_agent'])]
 class Activity extends Model
 {
 	public const UPDATED_AT = null;
@@ -31,6 +32,7 @@ class Activity extends Model
 	{
 		return [
 			'data' => 'array',
+			'via_agent' => 'boolean',
 		];
 	}
 
