@@ -2,7 +2,7 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
-import AccountMenu from '@/components/AccountMenu.vue';
+import AppMenu from '@/components/AppMenu.vue';
 import BoardMembers from '@/components/board/BoardMembers.vue';
 import { index } from '@/routes/boards';
 import type { Board } from '@/types';
@@ -10,7 +10,8 @@ import type { Board } from '@/types';
 const page = usePage();
 
 // On a board the bar carries the board's name instead of the wordmark,
-// and the board page teleports its search and menu into the bar.
+// and the board page teleports its search and menu into the bar. Off the
+// boards the same ⋯ menu stands alone.
 const board = computed(
 	() => page.props.board as Pick<Board, 'name' | 'color'> | undefined,
 );
@@ -49,7 +50,7 @@ const board = computed(
 			<BoardMembers v-if="board" />
 			<!-- A board teleports its own menu, with its actions, in here. -->
 			<div v-if="board" id="topbar-actions" class="contents" />
-			<AccountMenu v-else />
+			<AppMenu v-else />
 		</div>
 	</header>
 </template>

@@ -32,7 +32,7 @@ const { isCurrentOrParentUrl } = useCurrentUrl();
 </script>
 
 <template>
-	<div class="px-4 pt-8 pb-16 md:px-8">
+	<div class="px-3 pt-8 pb-16 md:px-5">
 		<Heading
 			title="Settings"
 			description="Manage your profile and account settings"

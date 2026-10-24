@@ -16,7 +16,7 @@ import { logout } from '@/routes';
 import { edit as editProfile } from '@/routes/profile';
 import type { Board } from '@/types';
 
-// The board's ⋯ menu at the end of the top bar: notifications, whatever the
+// The ⋯ menu at the end of the top bar: notifications, whatever the
 // board adds below them (view, people, archive), and your account last.
 // A yellow dot on the button says there's something unread. On a board
 // it's frosted glass of the board's colour.

@@ -88,9 +88,9 @@ Still open there: a manual check, see "After the deploy" under "Next up".
       left; the board's search centred; member avatars and the ⋯ app menu right
       (`components/AppMenu.vue`, a tinted circle like the avatar, with a yellow dot while anything is
       unread) on a board, ending with the account (name, Settings, Log out); there's no avatar in
-      the corner any more. Off the boards (boards overview, settings) the same place holds the
-      user's initials (`components/AccountMenu.vue`) with notifications, settings and log out, and
-      the unread dot on the initials. Page titles there are `text-4xl` / `md:text-[2.75rem]`,
+      the corner any more. Off the boards (boards overview, settings) the same ⋯ menu stands alone,
+      with notifications and the account. The main area's side padding matches the bar's
+      (`px-3 md:px-5`), so content lines up with the logo and the menu. Page titles there are `text-4xl` / `md:text-[2.75rem]`,
       not poster size. On a board the menu is frosted glass in the board's colour with white ink (`menu-glass`
       utility; the menu is teleported, so it carries its own `data-field`), like the frosted search.
       The board has no toolbar row and no big title of its own (only a hidden `h1`); it teleports

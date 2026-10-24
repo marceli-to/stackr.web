@@ -75,7 +75,7 @@ function plural(count: number, word: string) {
 <template>
 	<Head title="Boards" />
 
-	<div class="flex h-full flex-1 flex-col gap-10 px-4 pt-8 pb-12 md:px-8">
+	<div class="flex h-full flex-1 flex-col gap-10 px-3 pt-8 pb-12 md:px-5">
 		<h1
 			class="font-display text-4xl leading-[1.05] font-bold tracking-(--tracking-display) md:text-[2.75rem]"
 		>
