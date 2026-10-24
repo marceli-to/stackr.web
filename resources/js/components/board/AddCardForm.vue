@@ -54,7 +54,7 @@ function submitOnEnter(event: KeyboardEvent) {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    class="size-8"
+                    class="size-8 hover:bg-indigo-100 hover:text-indigo-900 dark:hover:bg-accent dark:hover:text-accent-foreground"
                     aria-label="Close"
                     @click="open = false"
                 >
@@ -66,7 +66,7 @@ function submitOnEnter(event: KeyboardEvent) {
             v-else
             variant="ghost"
             size="sm"
-            class="w-full justify-start text-muted-foreground"
+            class="w-full justify-start text-muted-foreground hover:bg-indigo-100 hover:text-indigo-900 dark:hover:bg-accent dark:hover:text-accent-foreground"
             @click="open = true"
         >
             <Plus />

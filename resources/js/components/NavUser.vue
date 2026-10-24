@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { usePage } from '@inertiajs/vue3';
-import { ChevronsUpDown } from '@lucide/vue';
+import { ChevronsUpDown, CircleUser } from '@lucide/vue';
 import { computed } from 'vue';
 import {
     DropdownMenu,
@@ -27,10 +27,12 @@ const { isMobile, state } = useSidebar();
             <DropdownMenu>
                 <DropdownMenuTrigger as-child>
                     <SidebarMenuButton
-                        size="lg"
                         class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                         data-test="sidebar-menu-button"
                     >
+                        <CircleUser
+                            class="hidden group-data-[collapsible=icon]:block"
+                        />
                         <UserInfo :user="user" />
                         <ChevronsUpDown class="ml-auto size-4" />
                     </SidebarMenuButton>

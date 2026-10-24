@@ -112,7 +112,6 @@ class ProjectTest extends TestCase
             ->assertInertia(fn (Assert $page) => $page
                 ->component('projects/Show')
                 ->where('project.id', $project->id)
-                ->where('role', 'owner')
             );
     }
 

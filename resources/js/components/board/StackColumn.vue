@@ -79,7 +79,7 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 
 <template>
     <section
-        class="flex max-h-[calc(100svh-11rem)] w-72 shrink-0 flex-col rounded-xl bg-muted/60 dark:bg-muted/40"
+        class="flex max-h-[calc(100svh-11rem)] w-72 shrink-0 flex-col rounded-xl bg-indigo-50 dark:bg-muted/40"
         :aria-label="stack.name"
     >
         <header
@@ -126,7 +126,7 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
                     <Button
                         variant="ghost"
                         size="icon"
-                        class="size-7"
+                        class="size-7 hover:bg-indigo-100 hover:text-indigo-900 dark:hover:bg-accent dark:hover:text-accent-foreground"
                         :aria-label="`Actions for ${stack.name}`"
                     >
                         <EllipsisVertical />

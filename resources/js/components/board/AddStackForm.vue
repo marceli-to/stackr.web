@@ -21,7 +21,7 @@ const open = ref(false);
             v-bind="StackController.store.form(project.id)"
             :options="{ preserveScroll: true, preserveState: true }"
             reset-on-success
-            class="space-y-2 rounded-xl bg-muted/60 p-2 dark:bg-muted/40"
+            class="space-y-2 rounded-xl bg-indigo-50 p-2 dark:bg-muted/40"
             v-slot="{ errors, processing }"
         >
             <input
@@ -45,7 +45,7 @@ const open = ref(false);
                     type="button"
                     variant="ghost"
                     size="icon"
-                    class="size-8"
+                    class="size-8 hover:bg-indigo-100 hover:text-indigo-900 dark:hover:bg-accent dark:hover:text-accent-foreground"
                     aria-label="Close"
                     @click="open = false"
                 >

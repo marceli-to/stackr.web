@@ -11,7 +11,7 @@ _Last updated: 2026-10-24_
 | 1. Data model (projects, members, lists, cards)              | ✅ done |
 | 2. Projects overview (create, rename, delete, sidebar)       | ✅ done |
 | 3. Board (lists + cards, drag & drop)                        | ✅ done |
-| 4. Branding (name, logo, indigo, login screen)               | ✅ done |
+| 4. Branding (name, logo, indigo theme, login screen)         | ✅ done |
 | 5. Card details popup (title, description, due date, delete) | ⏭ next  |
 
 Everything is committed on `main` and pushed to `origin`
@@ -47,6 +47,16 @@ Everything is committed on `main` and pushed to `origin`
   `AppLogoIcon.vue`; the favicons in `public/` use the same mark, white on an indigo rounded square.
   Indigo is `--primary` in light and dark mode (`resources/css/app.css`); everything else stays neutral.
   The starter kit's Repository/Documentation links are gone.
+- **Theme:** light indigo (`indigo-50`) behind everything — sidebar, auth pages, board lists — with
+  white surfaces on top using the shared `shadow-soft` utility (`app.css`): the content panel, the
+  login card, project cards. Ghost buttons inside lists hover in `indigo-100`. Dark mode stays neutral.
+- **Sidebar:** logo (links to projects, no hover background), "Your projects", and the user menu. The
+  user menu shows the name only — no avatar/initials; collapsed, it shows a person icon.
+- **Project page** shows just the heading and board. Editing and deleting a project happens from the ⋮
+  menu on the projects overview.
+- **No landing page:** `/` sends guests to the login and signed-in users to `/projects`.
+- **Favicons** are linked as SVG + PNG (`?v=2`), not `.ico`: Herd answers `/favicon.ico` with a 404
+  status, which browsers ignore. `favicon.ico` still exists for direct requests.
 - **Auth pages** use `AuthCardLayout.vue`: a white card on `bg-indigo-50` (neutral in dark mode).
   The login has no "Remember me"; instead sessions last 12 hours (`SESSION_LIFETIME=720`, set it in
   production's `.env` too, along with `APP_NAME=Stackr`).
@@ -58,11 +68,12 @@ Everything is committed on `main` and pushed to `origin`
   `app/Models/{Project,ProjectMembership,Stack,Card}.php`, `routes/web.php`
 - Frontend: `resources/js/pages/projects/{Index,Show}.vue`, `resources/js/components/board/*`,
   `resources/js/components/projects/*`, `resources/js/components/NavProjects.vue`
-- Tests: `tests/Feature/{ProjectTest,BoardTest,DashboardTest}.php`, `tests/Unit/FractionalIndexTest.php`
+- Tests: `tests/Feature/{ProjectTest,BoardTest,DashboardTest,HomeTest}.php`, `tests/Unit/FractionalIndexTest.php`
 
 ## Running it
 
-- Herd serves it at http://stackr.web.test (the Webroot folder is parked in Herd).
+- Herd serves it at https://stackr.web.test (the Webroot folder is parked in Herd; secured with
+  `herd secure stackr.web`, `APP_URL` is https).
 - `npm run dev` while you work. Without it, the site uses the last `npm run build`.
 - Checks: `php artisan test`, `vendor/bin/phpstan analyse --memory-limit=1G`, `vendor/bin/pint --test`,
   `npm run types:check`, `npm run check`
@@ -77,3 +88,5 @@ Everything is committed on `main` and pushed to `origin`
    their own database and `.env`.
 4. Later: invite members to a project (the data model already supports it), labels, archiving, search.
    The header layout's search button is a starter-kit leftover that does nothing yet.
+5. Production: certificate from the host, and set `APP_URL` (https), `APP_NAME=Stackr` and
+   `SESSION_LIFETIME=720` in its `.env`.

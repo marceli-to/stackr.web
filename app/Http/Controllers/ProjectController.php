@@ -62,7 +62,7 @@ class ProjectController extends Controller
     /**
      * Show a project's board.
      */
-    public function show(Request $request, Project $project): Response
+    public function show(Project $project): Response
     {
         Gate::authorize('view', $project);
 
@@ -70,7 +70,6 @@ class ProjectController extends Controller
 
         return Inertia::render('projects/Show', [
             'project' => $project->only('id', 'name', 'description'),
-            'role' => $project->roleOf($request->user()),
             'stacks' => $project->stacks->map(fn (Stack $stack) => [
                 'id' => $stack->id,
                 'name' => $stack->name,

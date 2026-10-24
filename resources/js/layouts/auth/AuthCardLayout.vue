@@ -31,9 +31,7 @@ defineProps<{
             </Link>
 
             <div class="flex flex-col gap-6">
-                <Card
-                    class="gap-8 rounded-2xl py-8 shadow-[0_1px_2px_rgb(0_0_0/0.04),0_8px_24px_-6px_rgb(0_0_0/0.08)]"
-                >
+                <Card class="gap-8 rounded-2xl py-8 shadow-soft">
                     <CardHeader class="px-8 text-center">
                         <CardTitle class="text-xl">{{ title }}</CardTitle>
                         <CardDescription>

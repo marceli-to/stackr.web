@@ -80,7 +80,7 @@ function plural(count: number, word: string) {
 
         <div
             v-if="projects.length === 0"
-            class="flex flex-1 flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-sidebar-border/70 p-12 text-center dark:border-sidebar-border"
+            class="flex flex-1 flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border p-12 text-center"
         >
             <FolderKanban class="size-10 text-muted-foreground" />
             <div class="space-y-1">
@@ -99,12 +99,12 @@ function plural(count: number, word: string) {
             <li
                 v-for="project in projects"
                 :key="project.id"
-                class="group relative flex flex-col gap-3 rounded-xl border border-sidebar-border/70 bg-card p-4 transition-colors hover:border-foreground/20 dark:border-sidebar-border"
+                class="group relative flex flex-col gap-3 rounded-2xl border border-transparent bg-card p-4 shadow-soft transition-colors hover:border-primary/30 dark:border-border"
             >
                 <div class="flex items-start justify-between gap-2">
                     <Link
                         :href="show(project.id)"
-                        class="font-medium after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none"
+                        class="font-medium after:absolute after:inset-0 after:rounded-2xl focus-visible:outline-none"
                     >
                         {{ project.name }}
                     </Link>
