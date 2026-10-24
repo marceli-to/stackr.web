@@ -1,22 +1,27 @@
 <script setup lang="ts">
-import { usePage } from '@inertiajs/vue3';
-import { PhBell, PhDotsThree } from '@phosphor-icons/vue';
+import { Link, router, usePage } from '@inertiajs/vue3';
+import { PhBell, PhDotsThree, PhGearSix, PhSignOut } from '@phosphor-icons/vue';
 import { computed, ref } from 'vue';
 import NotificationsDialog from '@/components/NotificationsDialog.vue';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import UserInfo from '@/components/UserInfo.vue';
+import { logout } from '@/routes';
+import { edit as editProfile } from '@/routes/profile';
 import type { Project } from '@/types';
 
-// The ⋯ menu at the end of the top bar: notifications on every page, and
-// whatever the page adds below them (the board's view, people and archive).
+// The board's ⋯ menu at the end of the top bar: notifications, whatever the
+// board adds below them (view, people, archive), and your account last.
 // A yellow dot on the button says there's something unread. On a project
 // it's frosted glass of the project's colour.
 const page = usePage();
+const user = computed(() => page.props.auth.user);
 const unread = computed(() => page.props.notifications?.unread ?? 0);
 const field = computed(
 	() => (page.props.project as Project | undefined)?.color,
@@ -67,6 +72,32 @@ const notificationsOpen = ref(false);
 				<DropdownMenuSeparator />
 				<slot />
 			</template>
+			<DropdownMenuSeparator />
+			<DropdownMenuLabel class="px-2.5 py-2 font-normal">
+				<UserInfo :user="user" :show-email="true" />
+			</DropdownMenuLabel>
+			<DropdownMenuItem :as-child="true">
+				<Link
+					class="block w-full cursor-pointer"
+					:href="editProfile()"
+					prefetch
+				>
+					<PhGearSix />
+					Settings
+				</Link>
+			</DropdownMenuItem>
+			<DropdownMenuItem :as-child="true">
+				<Link
+					class="block w-full cursor-pointer"
+					:href="logout()"
+					as="button"
+					data-test="logout-button"
+					@click="router.flushAll()"
+				>
+					<PhSignOut />
+					Log out
+				</Link>
+			</DropdownMenuItem>
 		</DropdownMenuContent>
 	</DropdownMenu>
 	<NotificationsDialog v-model:open="notificationsOpen" />
