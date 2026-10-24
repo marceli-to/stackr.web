@@ -71,42 +71,14 @@ function plural(count: number, word: string) {
 <template>
     <Head title="Projects" />
 
-    <div class="flex h-full flex-1 flex-col gap-8 px-4 pt-8 pb-12 md:px-8">
-        <div class="flex items-end justify-between gap-4">
-            <header class="space-y-4">
-                <h1
-                    class="font-display text-(length:--text-poster) leading-[0.95] font-bold tracking-(--tracking-display)"
-                >
-                    Projects
-                </h1>
-                <p class="text-lg text-muted-foreground">
-                    Every project has its own board
-                </p>
-            </header>
-            <Button @click="create" data-test="new-project-button">
-                <PhPlus />
-                New project
-            </Button>
-        </div>
-
-        <div
-            v-if="projects.length === 0"
-            class="flex flex-col items-start gap-4 rounded-[var(--radius-tile)] border-2 border-dashed border-border p-8"
+    <div class="flex h-full flex-1 flex-col gap-10 px-4 pt-8 pb-12 md:px-8">
+        <h1
+            class="font-display text-(length:--text-poster) leading-[0.95] font-bold tracking-(--tracking-display)"
         >
-            <div class="space-y-1">
-                <p class="font-display text-3xl font-bold">No projects yet</p>
-                <p class="text-muted-foreground">
-                    Create your first project to start a board.
-                </p>
-            </div>
-            <Button variant="outline" @click="create">
-                <PhPlus />
-                New project
-            </Button>
-        </div>
+            Projects
+        </h1>
 
         <ul
-            v-else
             class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,20rem),1fr))] gap-3"
         >
             <li
@@ -174,6 +146,32 @@ function plural(count: number, word: string) {
                         Shared with you
                     </span>
                 </div>
+            </li>
+
+            <!-- The wall ends with a blank tile that starts the next project. -->
+            <li>
+                <button
+                    type="button"
+                    class="flex aspect-[4/3] w-full flex-col justify-between rounded-[var(--radius-tile)] bg-(--color-paper-3) p-5 text-left transition-colors duration-(--dur-micro) hover:bg-(--color-rule) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus)"
+                    data-test="new-project-button"
+                    @click="create"
+                >
+                    <span
+                        class="font-display text-4xl leading-[0.95] font-bold tracking-(--tracking-display)"
+                    >
+                        New project
+                    </span>
+                    <span
+                        class="flex items-center gap-2 text-sm text-muted-foreground"
+                    >
+                        <PhPlus />
+                        {{
+                            projects.length === 0
+                                ? 'Create your first project to start a board.'
+                                : 'Each project gets its own board.'
+                        }}
+                    </span>
+                </button>
             </li>
         </ul>
     </div>

@@ -21,7 +21,7 @@ function submitOnEnter(event: KeyboardEvent) {
 </script>
 
 <template>
-    <div class="px-2 pt-1 pb-2">
+    <div class="px-2.5 pt-1.5 pb-2.5">
         <!-- Stays open after adding, so several cards can be typed in a row. -->
         <Form
             v-if="open"

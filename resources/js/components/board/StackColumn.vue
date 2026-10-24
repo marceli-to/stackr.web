@@ -87,7 +87,7 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
         :aria-label="stack.name"
     >
         <header
-            class="flex items-center gap-1 px-3 pt-2 pb-1"
+            class="flex items-center gap-1 px-3 pt-2.5 pb-2"
             data-stack-handle
             :class="renaming ? '' : 'cursor-grab active:cursor-grabbing'"
         >
@@ -161,7 +161,7 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
             group="cards"
             :animation="150"
             ghost-class="opacity-40"
-            class="flex min-h-2 flex-col gap-1.5 overflow-y-auto px-2 py-1"
+            class="flex min-h-2 flex-col gap-2.5 overflow-y-auto px-2.5 py-1"
             :data-stack-id="stack.id"
             @update="onCardMoved($event, false)"
             @add="onCardMoved($event, true)"

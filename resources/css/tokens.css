@@ -6,6 +6,8 @@
     --text-sm: 0.875rem;
     --text-md: 1rem;
     --text-poster: clamp(3rem, 2rem + 3.5vw, 5.5rem);
+    /* A board's title: a step below the poster, so the lists lead. */
+    --text-board-title: clamp(2.25rem, 1.75rem + 2vw, 3.75rem);
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     --dur-micro: 120ms;
     --dur-short: 220ms;

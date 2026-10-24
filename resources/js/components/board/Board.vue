@@ -51,13 +51,13 @@ function onStackMoved(event: DraggableEvent<BoardStack>) {
 </script>
 
 <template>
-    <div class="flex min-h-0 flex-1 gap-3 overflow-x-auto pb-6">
+    <div class="flex min-h-0 flex-1 gap-5 overflow-x-auto pb-6">
         <VueDraggable
             v-model="board"
             :animation="150"
             handle="[data-stack-handle]"
             ghost-class="opacity-40"
-            class="flex items-start gap-3"
+            class="flex items-start gap-5"
             @update="onStackMoved"
         >
             <StackColumn
