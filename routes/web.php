@@ -21,48 +21,48 @@ Route::get('/', fn () => to_route(auth()->check() ? 'projects.index' : 'login'))
 Route::get('invitations/{token}', [ProjectInvitationController::class, 'show'])->name('invitations.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Fortify sends users here after login; projects are the home screen.
-    Route::redirect('dashboard', '/projects')->name('dashboard');
+	// Fortify sends users here after login; projects are the home screen.
+	Route::redirect('dashboard', '/projects')->name('dashboard');
 
-    Route::resource('projects', ProjectController::class)->except(['create', 'edit']);
+	Route::resource('projects', ProjectController::class)->except(['create', 'edit']);
 
-    Route::post('projects/{project}/members', [ProjectMemberController::class, 'store'])->name('projects.members.store');
-    Route::delete('projects/{project}/members/{user}', [ProjectMemberController::class, 'destroy'])->name('projects.members.destroy');
-    Route::delete('invitations/{invitation}', [ProjectInvitationController::class, 'destroy'])->name('invitations.destroy');
+	Route::post('projects/{project}/members', [ProjectMemberController::class, 'store'])->name('projects.members.store');
+	Route::delete('projects/{project}/members/{user}', [ProjectMemberController::class, 'destroy'])->name('projects.members.destroy');
+	Route::delete('invitations/{invitation}', [ProjectInvitationController::class, 'destroy'])->name('invitations.destroy');
 
-    Route::post('projects/{project}/stacks', [StackController::class, 'store'])->name('stacks.store');
-    Route::patch('stacks/{stack}', [StackController::class, 'update'])->name('stacks.update');
-    Route::patch('stacks/{stack}/move', [StackController::class, 'move'])->name('stacks.move');
-    Route::delete('stacks/{stack}', [StackController::class, 'destroy'])->name('stacks.destroy');
+	Route::post('projects/{project}/stacks', [StackController::class, 'store'])->name('stacks.store');
+	Route::patch('stacks/{stack}', [StackController::class, 'update'])->name('stacks.update');
+	Route::patch('stacks/{stack}/move', [StackController::class, 'move'])->name('stacks.move');
+	Route::delete('stacks/{stack}', [StackController::class, 'destroy'])->name('stacks.destroy');
 
-    Route::post('stacks/{stack}/cards', [CardController::class, 'store'])->name('cards.store');
-    Route::patch('cards/{card}/move', [CardController::class, 'move'])->name('cards.move');
-    Route::patch('cards/{card}', [CardController::class, 'update'])->name('cards.update');
-    Route::delete('cards/{card}', [CardController::class, 'destroy'])->name('cards.destroy');
+	Route::post('stacks/{stack}/cards', [CardController::class, 'store'])->name('cards.store');
+	Route::patch('cards/{card}/move', [CardController::class, 'move'])->name('cards.move');
+	Route::patch('cards/{card}', [CardController::class, 'update'])->name('cards.update');
+	Route::delete('cards/{card}', [CardController::class, 'destroy'])->name('cards.destroy');
 
-    Route::post('projects/{project}/labels', [LabelController::class, 'store'])->name('labels.store');
-    Route::patch('labels/{label}', [LabelController::class, 'update'])->name('labels.update');
-    Route::delete('labels/{label}', [LabelController::class, 'destroy'])->name('labels.destroy');
-    Route::post('cards/{card}/labels/{label}', [CardLabelController::class, 'store'])->name('cards.labels.store');
-    Route::delete('cards/{card}/labels/{label}', [CardLabelController::class, 'destroy'])->name('cards.labels.destroy');
+	Route::post('projects/{project}/labels', [LabelController::class, 'store'])->name('labels.store');
+	Route::patch('labels/{label}', [LabelController::class, 'update'])->name('labels.update');
+	Route::delete('labels/{label}', [LabelController::class, 'destroy'])->name('labels.destroy');
+	Route::post('cards/{card}/labels/{label}', [CardLabelController::class, 'store'])->name('cards.labels.store');
+	Route::delete('cards/{card}/labels/{label}', [CardLabelController::class, 'destroy'])->name('cards.labels.destroy');
 
-    Route::post('cards/{card}/members/{user}', [CardMemberController::class, 'store'])->name('cards.members.store');
-    Route::delete('cards/{card}/members/{user}', [CardMemberController::class, 'destroy'])->name('cards.members.destroy');
+	Route::post('cards/{card}/members/{user}', [CardMemberController::class, 'store'])->name('cards.members.store');
+	Route::delete('cards/{card}/members/{user}', [CardMemberController::class, 'destroy'])->name('cards.members.destroy');
 
-    Route::post('cards/{card}/checklists', [ChecklistController::class, 'store'])->name('checklists.store');
-    Route::patch('checklists/{checklist}', [ChecklistController::class, 'update'])->name('checklists.update');
-    Route::delete('checklists/{checklist}', [ChecklistController::class, 'destroy'])->name('checklists.destroy');
-    Route::post('checklists/{checklist}/items', [ChecklistItemController::class, 'store'])->name('checklist-items.store');
-    Route::patch('checklist-items/{item}', [ChecklistItemController::class, 'update'])->name('checklist-items.update');
-    Route::delete('checklist-items/{item}', [ChecklistItemController::class, 'destroy'])->name('checklist-items.destroy');
+	Route::post('cards/{card}/checklists', [ChecklistController::class, 'store'])->name('checklists.store');
+	Route::patch('checklists/{checklist}', [ChecklistController::class, 'update'])->name('checklists.update');
+	Route::delete('checklists/{checklist}', [ChecklistController::class, 'destroy'])->name('checklists.destroy');
+	Route::post('checklists/{checklist}/items', [ChecklistItemController::class, 'store'])->name('checklist-items.store');
+	Route::patch('checklist-items/{item}', [ChecklistItemController::class, 'update'])->name('checklist-items.update');
+	Route::delete('checklist-items/{item}', [ChecklistItemController::class, 'destroy'])->name('checklist-items.destroy');
 
-    Route::post('cards/{card}/attachments', [AttachmentController::class, 'store'])->name('attachments.store');
-    Route::get('attachments/{attachment}', [AttachmentController::class, 'show'])->name('attachments.show');
-    Route::delete('attachments/{attachment}', [AttachmentController::class, 'destroy'])->name('attachments.destroy');
+	Route::post('cards/{card}/attachments', [AttachmentController::class, 'store'])->name('attachments.store');
+	Route::get('attachments/{attachment}', [AttachmentController::class, 'show'])->name('attachments.show');
+	Route::delete('attachments/{attachment}', [AttachmentController::class, 'destroy'])->name('attachments.destroy');
 
-    Route::post('cards/{card}/comments', [CommentController::class, 'store'])->name('comments.store');
-    Route::patch('comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
-    Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+	Route::post('cards/{card}/comments', [CommentController::class, 'store'])->name('comments.store');
+	Route::patch('comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+	Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 });
 
 require __DIR__.'/settings.php';

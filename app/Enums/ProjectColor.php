@@ -8,18 +8,18 @@ namespace App\Enums;
  */
 enum ProjectColor: string
 {
-    case Cobalt = 'cobalt';
-    case Rust = 'rust';
-    case Moss = 'moss';
-    case Oxblood = 'oxblood';
-    case Lagoon = 'lagoon';
-    case Plum = 'plum';
+	case Cobalt = 'cobalt';
+	case Rust = 'rust';
+	case Moss = 'moss';
+	case Oxblood = 'oxblood';
+	case Lagoon = 'lagoon';
+	case Plum = 'plum';
 
-    public function next(): self
-    {
-        $cases = self::cases();
-        $index = array_search($this, $cases, true);
+	public function next(): self
+	{
+		$cases = self::cases();
+		$index = array_search($this, $cases, true);
 
-        return $cases[($index + 1) % count($cases)];
-    }
+		return $cases[($index + 1) % count($cases)];
+	}
 }

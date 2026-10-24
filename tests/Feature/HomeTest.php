@@ -8,17 +8,17 @@ use Tests\TestCase;
 
 class HomeTest extends TestCase
 {
-    use RefreshDatabase;
+	use RefreshDatabase;
 
-    public function test_guests_are_sent_to_the_login()
-    {
-        $this->get(route('home'))->assertRedirect(route('login'));
-    }
+	public function test_guests_are_sent_to_the_login()
+	{
+		$this->get(route('home'))->assertRedirect(route('login'));
+	}
 
-    public function test_signed_in_users_are_sent_to_their_projects()
-    {
-        $this->actingAs(User::factory()->create())
-            ->get(route('home'))
-            ->assertRedirect(route('projects.index'));
-    }
+	public function test_signed_in_users_are_sent_to_their_projects()
+	{
+		$this->actingAs(User::factory()->create())
+			->get(route('home'))
+			->assertRedirect(route('projects.index'));
+	}
 }

@@ -12,87 +12,87 @@ import { store } from '@/routes/login';
 import { request } from '@/routes/password';
 
 defineOptions({
-    layout: {
-        title: 'Log in to your account',
-        description: 'Enter your email and password below to log in',
-    },
+	layout: {
+		title: 'Log in to your account',
+		description: 'Enter your email and password below to log in',
+	},
 });
 
 defineProps<{
-    status?: string;
-    canResetPassword: boolean;
-    email?: string | null;
+	status?: string;
+	canResetPassword: boolean;
+	email?: string | null;
 }>();
 </script>
 
 <template>
-    <Head title="Log in" />
+	<Head title="Log in" />
 
-    <div v-if="status" class="mb-4 text-sm font-medium text-(--color-success)">
-        {{ status }}
-    </div>
+	<div v-if="status" class="mb-4 text-sm font-medium text-(--color-success)">
+		{{ status }}
+	</div>
 
-    <Form
-        v-bind="store.form()"
-        :reset-on-success="['password']"
-        v-slot="{ errors, processing }"
-        class="flex flex-col gap-6"
-    >
-        <div class="grid gap-6">
-            <div class="grid gap-2">
-                <Label for="email">Email address</Label>
-                <Input
-                    id="email"
-                    type="email"
-                    name="email"
-                    :default-value="email ?? undefined"
-                    required
-                    v-focus
-                    :tabindex="1"
-                    autocomplete="email"
-                    placeholder="email@example.com"
-                />
-                <InputError :message="errors.email" />
-            </div>
+	<Form
+		v-bind="store.form()"
+		:reset-on-success="['password']"
+		v-slot="{ errors, processing }"
+		class="flex flex-col gap-6"
+	>
+		<div class="grid gap-6">
+			<div class="grid gap-2">
+				<Label for="email">Email address</Label>
+				<Input
+					id="email"
+					type="email"
+					name="email"
+					:default-value="email ?? undefined"
+					required
+					v-focus
+					:tabindex="1"
+					autocomplete="email"
+					placeholder="email@example.com"
+				/>
+				<InputError :message="errors.email" />
+			</div>
 
-            <div class="grid gap-2">
-                <Label for="password">Password</Label>
-                <PasswordInput
-                    id="password"
-                    name="password"
-                    required
-                    :tabindex="2"
-                    autocomplete="current-password"
-                    placeholder="Password"
-                />
-                <InputError :message="errors.password" />
-            </div>
+			<div class="grid gap-2">
+				<Label for="password">Password</Label>
+				<PasswordInput
+					id="password"
+					name="password"
+					required
+					:tabindex="2"
+					autocomplete="current-password"
+					placeholder="Password"
+				/>
+				<InputError :message="errors.password" />
+			</div>
 
-            <Button
-                type="submit"
-                class="mt-4 w-full"
-                :tabindex="3"
-                :disabled="processing"
-                data-test="login-button"
-            >
-                <Spinner v-if="processing" />
-                Log in
-            </Button>
-        </div>
+			<Button
+				type="submit"
+				class="mt-4 w-full"
+				:tabindex="3"
+				:disabled="processing"
+				data-test="login-button"
+			>
+				<Spinner v-if="processing" />
+				Log in
+			</Button>
+		</div>
 
-        <div class="grid gap-2 text-center text-sm text-muted-foreground">
-            <TextLink
-                v-if="canResetPassword"
-                :href="request()"
-                class="justify-self-center text-foreground"
-                :tabindex="4"
-            >
-                Forgot your password?
-            </TextLink>
-            <div>
-                Don’t have an account?
-                <TextLink :href="register()" :tabindex="5">Sign up</TextLink>
-            </div>
-        </div>
-    </Form>
+		<div class="grid gap-2 text-center text-sm text-muted-foreground">
+			<TextLink
+				v-if="canResetPassword"
+				:href="request()"
+				class="justify-self-center text-foreground"
+				:tabindex="4"
+			>
+				Forgot your password?
+			</TextLink>
+			<div>
+				Don’t have an account?
+				<TextLink :href="register()" :tabindex="5">Sign up</TextLink>
+			</div>
+		</div>
+	</Form>
 </template>

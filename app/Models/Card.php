@@ -29,94 +29,94 @@ use Illuminate\Support\Facades\Storage;
 #[Fillable(['title', 'description', 'position', 'start_at', 'due_at', 'completed_at', 'cover_attachment_id'])]
 class Card extends Model
 {
-    /** @use HasFactory<CardFactory> */
-    use HasFactory;
+	/** @use HasFactory<CardFactory> */
+	use HasFactory;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'start_at' => 'datetime',
-            'due_at' => 'datetime',
-            'completed_at' => 'datetime',
-        ];
-    }
+	/**
+	 * Get the attributes that should be cast.
+	 *
+	 * @return array<string, string>
+	 */
+	protected function casts(): array
+	{
+		return [
+			'start_at' => 'datetime',
+			'due_at' => 'datetime',
+			'completed_at' => 'datetime',
+		];
+	}
 
-    /**
-     * The database removes a card's rows; its files go here.
-     */
-    protected static function booted(): void
-    {
-        static::deleting(function (Card $card): void {
-            Storage::disk(Attachment::DISK)->deleteDirectory(
-                Attachment::directoryFor($card->stack->project_id, $card->id),
-            );
-        });
-    }
+	/**
+	 * The database removes a card's rows; its files go here.
+	 */
+	protected static function booted(): void
+	{
+		static::deleting(function (Card $card): void {
+			Storage::disk(Attachment::DISK)->deleteDirectory(
+				Attachment::directoryFor($card->stack->project_id, $card->id),
+			);
+		});
+	}
 
-    /**
-     * @return BelongsTo<Stack, $this>
-     */
-    public function stack(): BelongsTo
-    {
-        return $this->belongsTo(Stack::class);
-    }
+	/**
+	 * @return BelongsTo<Stack, $this>
+	 */
+	public function stack(): BelongsTo
+	{
+		return $this->belongsTo(Stack::class);
+	}
 
-    /**
-     * @return BelongsToMany<Label, $this>
-     */
-    public function labels(): BelongsToMany
-    {
-        return $this->belongsToMany(Label::class)->orderBy('labels.id');
-    }
+	/**
+	 * @return BelongsToMany<Label, $this>
+	 */
+	public function labels(): BelongsToMany
+	{
+		return $this->belongsToMany(Label::class)->orderBy('labels.id');
+	}
 
-    /**
-     * The project members assigned to the card.
-     *
-     * @return BelongsToMany<User, $this>
-     */
-    public function members(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class)->orderBy('users.name');
-    }
+	/**
+	 * The project members assigned to the card.
+	 *
+	 * @return BelongsToMany<User, $this>
+	 */
+	public function members(): BelongsToMany
+	{
+		return $this->belongsToMany(User::class)->orderBy('users.name');
+	}
 
-    /**
-     * @return HasMany<Checklist, $this>
-     */
-    public function checklists(): HasMany
-    {
-        return $this->hasMany(Checklist::class)->orderBy('id');
-    }
+	/**
+	 * @return HasMany<Checklist, $this>
+	 */
+	public function checklists(): HasMany
+	{
+		return $this->hasMany(Checklist::class)->orderBy('id');
+	}
 
-    /**
-     * Newest first, like the comments.
-     *
-     * @return HasMany<Attachment, $this>
-     */
-    public function attachments(): HasMany
-    {
-        return $this->hasMany(Attachment::class)->latest('id');
-    }
+	/**
+	 * Newest first, like the comments.
+	 *
+	 * @return HasMany<Attachment, $this>
+	 */
+	public function attachments(): HasMany
+	{
+		return $this->hasMany(Attachment::class)->latest('id');
+	}
 
-    /**
-     * @return BelongsTo<Attachment, $this>
-     */
-    public function cover(): BelongsTo
-    {
-        return $this->belongsTo(Attachment::class, 'cover_attachment_id');
-    }
+	/**
+	 * @return BelongsTo<Attachment, $this>
+	 */
+	public function cover(): BelongsTo
+	{
+		return $this->belongsTo(Attachment::class, 'cover_attachment_id');
+	}
 
-    /**
-     * Newest first.
-     *
-     * @return HasMany<Comment, $this>
-     */
-    public function comments(): HasMany
-    {
-        return $this->hasMany(Comment::class)->latest('id');
-    }
+	/**
+	 * Newest first.
+	 *
+	 * @return HasMany<Comment, $this>
+	 */
+	public function comments(): HasMany
+	{
+		return $this->hasMany(Comment::class)->latest('id');
+	}
 }

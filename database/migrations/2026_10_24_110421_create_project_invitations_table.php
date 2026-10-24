@@ -6,28 +6,28 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::create('project_invitations', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('project_id')->constrained()->cascadeOnDelete();
-            $table->string('email');
-            $table->string('token', 64)->unique();
-            $table->foreignId('invited_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->timestamps();
+	/**
+	 * Run the migrations.
+	 */
+	public function up(): void
+	{
+		Schema::create('project_invitations', function (Blueprint $table) {
+			$table->id();
+			$table->foreignId('project_id')->constrained()->cascadeOnDelete();
+			$table->string('email');
+			$table->string('token', 64)->unique();
+			$table->foreignId('invited_by')->nullable()->constrained('users')->nullOnDelete();
+			$table->timestamps();
 
-            $table->unique(['project_id', 'email']);
-        });
-    }
+			$table->unique(['project_id', 'email']);
+		});
+	}
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('project_invitations');
-    }
+	/**
+	 * Reverse the migrations.
+	 */
+	public function down(): void
+	{
+		Schema::dropIfExists('project_invitations');
+	}
 };

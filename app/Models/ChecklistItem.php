@@ -19,21 +19,21 @@ use Illuminate\Support\Carbon;
 #[Fillable(['title', 'completed_at'])]
 class ChecklistItem extends Model
 {
-    /**
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'completed_at' => 'datetime',
-        ];
-    }
+	/**
+	 * @return array<string, string>
+	 */
+	protected function casts(): array
+	{
+		return [
+			'completed_at' => 'datetime',
+		];
+	}
 
-    /**
-     * @return BelongsTo<Checklist, $this>
-     */
-    public function checklist(): BelongsTo
-    {
-        return $this->belongsTo(Checklist::class);
-    }
+	/**
+	 * @return BelongsTo<Checklist, $this>
+	 */
+	public function checklist(): BelongsTo
+	{
+		return $this->belongsTo(Checklist::class);
+	}
 }

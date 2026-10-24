@@ -24,36 +24,36 @@ use Illuminate\Support\Str;
 #[Fillable(['email', 'token', 'invited_by'])]
 class ProjectInvitation extends Model
 {
-    /**
-     * Invitations older than this can no longer be accepted.
-     */
-    public const VALID_DAYS = 14;
+	/**
+	 * Invitations older than this can no longer be accepted.
+	 */
+	public const VALID_DAYS = 14;
 
-    protected $hidden = ['token'];
+	protected $hidden = ['token'];
 
-    public static function newToken(): string
-    {
-        return Str::random(64);
-    }
+	public static function newToken(): string
+	{
+		return Str::random(64);
+	}
 
-    public function isExpired(): bool
-    {
-        return $this->updated_at === null || $this->updated_at->lt(now()->subDays(self::VALID_DAYS));
-    }
+	public function isExpired(): bool
+	{
+		return $this->updated_at === null || $this->updated_at->lt(now()->subDays(self::VALID_DAYS));
+	}
 
-    /**
-     * @return BelongsTo<Project, $this>
-     */
-    public function project(): BelongsTo
-    {
-        return $this->belongsTo(Project::class);
-    }
+	/**
+	 * @return BelongsTo<Project, $this>
+	 */
+	public function project(): BelongsTo
+	{
+		return $this->belongsTo(Project::class);
+	}
 
-    /**
-     * @return BelongsTo<User, $this>
-     */
-    public function inviter(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'invited_by');
-    }
+	/**
+	 * @return BelongsTo<User, $this>
+	 */
+	public function inviter(): BelongsTo
+	{
+		return $this->belongsTo(User::class, 'invited_by');
+	}
 }

@@ -24,36 +24,36 @@ use Illuminate\Support\Facades\Storage;
 #[Fillable(['name', 'position'])]
 class Stack extends Model
 {
-    /** @use HasFactory<StackFactory> */
-    use HasFactory;
+	/** @use HasFactory<StackFactory> */
+	use HasFactory;
 
-    /**
-     * The database removes the list's cards; their files go here.
-     */
-    protected static function booted(): void
-    {
-        static::deleting(function (Stack $stack): void {
-            foreach ($stack->cards()->pluck('id') as $cardId) {
-                Storage::disk(Attachment::DISK)->deleteDirectory(
-                    Attachment::directoryFor($stack->project_id, $cardId),
-                );
-            }
-        });
-    }
+	/**
+	 * The database removes the list's cards; their files go here.
+	 */
+	protected static function booted(): void
+	{
+		static::deleting(function (Stack $stack): void {
+			foreach ($stack->cards()->pluck('id') as $cardId) {
+				Storage::disk(Attachment::DISK)->deleteDirectory(
+					Attachment::directoryFor($stack->project_id, $cardId),
+				);
+			}
+		});
+	}
 
-    /**
-     * @return BelongsTo<Project, $this>
-     */
-    public function project(): BelongsTo
-    {
-        return $this->belongsTo(Project::class);
-    }
+	/**
+	 * @return BelongsTo<Project, $this>
+	 */
+	public function project(): BelongsTo
+	{
+		return $this->belongsTo(Project::class);
+	}
 
-    /**
-     * @return HasMany<Card, $this>
-     */
-    public function cards(): HasMany
-    {
-        return $this->hasMany(Card::class)->orderBy('position');
-    }
+	/**
+	 * @return HasMany<Card, $this>
+	 */
+	public function cards(): HasMany
+	{
+		return $this->hasMany(Card::class)->orderBy('position');
+	}
 }

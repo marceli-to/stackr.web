@@ -22,29 +22,29 @@ use Illuminate\Support\Carbon;
 #[Fillable(['name', 'color'])]
 class Label extends Model
 {
-    /**
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'color' => LabelColor::class,
-        ];
-    }
+	/**
+	 * @return array<string, string>
+	 */
+	protected function casts(): array
+	{
+		return [
+			'color' => LabelColor::class,
+		];
+	}
 
-    /**
-     * @return BelongsTo<Project, $this>
-     */
-    public function project(): BelongsTo
-    {
-        return $this->belongsTo(Project::class);
-    }
+	/**
+	 * @return BelongsTo<Project, $this>
+	 */
+	public function project(): BelongsTo
+	{
+		return $this->belongsTo(Project::class);
+	}
 
-    /**
-     * @return BelongsToMany<Card, $this>
-     */
-    public function cards(): BelongsToMany
-    {
-        return $this->belongsToMany(Card::class);
-    }
+	/**
+	 * @return BelongsToMany<Card, $this>
+	 */
+	public function cards(): BelongsToMany
+	{
+		return $this->belongsToMany(Card::class);
+	}
 }

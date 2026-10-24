@@ -28,41 +28,41 @@ use Illuminate\Support\Facades\Storage;
 #[Fillable(['path', 'name', 'mime_type', 'size', 'width', 'height'])]
 class Attachment extends Model
 {
-    public const DISK = 'local';
+	public const DISK = 'local';
 
-    protected static function booted(): void
-    {
-        static::deleted(function (Attachment $attachment): void {
-            Storage::disk(self::DISK)->delete($attachment->path);
-        });
-    }
+	protected static function booted(): void
+	{
+		static::deleted(function (Attachment $attachment): void {
+			Storage::disk(self::DISK)->delete($attachment->path);
+		});
+	}
 
-    /**
-     * The folder that holds a card's files.
-     */
-    public static function directoryFor(int $projectId, int $cardId): string
-    {
-        return "attachments/{$projectId}/{$cardId}";
-    }
+	/**
+	 * The folder that holds a card's files.
+	 */
+	public static function directoryFor(int $projectId, int $cardId): string
+	{
+		return "attachments/{$projectId}/{$cardId}";
+	}
 
-    public function isImage(): bool
-    {
-        return in_array($this->mime_type, ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif'], true);
-    }
+	public function isImage(): bool
+	{
+		return in_array($this->mime_type, ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif'], true);
+	}
 
-    /**
-     * @return BelongsTo<Card, $this>
-     */
-    public function card(): BelongsTo
-    {
-        return $this->belongsTo(Card::class);
-    }
+	/**
+	 * @return BelongsTo<Card, $this>
+	 */
+	public function card(): BelongsTo
+	{
+		return $this->belongsTo(Card::class);
+	}
 
-    /**
-     * @return BelongsTo<User, $this>
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+	/**
+	 * @return BelongsTo<User, $this>
+	 */
+	public function user(): BelongsTo
+	{
+		return $this->belongsTo(User::class);
+	}
 }

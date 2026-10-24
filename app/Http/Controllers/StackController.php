@@ -14,68 +14,68 @@ use Inertia\Inertia;
 
 class StackController extends Controller
 {
-    /**
-     * Add a list to the end of a project's board.
-     */
-    public function store(StackRequest $request, Project $project): RedirectResponse
-    {
-        Gate::authorize('update', $project);
+	/**
+	 * Add a list to the end of a project's board.
+	 */
+	public function store(StackRequest $request, Project $project): RedirectResponse
+	{
+		Gate::authorize('update', $project);
 
-        DB::transaction(function () use ($request, $project): void {
-            $last = $project->stacks()->reorder()->max('position');
+		DB::transaction(function () use ($request, $project): void {
+			$last = $project->stacks()->reorder()->max('position');
 
-            $project->stacks()->create([
-                ...$request->validated(),
-                'position' => FractionalIndex::between($last, null),
-            ]);
-        });
+			$project->stacks()->create([
+				...$request->validated(),
+				'position' => FractionalIndex::between($last, null),
+			]);
+		});
 
-        return back();
-    }
+		return back();
+	}
 
-    /**
-     * Rename a list.
-     */
-    public function update(StackRequest $request, Stack $stack): RedirectResponse
-    {
-        Gate::authorize('update', $stack->project);
+	/**
+	 * Rename a list.
+	 */
+	public function update(StackRequest $request, Stack $stack): RedirectResponse
+	{
+		Gate::authorize('update', $stack->project);
 
-        $stack->update($request->validated());
+		$stack->update($request->validated());
 
-        return back();
-    }
+		return back();
+	}
 
-    /**
-     * Move a list to a new place on the board.
-     */
-    public function move(MoveRequest $request, Stack $stack): RedirectResponse
-    {
-        Gate::authorize('update', $stack->project);
+	/**
+	 * Move a list to a new place on the board.
+	 */
+	public function move(MoveRequest $request, Stack $stack): RedirectResponse
+	{
+		Gate::authorize('update', $stack->project);
 
-        DB::transaction(function () use ($request, $stack): void {
-            $siblings = $stack->project->stacks()
-                ->whereKeyNot($stack->id)
-                ->get(['id', 'position'])
-                ->map(fn (Stack $sibling): string => $sibling->position)
-                ->all();
+		DB::transaction(function () use ($request, $stack): void {
+			$siblings = $stack->project->stacks()
+				->whereKeyNot($stack->id)
+				->get(['id', 'position'])
+				->map(fn (Stack $sibling): string => $sibling->position)
+				->all();
 
-            $stack->update(['position' => FractionalIndex::forIndex($siblings, $request->integer('index'))]);
-        });
+			$stack->update(['position' => FractionalIndex::forIndex($siblings, $request->integer('index'))]);
+		});
 
-        return back();
-    }
+		return back();
+	}
 
-    /**
-     * Delete a list and its cards.
-     */
-    public function destroy(Stack $stack): RedirectResponse
-    {
-        Gate::authorize('update', $stack->project);
+	/**
+	 * Delete a list and its cards.
+	 */
+	public function destroy(Stack $stack): RedirectResponse
+	{
+		Gate::authorize('update', $stack->project);
 
-        $stack->delete();
+		$stack->delete();
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('List deleted.')]);
+		Inertia::flash('toast', ['type' => 'success', 'message' => __('List deleted.')]);
 
-        return back();
-    }
+		return back();
+	}
 }

@@ -8,20 +8,20 @@ use Tests\TestCase;
 
 class DashboardTest extends TestCase
 {
-    use RefreshDatabase;
+	use RefreshDatabase;
 
-    public function test_guests_are_redirected_to_the_login_page()
-    {
-        $response = $this->get(route('dashboard'));
-        $response->assertRedirect(route('login'));
-    }
+	public function test_guests_are_redirected_to_the_login_page()
+	{
+		$response = $this->get(route('dashboard'));
+		$response->assertRedirect(route('login'));
+	}
 
-    public function test_the_dashboard_redirects_to_the_projects_overview()
-    {
-        $user = User::factory()->create();
-        $this->actingAs($user);
+	public function test_the_dashboard_redirects_to_the_projects_overview()
+	{
+		$user = User::factory()->create();
+		$this->actingAs($user);
 
-        $response = $this->get(route('dashboard'));
-        $response->assertRedirect('/projects');
-    }
+		$response = $this->get(route('dashboard'));
+		$response->assertRedirect('/projects');
+	}
 }

@@ -26,74 +26,74 @@ use Illuminate\Support\Facades\Storage;
 #[Fillable(['name', 'description', 'url', 'color'])]
 class Project extends Model
 {
-    /** @use HasFactory<ProjectFactory> */
-    use HasFactory;
+	/** @use HasFactory<ProjectFactory> */
+	use HasFactory;
 
-    /**
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'color' => ProjectColor::class,
-        ];
-    }
+	/**
+	 * @return array<string, string>
+	 */
+	protected function casts(): array
+	{
+		return [
+			'color' => ProjectColor::class,
+		];
+	}
 
-    /**
-     * The database removes the project's rows; its files go here.
-     */
-    protected static function booted(): void
-    {
-        static::deleting(function (Project $project): void {
-            Storage::disk(Attachment::DISK)->deleteDirectory("attachments/{$project->id}");
-        });
-    }
+	/**
+	 * The database removes the project's rows; its files go here.
+	 */
+	protected static function booted(): void
+	{
+		static::deleting(function (Project $project): void {
+			Storage::disk(Attachment::DISK)->deleteDirectory("attachments/{$project->id}");
+		});
+	}
 
-    /**
-     * @return HasMany<Label, $this>
-     */
-    public function labels(): HasMany
-    {
-        return $this->hasMany(Label::class)->orderBy('id');
-    }
+	/**
+	 * @return HasMany<Label, $this>
+	 */
+	public function labels(): HasMany
+	{
+		return $this->hasMany(Label::class)->orderBy('id');
+	}
 
-    /**
-     * @return BelongsToMany<User, $this, ProjectMembership>
-     */
-    public function members(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class)
-            ->using(ProjectMembership::class)
-            ->withPivot('id', 'role')
-            ->withTimestamps();
-    }
+	/**
+	 * @return BelongsToMany<User, $this, ProjectMembership>
+	 */
+	public function members(): BelongsToMany
+	{
+		return $this->belongsToMany(User::class)
+			->using(ProjectMembership::class)
+			->withPivot('id', 'role')
+			->withTimestamps();
+	}
 
-    /**
-     * @return HasMany<ProjectInvitation, $this>
-     */
-    public function invitations(): HasMany
-    {
-        return $this->hasMany(ProjectInvitation::class)->orderBy('email');
-    }
+	/**
+	 * @return HasMany<ProjectInvitation, $this>
+	 */
+	public function invitations(): HasMany
+	{
+		return $this->hasMany(ProjectInvitation::class)->orderBy('email');
+	}
 
-    /**
-     * @return HasMany<Stack, $this>
-     */
-    public function stacks(): HasMany
-    {
-        return $this->hasMany(Stack::class)->orderBy('position');
-    }
+	/**
+	 * @return HasMany<Stack, $this>
+	 */
+	public function stacks(): HasMany
+	{
+		return $this->hasMany(Stack::class)->orderBy('position');
+	}
 
-    /**
-     * @return HasManyThrough<Card, Stack, $this>
-     */
-    public function cards(): HasManyThrough
-    {
-        return $this->hasManyThrough(Card::class, Stack::class);
-    }
+	/**
+	 * @return HasManyThrough<Card, Stack, $this>
+	 */
+	public function cards(): HasManyThrough
+	{
+		return $this->hasManyThrough(Card::class, Stack::class);
+	}
 
-    public function roleOf(User $user): ?ProjectRole
-    {
-        return $this->members()->whereKey($user->id)->first()?->pivot->role;
-    }
+	public function roleOf(User $user): ?ProjectRole
+	{
+		return $this->members()->whereKey($user->id)->first()?->pivot->role;
+	}
 }

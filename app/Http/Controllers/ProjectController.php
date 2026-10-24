@@ -23,136 +23,136 @@ use Inertia\Response;
 
 class ProjectController extends Controller
 {
-    /**
-     * Show the projects the user is a member of.
-     */
-    public function index(Request $request): Response
-    {
-        $projects = $request->user()->memberships()
-            ->with(['project' => fn ($query) => $query->withCount(['stacks', 'cards'])])
-            ->get()
-            ->sortBy('project.name', SORT_NATURAL | SORT_FLAG_CASE)
-            ->values()
-            ->map(fn (ProjectMembership $membership) => [
-                'id' => $membership->project->id,
-                'name' => $membership->project->name,
-                'description' => $membership->project->description,
-                'url' => $membership->project->url,
-                'color' => $membership->project->color,
-                'role' => $membership->role,
-                'stacks_count' => $membership->project->stacks_count,
-                'cards_count' => $membership->project->cards_count,
-                'updated_at' => $membership->project->updated_at,
-            ]);
+	/**
+	 * Show the projects the user is a member of.
+	 */
+	public function index(Request $request): Response
+	{
+		$projects = $request->user()->memberships()
+			->with(['project' => fn ($query) => $query->withCount(['stacks', 'cards'])])
+			->get()
+			->sortBy('project.name', SORT_NATURAL | SORT_FLAG_CASE)
+			->values()
+			->map(fn (ProjectMembership $membership) => [
+				'id' => $membership->project->id,
+				'name' => $membership->project->name,
+				'description' => $membership->project->description,
+				'url' => $membership->project->url,
+				'color' => $membership->project->color,
+				'role' => $membership->role,
+				'stacks_count' => $membership->project->stacks_count,
+				'cards_count' => $membership->project->cards_count,
+				'updated_at' => $membership->project->updated_at,
+			]);
 
-        return Inertia::render('projects/Index', [
-            'projects' => $projects,
-        ]);
-    }
+		return Inertia::render('projects/Index', [
+			'projects' => $projects,
+		]);
+	}
 
-    /**
-     * Create a project owned by the user.
-     */
-    public function store(ProjectRequest $request): RedirectResponse
-    {
-        $project = DB::transaction(function () use ($request): Project {
-            $latest = $request->user()->projects()->latest('projects.id')->first();
+	/**
+	 * Create a project owned by the user.
+	 */
+	public function store(ProjectRequest $request): RedirectResponse
+	{
+		$project = DB::transaction(function () use ($request): Project {
+			$latest = $request->user()->projects()->latest('projects.id')->first();
 
-            $project = Project::create([
-                'color' => $latest?->color->next() ?? ProjectColor::Cobalt,
-                ...$request->validated(),
-            ]);
-            $project->members()->attach($request->user(), ['role' => ProjectRole::Owner->value]);
+			$project = Project::create([
+				'color' => $latest?->color->next() ?? ProjectColor::Cobalt,
+				...$request->validated(),
+			]);
+			$project->members()->attach($request->user(), ['role' => ProjectRole::Owner->value]);
 
-            return $project;
-        });
+			return $project;
+		});
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Project created.')]);
+		Inertia::flash('toast', ['type' => 'success', 'message' => __('Project created.')]);
 
-        return to_route('projects.show', $project);
-    }
+		return to_route('projects.show', $project);
+	}
 
-    /**
-     * Show a project's board.
-     */
-    public function show(Request $request, Project $project): Response
-    {
-        Gate::authorize('view', $project);
+	/**
+	 * Show a project's board.
+	 */
+	public function show(Request $request, Project $project): Response
+	{
+		Gate::authorize('view', $project);
 
-        $project->load([
-            'labels',
-            'stacks.cards' => fn ($query) => $query->withCount(['attachments', 'comments']),
-            'stacks.cards.labels:id',
-            'stacks.cards.members:id',
-            'stacks.cards.cover',
-            'stacks.cards.checklists.items:id,checklist_id,completed_at',
-        ]);
+		$project->load([
+			'labels',
+			'stacks.cards' => fn ($query) => $query->withCount(['attachments', 'comments']),
+			'stacks.cards.labels:id',
+			'stacks.cards.members:id',
+			'stacks.cards.cover',
+			'stacks.cards.checklists.items:id,checklist_id,completed_at',
+		]);
 
-        // ?card=<id> opens a card; it has to be on this board.
-        $open = $request->integer('card') ?: null;
-        $card = $open !== null
-            ? $project->stacks->flatMap(fn (Stack $stack) => $stack->cards)->firstWhere('id', $open)
-            : null;
+		// ?card=<id> opens a card; it has to be on this board.
+		$open = $request->integer('card') ?: null;
+		$card = $open !== null
+			? $project->stacks->flatMap(fn (Stack $stack) => $stack->cards)->firstWhere('id', $open)
+			: null;
 
-        /** @var User $user */
-        $user = $request->user();
-        $manages = $user->can('manageMembers', $project);
+		/** @var User $user */
+		$user = $request->user();
+		$manages = $user->can('manageMembers', $project);
 
-        return Inertia::render('projects/Show', [
-            'project' => $project->only('id', 'name', 'description', 'url', 'color'),
-            'labels' => $project->labels->map(fn (Label $label) => CardData::label($label)),
-            'members' => ProjectMembership::with('user')->where('project_id', $project->id)->get()
-                ->sortBy(fn (ProjectMembership $membership) => [
-                    $membership->role !== ProjectRole::Owner,
-                    Str::lower($membership->user->name),
-                ])
-                ->values()
-                ->map(fn (ProjectMembership $membership) => [
-                    ...$membership->user->only('id', 'name', 'email'),
-                    'role' => $membership->role,
-                ]),
-            'invitations' => $manages
-                ? $project->invitations()->get()->map(fn (ProjectInvitation $invitation) => [
-                    'id' => $invitation->id,
-                    'email' => $invitation->email,
-                    'expired' => $invitation->isExpired(),
-                ])
-                : [],
-            'canManageMembers' => $manages,
-            'stacks' => $project->stacks->map(fn (Stack $stack) => [
-                'id' => $stack->id,
-                'name' => $stack->name,
-                'cards' => $stack->cards->map(fn (Card $card) => CardData::face($card)),
-            ]),
-            'card' => $card !== null ? CardData::detail($card, $user) : null,
-        ]);
-    }
+		return Inertia::render('projects/Show', [
+			'project' => $project->only('id', 'name', 'description', 'url', 'color'),
+			'labels' => $project->labels->map(fn (Label $label) => CardData::label($label)),
+			'members' => ProjectMembership::with('user')->where('project_id', $project->id)->get()
+				->sortBy(fn (ProjectMembership $membership) => [
+					$membership->role !== ProjectRole::Owner,
+					Str::lower($membership->user->name),
+				])
+				->values()
+				->map(fn (ProjectMembership $membership) => [
+					...$membership->user->only('id', 'name', 'email'),
+					'role' => $membership->role,
+				]),
+			'invitations' => $manages
+				? $project->invitations()->get()->map(fn (ProjectInvitation $invitation) => [
+					'id' => $invitation->id,
+					'email' => $invitation->email,
+					'expired' => $invitation->isExpired(),
+				])
+				: [],
+			'canManageMembers' => $manages,
+			'stacks' => $project->stacks->map(fn (Stack $stack) => [
+				'id' => $stack->id,
+				'name' => $stack->name,
+				'cards' => $stack->cards->map(fn (Card $card) => CardData::face($card)),
+			]),
+			'card' => $card !== null ? CardData::detail($card, $user) : null,
+		]);
+	}
 
-    /**
-     * Rename a project or change its description.
-     */
-    public function update(ProjectRequest $request, Project $project): RedirectResponse
-    {
-        Gate::authorize('update', $project);
+	/**
+	 * Rename a project or change its description.
+	 */
+	public function update(ProjectRequest $request, Project $project): RedirectResponse
+	{
+		Gate::authorize('update', $project);
 
-        $project->update($request->validated());
+		$project->update($request->validated());
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Project updated.')]);
+		Inertia::flash('toast', ['type' => 'success', 'message' => __('Project updated.')]);
 
-        return back();
-    }
+		return back();
+	}
 
-    /**
-     * Delete a project with all of its lists and cards.
-     */
-    public function destroy(Project $project): RedirectResponse
-    {
-        Gate::authorize('delete', $project);
+	/**
+	 * Delete a project with all of its lists and cards.
+	 */
+	public function destroy(Project $project): RedirectResponse
+	{
+		Gate::authorize('delete', $project);
 
-        $project->delete();
+		$project->delete();
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Project deleted.')]);
+		Inertia::flash('toast', ['type' => 'success', 'message' => __('Project deleted.')]);
 
-        return to_route('projects.index');
-    }
+		return to_route('projects.index');
+	}
 }

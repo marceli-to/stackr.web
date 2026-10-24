@@ -13,60 +13,60 @@ use Inertia\Inertia;
 
 class ProjectInvitationController extends Controller
 {
-    /**
-     * Open an invitation link. Guests sign up (or log in) first and come back
-     * here; then the signed-in user joins the project.
-     */
-    public function show(Request $request, string $token): RedirectResponse
-    {
-        $invitation = ProjectInvitation::with('project')->where('token', $token)->first();
+	/**
+	 * Open an invitation link. Guests sign up (or log in) first and come back
+	 * here; then the signed-in user joins the project.
+	 */
+	public function show(Request $request, string $token): RedirectResponse
+	{
+		$invitation = ProjectInvitation::with('project')->where('token', $token)->first();
 
-        if ($invitation === null || $invitation->isExpired()) {
-            Inertia::flash('toast', ['type' => 'error', 'message' => __('This invitation is no longer valid. Ask for a new one.')]);
+		if ($invitation === null || $invitation->isExpired()) {
+			Inertia::flash('toast', ['type' => 'error', 'message' => __('This invitation is no longer valid. Ask for a new one.')]);
 
-            return to_route('home');
-        }
+			return to_route('home');
+		}
 
-        /** @var User|null $user */
-        $user = $request->user();
+		/** @var User|null $user */
+		$user = $request->user();
 
-        if ($user === null) {
-            $request->session()->put('url.intended', $request->fullUrl());
+		if ($user === null) {
+			$request->session()->put('url.intended', $request->fullUrl());
 
-            return User::where('email', $invitation->email)->exists()
-                ? to_route('login', ['email' => $invitation->email])
-                : to_route('register', ['email' => $invitation->email]);
-        }
+			return User::where('email', $invitation->email)->exists()
+				? to_route('login', ['email' => $invitation->email])
+				: to_route('register', ['email' => $invitation->email]);
+		}
 
-        $project = $invitation->project;
+		$project = $invitation->project;
 
-        if ($project->roleOf($user) === null) {
-            $project->members()->attach($user, ['role' => ProjectRole::Member->value]);
-        }
+		if ($project->roleOf($user) === null) {
+			$project->members()->attach($user, ['role' => ProjectRole::Member->value]);
+		}
 
-        // The link arrived at this address, which proves the user owns it.
-        if (Str::lower($user->email) === $invitation->email && ! $user->hasVerifiedEmail()) {
-            $user->markEmailAsVerified();
-        }
+		// The link arrived at this address, which proves the user owns it.
+		if (Str::lower($user->email) === $invitation->email && ! $user->hasVerifiedEmail()) {
+			$user->markEmailAsVerified();
+		}
 
-        $invitation->delete();
+		$invitation->delete();
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Welcome to :project.', ['project' => $project->name])]);
+		Inertia::flash('toast', ['type' => 'success', 'message' => __('Welcome to :project.', ['project' => $project->name])]);
 
-        return to_route('projects.show', $project);
-    }
+		return to_route('projects.show', $project);
+	}
 
-    /**
-     * Withdraw an invitation that hasn't been accepted.
-     */
-    public function destroy(ProjectInvitation $invitation): RedirectResponse
-    {
-        Gate::authorize('manageMembers', $invitation->project);
+	/**
+	 * Withdraw an invitation that hasn't been accepted.
+	 */
+	public function destroy(ProjectInvitation $invitation): RedirectResponse
+	{
+		Gate::authorize('manageMembers', $invitation->project);
 
-        $invitation->delete();
+		$invitation->delete();
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Invitation withdrawn.')]);
+		Inertia::flash('toast', ['type' => 'success', 'message' => __('Invitation withdrawn.')]);
 
-        return back();
-    }
+		return back();
+	}
 }

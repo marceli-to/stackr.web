@@ -14,30 +14,30 @@ use Illuminate\Queue\SerializesModels;
  */
 class ProjectInvitationMail extends Mailable
 {
-    use Queueable, SerializesModels;
+	use Queueable, SerializesModels;
 
-    public function __construct(public ProjectInvitation $invitation) {}
+	public function __construct(public ProjectInvitation $invitation) {}
 
-    public function envelope(): Envelope
-    {
-        return new Envelope(
-            subject: __(':name invited you to :project', [
-                'name' => $this->invitation->inviter->name ?? config('app.name'),
-                'project' => $this->invitation->project->name,
-            ]),
-        );
-    }
+	public function envelope(): Envelope
+	{
+		return new Envelope(
+			subject: __(':name invited you to :project', [
+				'name' => $this->invitation->inviter->name ?? config('app.name'),
+				'project' => $this->invitation->project->name,
+			]),
+		);
+	}
 
-    public function content(): Content
-    {
-        return new Content(
-            markdown: 'mail.project-invitation',
-            with: [
-                'inviter' => $this->invitation->inviter->name ?? null,
-                'project' => $this->invitation->project->name,
-                'url' => route('invitations.show', $this->invitation->token),
-                'days' => ProjectInvitation::VALID_DAYS,
-            ],
-        );
-    }
+	public function content(): Content
+	{
+		return new Content(
+			markdown: 'mail.project-invitation',
+			with: [
+				'inviter' => $this->invitation->inviter->name ?? null,
+				'project' => $this->invitation->project->name,
+				'url' => route('invitations.show', $this->invitation->token),
+				'days' => ProjectInvitation::VALID_DAYS,
+			],
+		);
+	}
 }

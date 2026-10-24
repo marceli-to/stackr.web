@@ -20,35 +20,35 @@ use Illuminate\Support\Carbon;
  */
 class ProjectMembership extends Pivot
 {
-    protected $table = 'project_user';
+	protected $table = 'project_user';
 
-    public $incrementing = true;
+	public $incrementing = true;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'role' => ProjectRole::class,
-        ];
-    }
+	/**
+	 * Get the attributes that should be cast.
+	 *
+	 * @return array<string, string>
+	 */
+	protected function casts(): array
+	{
+		return [
+			'role' => ProjectRole::class,
+		];
+	}
 
-    /**
-     * @return BelongsTo<Project, $this>
-     */
-    public function project(): BelongsTo
-    {
-        return $this->belongsTo(Project::class);
-    }
+	/**
+	 * @return BelongsTo<Project, $this>
+	 */
+	public function project(): BelongsTo
+	{
+		return $this->belongsTo(Project::class);
+	}
 
-    /**
-     * @return BelongsTo<User, $this>
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+	/**
+	 * @return BelongsTo<User, $this>
+	 */
+	public function user(): BelongsTo
+	{
+		return $this->belongsTo(User::class);
+	}
 }

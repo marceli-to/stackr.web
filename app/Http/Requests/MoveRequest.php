@@ -11,16 +11,16 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class MoveRequest extends FormRequest
 {
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
-    {
-        return [
-            'index' => ['required', 'integer', 'min:0'],
-            'stack_id' => ['sometimes', 'integer'],
-        ];
-    }
+	/**
+	 * Get the validation rules that apply to the request.
+	 *
+	 * @return array<string, ValidationRule|array<mixed>|string>
+	 */
+	public function rules(): array
+	{
+		return [
+			'index' => ['required', 'integer', 'min:0'],
+			'stack_id' => ['sometimes', 'integer'],
+		];
+	}
 }

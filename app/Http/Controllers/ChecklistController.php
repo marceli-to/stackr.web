@@ -10,43 +10,43 @@ use Illuminate\Support\Facades\Gate;
 
 class ChecklistController extends Controller
 {
-    /**
-     * Add a checklist to a card.
-     */
-    public function store(Request $request, Card $card): RedirectResponse
-    {
-        Gate::authorize('update', $card->stack->project);
+	/**
+	 * Add a checklist to a card.
+	 */
+	public function store(Request $request, Card $card): RedirectResponse
+	{
+		Gate::authorize('update', $card->stack->project);
 
-        $card->checklists()->create($request->validate([
-            'title' => ['required', 'string', 'max:255'],
-        ]));
+		$card->checklists()->create($request->validate([
+			'title' => ['required', 'string', 'max:255'],
+		]));
 
-        return back();
-    }
+		return back();
+	}
 
-    /**
-     * Rename a checklist.
-     */
-    public function update(Request $request, Checklist $checklist): RedirectResponse
-    {
-        Gate::authorize('update', $checklist->card->stack->project);
+	/**
+	 * Rename a checklist.
+	 */
+	public function update(Request $request, Checklist $checklist): RedirectResponse
+	{
+		Gate::authorize('update', $checklist->card->stack->project);
 
-        $checklist->update($request->validate([
-            'title' => ['required', 'string', 'max:255'],
-        ]));
+		$checklist->update($request->validate([
+			'title' => ['required', 'string', 'max:255'],
+		]));
 
-        return back();
-    }
+		return back();
+	}
 
-    /**
-     * Delete a checklist and its items.
-     */
-    public function destroy(Checklist $checklist): RedirectResponse
-    {
-        Gate::authorize('update', $checklist->card->stack->project);
+	/**
+	 * Delete a checklist and its items.
+	 */
+	public function destroy(Checklist $checklist): RedirectResponse
+	{
+		Gate::authorize('update', $checklist->card->stack->project);
 
-        $checklist->delete();
+		$checklist->delete();
 
-        return back();
-    }
+		return back();
+	}
 }

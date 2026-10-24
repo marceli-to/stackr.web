@@ -2,151 +2,151 @@
    project's board stands on one. shadcn already owns --color-accent and
    --color-muted, so the third ink is --color-ink-3. */
 :root {
-    --text-xs: 0.75rem;
-    --text-sm: 0.875rem;
-    --text-md: 1rem;
-    --text-poster: clamp(3rem, 2rem + 3.5vw, 5.5rem);
-    /* A board's title: a step below the poster, so the lists lead. */
-    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-    --dur-micro: 120ms;
-    --dur-short: 220ms;
+	--text-xs: 0.75rem;
+	--text-sm: 0.875rem;
+	--text-md: 1rem;
+	--text-poster: clamp(3rem, 2rem + 3.5vw, 5.5rem);
+	/* A board's title: a step below the poster, so the lists lead. */
+	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+	--dur-micro: 120ms;
+	--dur-short: 220ms;
 
-    --color-paper: oklch(97.6% 0.004 90);
-    --color-paper-2: oklch(95% 0.005 90);
-    --color-paper-3: oklch(91.5% 0.006 90);
-    --color-sheet: oklch(99.4% 0.003 90);
-    --color-rule: oklch(88.5% 0.006 90);
-    --color-ink: oklch(18% 0.012 262);
-    --color-ink-2: oklch(32% 0.012 262);
-    --color-ink-3: oklch(46% 0.012 262);
-    --color-focus: oklch(38% 0.01 262);
-    --color-error: oklch(51% 0.19 27);
-    --color-success: oklch(48% 0.11 150);
-    --color-on-dark: oklch(98.6% 0.004 90);
+	--color-paper: oklch(97.6% 0.004 90);
+	--color-paper-2: oklch(95% 0.005 90);
+	--color-paper-3: oklch(91.5% 0.006 90);
+	--color-sheet: oklch(99.4% 0.003 90);
+	--color-rule: oklch(88.5% 0.006 90);
+	--color-ink: oklch(18% 0.012 262);
+	--color-ink-2: oklch(32% 0.012 262);
+	--color-ink-3: oklch(46% 0.012 262);
+	--color-focus: oklch(38% 0.01 262);
+	--color-error: oklch(51% 0.19 27);
+	--color-success: oklch(48% 0.11 150);
+	--color-on-dark: oklch(98.6% 0.004 90);
 
-    --color-field-cobalt: oklch(45% 0.17 262);
-    --color-field-rust: oklch(47% 0.15 38);
-    --color-field-moss: oklch(46% 0.1 135);
-    --color-field-oxblood: oklch(40% 0.13 22);
-    --color-field-lagoon: oklch(47% 0.085 205);
-    --color-field-plum: oklch(40% 0.11 340);
+	--color-field-cobalt: oklch(45% 0.17 262);
+	--color-field-rust: oklch(47% 0.15 38);
+	--color-field-moss: oklch(46% 0.1 135);
+	--color-field-oxblood: oklch(40% 0.13 22);
+	--color-field-lagoon: oklch(47% 0.085 205);
+	--color-field-plum: oklch(40% 0.11 340);
 
-    --font-display: 'Antonio', ui-sans-serif, system-ui, sans-serif;
-    --font-body: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
-    --font-figure: var(--font-body);
+	--font-display: 'Antonio', ui-sans-serif, system-ui, sans-serif;
+	--font-body: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+	--font-figure: var(--font-body);
 
-    /* Edges for controls and floating sheets: ink at low alpha, so they
+	/* Edges for controls and floating sheets: ink at low alpha, so they
        sit on paper, sheets and fields alike. */
-    --control-edge: oklch(18% 0.012 262 / 0.16);
-    --surface-edge: oklch(18% 0.012 262 / 0.1);
-    --overlay: oklch(15% 0.012 262 / 0.45);
-    --float-shadow: 0 24px 48px -20px oklch(15% 0.02 262 / 0.35);
+	--control-edge: oklch(18% 0.012 262 / 0.16);
+	--surface-edge: oklch(18% 0.012 262 / 0.1);
+	--overlay: oklch(15% 0.012 262 / 0.45);
+	--float-shadow: 0 24px 48px -20px oklch(15% 0.02 262 / 0.35);
 
-    /* Focus on text fields: a soft halo and a firmer edge, not an outline. */
-    --field-focus:
-        inset 0 0 0 1px oklch(18% 0.012 262 / 0.22),
-        0 0 0 3px oklch(18% 0.012 262 / 0.04);
+	/* Focus on text fields: a soft halo and a firmer edge, not an outline. */
+	--field-focus:
+		inset 0 0 0 1px oklch(18% 0.012 262 / 0.22),
+		0 0 0 3px oklch(18% 0.012 262 / 0.04);
 
-    /* Menus are white sheets with a hairline edge, like the cards. */
-    --menu-bg: var(--color-sheet);
-    --menu-ink: var(--color-ink);
-    --menu-hover: var(--color-paper-2);
-    --menu-rule: var(--color-rule);
-    --menu-danger: var(--color-error);
-    --menu-shadow:
-        0 0 0 1px var(--color-rule), 0 14px 32px -12px oklch(20% 0.02 262 / 0.3);
+	/* Menus are white sheets with a hairline edge, like the cards. */
+	--menu-bg: var(--color-sheet);
+	--menu-ink: var(--color-ink);
+	--menu-hover: var(--color-paper-2);
+	--menu-rule: var(--color-rule);
+	--menu-danger: var(--color-error);
+	--menu-shadow:
+		0 0 0 1px var(--color-rule), 0 14px 32px -12px oklch(20% 0.02 262 / 0.3);
 
-    /* Labels sit on white cards in both modes, so they keep their light
+	/* Labels sit on white cards in both modes, so they keep their light
        colours and dark text in dark mode too. */
-    --color-label-ink: oklch(20% 0.02 262);
-    --color-label-green: oklch(80% 0.13 148);
-    --color-label-yellow: oklch(88% 0.14 95);
-    --color-label-orange: oklch(81% 0.13 62);
-    --color-label-red: oklch(74% 0.14 25);
-    --color-label-purple: oklch(76% 0.1 305);
-    --color-label-blue: oklch(75% 0.11 255);
-    --color-label-sky: oklch(84% 0.08 215);
-    --color-label-gray: oklch(85% 0.008 262);
+	--color-label-ink: oklch(20% 0.02 262);
+	--color-label-green: oklch(80% 0.13 148);
+	--color-label-yellow: oklch(88% 0.14 95);
+	--color-label-orange: oklch(81% 0.13 62);
+	--color-label-red: oklch(74% 0.14 25);
+	--color-label-purple: oklch(76% 0.1 305);
+	--color-label-blue: oklch(75% 0.11 255);
+	--color-label-sky: oklch(84% 0.08 215);
+	--color-label-gray: oklch(85% 0.008 262);
 
-    --radius-tile: 6px;
-    --radius-sheet: 4px;
-    --tracking-display: -0.005em;
+	--radius-tile: 6px;
+	--radius-sheet: 4px;
+	--tracking-display: -0.005em;
 }
 
 .dark {
-    --color-paper: oklch(15.5% 0.008 262);
-    --color-paper-2: oklch(19% 0.009 262);
-    --color-paper-3: oklch(24% 0.01 262);
-    --color-sheet: oklch(23% 0.01 262);
-    --color-rule: oklch(29% 0.01 262);
-    --color-ink: oklch(95% 0.005 90);
-    --color-ink-2: oklch(85% 0.006 90);
-    --color-ink-3: oklch(70% 0.008 90);
-    --color-focus: oklch(78% 0.008 90);
-    --color-error: oklch(68% 0.17 27);
-    --color-success: oklch(72% 0.13 150);
-    --field-focus:
-        inset 0 0 0 1px oklch(95% 0.005 90 / 0.24),
-        0 0 0 3px oklch(95% 0.005 90 / 0.05);
-    --menu-hover: var(--color-paper-3);
-    --menu-shadow:
-        0 0 0 1px var(--color-rule), 0 14px 32px -12px oklch(4% 0.01 262 / 0.7);
+	--color-paper: oklch(15.5% 0.008 262);
+	--color-paper-2: oklch(19% 0.009 262);
+	--color-paper-3: oklch(24% 0.01 262);
+	--color-sheet: oklch(23% 0.01 262);
+	--color-rule: oklch(29% 0.01 262);
+	--color-ink: oklch(95% 0.005 90);
+	--color-ink-2: oklch(85% 0.006 90);
+	--color-ink-3: oklch(70% 0.008 90);
+	--color-focus: oklch(78% 0.008 90);
+	--color-error: oklch(68% 0.17 27);
+	--color-success: oklch(72% 0.13 150);
+	--field-focus:
+		inset 0 0 0 1px oklch(95% 0.005 90 / 0.24),
+		0 0 0 3px oklch(95% 0.005 90 / 0.05);
+	--menu-hover: var(--color-paper-3);
+	--menu-shadow:
+		0 0 0 1px var(--color-rule), 0 14px 32px -12px oklch(4% 0.01 262 / 0.7);
 
-    --color-field-cobalt: oklch(39% 0.15 262);
-    --color-field-rust: oklch(41% 0.13 38);
-    --color-field-moss: oklch(40% 0.085 135);
-    --color-field-oxblood: oklch(35% 0.11 22);
-    --color-field-lagoon: oklch(41% 0.075 205);
-    --color-field-plum: oklch(35% 0.095 340);
+	--color-field-cobalt: oklch(39% 0.15 262);
+	--color-field-rust: oklch(41% 0.13 38);
+	--color-field-moss: oklch(40% 0.085 135);
+	--color-field-oxblood: oklch(35% 0.11 22);
+	--color-field-lagoon: oklch(41% 0.075 205);
+	--color-field-plum: oklch(35% 0.095 340);
 }
 
 /* A field sets its colour, the well its lists sit in and a focus ring that
    shows on it. Every field is dark, so its ink is always white. */
 [data-field] {
-    --field-well: color-mix(in oklab, var(--field) 82%, black);
-    --field-ink: var(--color-on-dark);
-    --ring: var(--field-ink);
+	--field-well: color-mix(in oklab, var(--field) 82%, black);
+	--field-ink: var(--color-on-dark);
+	--ring: var(--field-ink);
 }
 [data-field='cobalt'] {
-    --field: var(--color-field-cobalt);
+	--field: var(--color-field-cobalt);
 }
 [data-field='rust'] {
-    --field: var(--color-field-rust);
+	--field: var(--color-field-rust);
 }
 [data-field='moss'] {
-    --field: var(--color-field-moss);
+	--field: var(--color-field-moss);
 }
 [data-field='oxblood'] {
-    --field: var(--color-field-oxblood);
+	--field: var(--color-field-oxblood);
 }
 [data-field='lagoon'] {
-    --field: var(--color-field-lagoon);
+	--field: var(--color-field-lagoon);
 }
 [data-field='plum'] {
-    --field: var(--color-field-plum);
+	--field: var(--color-field-plum);
 }
 
 [data-label='green'] {
-    --label: var(--color-label-green);
+	--label: var(--color-label-green);
 }
 [data-label='yellow'] {
-    --label: var(--color-label-yellow);
+	--label: var(--color-label-yellow);
 }
 [data-label='orange'] {
-    --label: var(--color-label-orange);
+	--label: var(--color-label-orange);
 }
 [data-label='red'] {
-    --label: var(--color-label-red);
+	--label: var(--color-label-red);
 }
 [data-label='purple'] {
-    --label: var(--color-label-purple);
+	--label: var(--color-label-purple);
 }
 [data-label='blue'] {
-    --label: var(--color-label-blue);
+	--label: var(--color-label-blue);
 }
 [data-label='sky'] {
-    --label: var(--color-label-sky);
+	--label: var(--color-label-sky);
 }
 [data-label='gray'] {
-    --label: var(--color-label-gray);
+	--label: var(--color-label-gray);
 }

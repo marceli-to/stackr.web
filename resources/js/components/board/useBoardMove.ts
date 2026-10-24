@@ -9,26 +9,26 @@ let pending = 0;
  * the server's order, which also undoes a move the server rejected.
  */
 export function saveMove(
-    route: RouteDefinition<'patch'>,
-    data: { index: number; stack_id?: number },
-    resync: () => void,
+	route: RouteDefinition<'patch'>,
+	data: { index: number; stack_id?: number },
+	resync: () => void,
 ) {
-    pending++;
+	pending++;
 
-    router.patch(route.url, data, {
-        async: true,
-        preserveScroll: true,
-        preserveState: true,
-        onFinish: () => {
-            pending--;
+	router.patch(route.url, data, {
+		async: true,
+		preserveScroll: true,
+		preserveState: true,
+		onFinish: () => {
+			pending--;
 
-            if (pending === 0) {
-                resync();
-            }
-        },
-    });
+			if (pending === 0) {
+				resync();
+			}
+		},
+	});
 }
 
 export function hasPendingMoves() {
-    return pending > 0;
+	return pending > 0;
 }

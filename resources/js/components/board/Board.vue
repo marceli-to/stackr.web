@@ -9,66 +9,66 @@ import { hasPendingMoves, saveMove } from '@/components/board/useBoardMove';
 import type { BoardStack, Project } from '@/types';
 
 const props = defineProps<{
-    project: Project;
-    stacks: BoardStack[];
+	project: Project;
+	stacks: BoardStack[];
 }>();
 
 // Local copy that drag & drop rearranges straight away. (structuredClone
 // can't copy Vue's reactive props, so copy by hand.)
 function copy(stacks: BoardStack[]): BoardStack[] {
-    return stacks.map((stack) => ({
-        ...stack,
-        cards: stack.cards.map((card) => ({ ...card })),
-    }));
+	return stacks.map((stack) => ({
+		...stack,
+		cards: stack.cards.map((card) => ({ ...card })),
+	}));
 }
 
 const board = ref<BoardStack[]>(copy(props.stacks));
 
 function resync() {
-    board.value = copy(props.stacks);
+	board.value = copy(props.stacks);
 }
 
 watch(
-    () => props.stacks,
-    () => {
-        if (!hasPendingMoves()) {
-            resync();
-        }
-    },
+	() => props.stacks,
+	() => {
+		if (!hasPendingMoves()) {
+			resync();
+		}
+	},
 );
 
 function onStackMoved(event: DraggableEvent<BoardStack>) {
-    if (event.newIndex === undefined || event.newIndex === event.oldIndex) {
-        return;
-    }
+	if (event.newIndex === undefined || event.newIndex === event.oldIndex) {
+		return;
+	}
 
-    saveMove(
-        StackController.move(event.data.id),
-        { index: event.newIndex },
-        resync,
-    );
+	saveMove(
+		StackController.move(event.data.id),
+		{ index: event.newIndex },
+		resync,
+	);
 }
 </script>
 
 <template>
-    <div class="flex min-h-0 flex-1 gap-5 overflow-x-auto pb-6">
-        <VueDraggable
-            v-model="board"
-            :animation="150"
-            handle="[data-stack-handle]"
-            ghost-class="opacity-40"
-            class="flex items-start gap-5"
-            @update="onStackMoved"
-        >
-            <StackColumn
-                v-for="stack in board"
-                :key="stack.id"
-                v-model:cards="stack.cards"
-                :stack="stack"
-                :resync="resync"
-            />
-        </VueDraggable>
+	<div class="flex min-h-0 flex-1 gap-5 overflow-x-auto pb-6">
+		<VueDraggable
+			v-model="board"
+			:animation="150"
+			handle="[data-stack-handle]"
+			ghost-class="opacity-40"
+			class="flex items-start gap-5"
+			@update="onStackMoved"
+		>
+			<StackColumn
+				v-for="stack in board"
+				:key="stack.id"
+				v-model:cards="stack.cards"
+				:stack="stack"
+				:resync="resync"
+			/>
+		</VueDraggable>
 
-        <AddStackForm :project="project" />
-    </div>
+		<AddStackForm :project="project" />
+	</div>
 </template>

@@ -18,19 +18,19 @@ use Illuminate\Support\Carbon;
 #[Fillable(['body'])]
 class Comment extends Model
 {
-    /**
-     * @return BelongsTo<Card, $this>
-     */
-    public function card(): BelongsTo
-    {
-        return $this->belongsTo(Card::class);
-    }
+	/**
+	 * @return BelongsTo<Card, $this>
+	 */
+	public function card(): BelongsTo
+	{
+		return $this->belongsTo(Card::class);
+	}
 
-    /**
-     * @return BelongsTo<User, $this>
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+	/**
+	 * @return BelongsTo<User, $this>
+	 */
+	public function user(): BelongsTo
+	{
+		return $this->belongsTo(User::class);
+	}
 }
