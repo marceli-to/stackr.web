@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import {
-    PhDotsThreeVertical,
+    PhDotsThree,
     PhPencilSimple,
     PhPlus,
     PhTrash,
@@ -103,7 +103,7 @@ function plural(count: number, word: string) {
                                 class="relative z-10 -mt-1 -mr-2 size-8 text-inherit hover:bg-current/10 hover:text-inherit data-[state=open]:bg-current/10"
                                 :aria-label="`Actions for ${project.name}`"
                             >
-                                <PhDotsThreeVertical />
+                                <PhDotsThree />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">

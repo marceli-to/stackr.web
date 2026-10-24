@@ -59,7 +59,7 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
     - Shell: a slim top bar (logo → projects, the user's initials → menu). On a board the wordmark
       gives way to the board's name next to the icon; the board has no big title of its own (only a
       hidden `h1`). No sidebar, no breadcrumbs, no project switcher.
-    - Board: lists show no card count; the list menu is a horizontal ⋯. "Add a card" is card-height
+    - Board: lists show no card count; the list menu (and every other ⋯ menu, e.g. on project tiles) uses horizontal dots. "Add a card" is card-height
       with a faint tint, "Add a list" has the list's well colour.
     - Overview: a wall of colour tiles that ends with a neutral "New project" tile.
     - Controls: 4px corners, ink primary buttons, white inputs with an ink hairline (`--control-edge`),
