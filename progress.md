@@ -82,6 +82,8 @@ Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stac
       left; the board's search centred; member avatars and the ⋯ app menu right
       (`components/AppMenu.vue`, a tinted circle like the avatar, with a yellow dot while anything is
       unread). The user's initials (account menu, opens upwards) sit fixed in the bottom-left corner.
+      On a board both menus are frosted glass in the project's colour with white ink (`menu-glass`
+      utility; the menu is teleported, so it carries its own `data-field`), like the frosted search.
       The board has no toolbar row and no big title of its own (only a hidden `h1`); it teleports
       its search (`#topbar-search`) and its own `AppMenu` with the board items (`#topbar-actions`)
       into the bar. No sidebar, no breadcrumbs, no project switcher.

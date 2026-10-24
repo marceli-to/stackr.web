@@ -235,6 +235,25 @@
 	background-image: var(--field-fill);
 }
 
+/* A menu opened on a field: frosted glass of the field's colour with white
+   ink, like the top bar's search. The menu is teleported out of the page,
+   so it carries its own data-field. */
+@utility menu-glass {
+	--menu-bg: color-mix(
+		in oklab,
+		color-mix(in oklab, var(--field) 88%, white) 72%,
+		transparent
+	);
+	--menu-ink: var(--field-ink);
+	--menu-hover: oklch(100% 0 0 / 0.12);
+	--menu-rule: oklch(100% 0 0 / 0.16);
+	--menu-shadow:
+		inset 0 0 0 1px oklch(100% 0 0 / 0.14),
+		0 14px 32px -12px oklch(10% 0.02 262 / 0.5);
+	--muted-foreground: oklch(100% 0 0 / 0.6);
+	backdrop-filter: blur(24px) saturate(1.5);
+}
+
 @utility focus-field {
 	&:focus-visible {
 		outline: none;

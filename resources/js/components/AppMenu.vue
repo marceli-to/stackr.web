@@ -10,12 +10,17 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import type { Project } from '@/types';
 
 // The ⋯ menu at the end of the top bar: notifications on every page, and
 // whatever the page adds below them (the board's view, people and archive).
-// A yellow dot on the button says there's something unread.
+// A yellow dot on the button says there's something unread. On a project
+// it's frosted glass of the project's colour.
 const page = usePage();
 const unread = computed(() => page.props.notifications?.unread ?? 0);
+const field = computed(
+	() => (page.props.project as Project | undefined)?.color,
+);
 
 const notificationsOpen = ref(false);
 </script>
@@ -42,7 +47,12 @@ const notificationsOpen = ref(false);
 				/>
 			</button>
 		</DropdownMenuTrigger>
-		<DropdownMenuContent align="end" class="w-60">
+		<DropdownMenuContent
+			align="end"
+			:data-field="field"
+			class="w-60"
+			:class="{ 'menu-glass': field }"
+		>
 			<DropdownMenuItem @select="notificationsOpen = true">
 				<PhBell />
 				Notifications

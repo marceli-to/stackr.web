@@ -12,6 +12,7 @@ import {
 import UserMenuContent from '@/components/UserMenuContent.vue';
 import { getInitials } from '@/composables/useInitials';
 import { index } from '@/routes/projects';
+import type { Project } from '@/types';
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
@@ -19,7 +20,7 @@ const user = computed(() => page.props.auth.user);
 // On a board the bar carries the project's name instead of the wordmark,
 // and the board page teleports its search and menu into the bar.
 const project = computed(
-	() => page.props.project as { name: string } | undefined,
+	() => page.props.project as Pick<Project, 'name' | 'color'> | undefined,
 );
 </script>
 
@@ -77,7 +78,14 @@ const project = computed(
 					/>
 				</button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent side="top" align="start" class="w-64">
+			<!-- Frosted in the project's colour on a board, like the ⋯ menu. -->
+			<DropdownMenuContent
+				side="top"
+				align="start"
+				:data-field="project?.color"
+				class="w-64"
+				:class="{ 'menu-glass': project }"
+			>
 				<UserMenuContent :user="user" />
 			</DropdownMenuContent>
 		</DropdownMenu>
