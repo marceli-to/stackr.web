@@ -36,7 +36,7 @@ _Last updated: 2026-10-24_
 | 26. MCP server for agents (Settings → Agents)          | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
-Production (https://stackr.kimiyu.ch) runs `b1011ed` (deployed 2026-10-24, all migrations run).
+Production (https://stackr.kimiyu.ch) runs `4af5177` (deployed 2026-10-24, all migrations run).
 Still open there: a manual check, see "After the deploy" under "Next up".
 (`design/field` and `feature/card-details` are merged into `main` and can be deleted.)
 
