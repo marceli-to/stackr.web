@@ -28,10 +28,7 @@ defineProps<{
 <template>
     <Head title="Log in" />
 
-    <div
-        v-if="status"
-        class="mb-4 text-center text-sm font-medium text-(--color-success)"
-    >
+    <div v-if="status" class="mb-4 text-sm font-medium text-(--color-success)">
         {{ status }}
     </div>
 
@@ -84,11 +81,11 @@ defineProps<{
             </Button>
         </div>
 
-        <div class="grid gap-2 text-center text-sm text-muted-foreground">
+        <div class="grid gap-2 text-sm text-muted-foreground">
             <TextLink
                 v-if="canResetPassword"
                 :href="request()"
-                class="justify-self-center text-foreground"
+                class="justify-self-start text-foreground"
                 :tabindex="4"
             >
                 Forgot your password?

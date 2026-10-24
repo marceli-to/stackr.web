@@ -37,6 +37,13 @@
     --font-body: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
     --font-figure: var(--font-body);
 
+    /* Edges for controls and floating sheets: ink at low alpha, so they
+       sit on paper, sheets and fields alike. */
+    --control-edge: oklch(18% 0.012 262 / 0.16);
+    --surface-edge: oklch(18% 0.012 262 / 0.1);
+    --overlay: oklch(15% 0.012 262 / 0.45);
+    --float-shadow: 0 24px 48px -20px oklch(15% 0.02 262 / 0.35);
+
     /* Menus are white sheets with a hairline edge, like the cards. */
     --menu-bg: var(--color-sheet);
     --menu-ink: var(--color-ink);
@@ -62,6 +69,7 @@
     --color-ink-3: oklch(70% 0.008 90);
     --color-focus: oklch(70% 0.15 262);
     --color-error: oklch(68% 0.17 27);
+    --color-success: oklch(72% 0.13 150);
     --menu-hover: var(--color-paper-3);
     --menu-shadow:
         0 0 0 1px var(--color-rule), 0 14px 32px -12px oklch(4% 0.01 262 / 0.7);

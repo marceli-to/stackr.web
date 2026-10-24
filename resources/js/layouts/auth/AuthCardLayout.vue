@@ -12,14 +12,13 @@ const name = usePage().props.name;
 </script>
 
 <template>
-    <div
-        data-field="cobalt"
-        class="flex min-h-svh flex-col bg-field text-field-ink"
-    >
-        <header class="px-6 py-5 md:px-10">
+    <div class="flex min-h-svh flex-col bg-background">
+        <header
+            class="flex h-14 shrink-0 items-center border-b border-border px-4 md:px-8"
+        >
             <Link
                 :href="home()"
-                class="inline-flex items-center gap-2 rounded-sm"
+                class="flex items-center gap-2 rounded-sm"
                 :aria-label="`${name} home`"
             >
                 <AppLogoIcon class="size-6 fill-current" />
@@ -29,20 +28,18 @@ const name = usePage().props.name;
             </Link>
         </header>
 
-        <main
-            class="grid flex-1 items-start gap-10 px-6 pt-[8vh] pb-16 md:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] md:px-10"
-        >
-            <h1
-                class="max-w-[12ch] font-display text-(length:--text-poster) leading-[0.95] font-bold tracking-(--tracking-display)"
-            >
-                {{ title }}
-            </h1>
-            <div
-                class="rounded-[var(--radius-tile)] bg-sheet p-8 text-foreground [--ring:var(--color-focus)]"
-            >
-                <p v-if="description" class="mb-6 text-muted-foreground">
+        <main class="px-4 pt-8 pb-16 md:px-8">
+            <header class="mb-10 space-y-4">
+                <h1
+                    class="font-display text-(length:--text-poster) leading-[0.95] font-bold tracking-(--tracking-display)"
+                >
+                    {{ title }}
+                </h1>
+                <p v-if="description" class="text-lg text-muted-foreground">
                     {{ description }}
                 </p>
+            </header>
+            <div class="max-w-xs">
                 <slot />
             </div>
         </main>

@@ -141,3 +141,20 @@
         @apply bg-background text-foreground;
     }
 }
+
+/* Toasts: white sheets like the menus, in the text face, with the icon in
+   the colour of what happened. */
+[data-sonner-toaster] {
+    font-family: var(--font-body);
+}
+[data-sonner-toast][data-styled='true'] {
+    padding: 0.875rem 1rem;
+    font-size: 0.9375rem;
+    box-shadow: var(--float-shadow);
+}
+[data-sonner-toast][data-type='success'] [data-icon] {
+    color: var(--color-success);
+}
+[data-sonner-toast][data-type='error'] [data-icon] {
+    color: var(--color-error);
+}

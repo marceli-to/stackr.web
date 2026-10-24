@@ -38,7 +38,7 @@ function submitOnEnter(event: KeyboardEvent) {
                 maxlength="500"
                 placeholder="Card title"
                 aria-label="Card title"
-                class="block w-full resize-none rounded-[var(--radius-sheet)] bg-sheet px-3 py-2.5 text-[0.9375rem] text-foreground outline-none placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                class="block w-full resize-none rounded-[var(--radius-sheet)] bg-sheet px-3 py-2.5 text-[0.9375rem] text-foreground outline-hidden placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
                 v-focus
                 @keydown.enter="submitOnEnter"
                 @keydown.esc="open = false"
