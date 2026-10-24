@@ -407,6 +407,17 @@ Feature list (2026-10-24). 1â€“14 are done (one commit each on 2026-10-24); 15â€
     get board, get card, create card, update card, add comment, move card (list by name),
     tick checklist items. Activity shows the token's user; maybe mark it "via agent".~~
     Done, see "Agents (MCP)" under "Decisions made".
+21. Attachments for agents. MCP can't carry files; a tool call is JSON the model writes out, so
+    the bytes have to travel another way. Plan:
+    - `get_upload_url(card_id)` returns a short-lived signed URL (about 15 min, tied to that card and
+      the token's user); the agent uploads with its shell, e.g.
+      `curl -F "files[]=@shot.png" "<url>"`. The file never goes through the model. The route reuses
+      `AttachmentRequest`'s rules (20 files, 20 MB each) and `StoreAttachments`, marked "via agent".
+      Only works for agents with a shell (Claude Code, Cursor).
+    - Maybe `add_attachment(card_id, filename, content)` for small text the agent wrote (notes.md,
+      a log, a CSV), with a low size limit, since base64 of a real file is far too long for a model.
+    - `get_card` lists attachments with short-lived download links, so agents can read them.
+    - Not planned: Stackr fetching from a URL, as that needs SSRF guarding and doesn't reach local files.
 
 Not planned: realtime updates (no long-running processes on shared hosting), and browser tests
 (Playwright): the user tests the UI by hand. After UI changes, list what to check by hand, especially
