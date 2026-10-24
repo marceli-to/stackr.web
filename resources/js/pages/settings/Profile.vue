@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Form, Head, usePage } from '@inertiajs/vue3';
+import { Form, Head, router, usePage } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
@@ -25,6 +25,14 @@ defineOptions({
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
+
+function setEmails(event: Event) {
+	router.patch(
+		ProfileController.notifications().url,
+		{ email_notifications: (event.target as HTMLInputElement).checked },
+		{ preserveScroll: true },
+	);
+}
 </script>
 
 <template>
@@ -99,6 +107,29 @@ const user = computed(() => page.props.auth.user);
 				>
 			</div>
 		</Form>
+	</div>
+
+	<div class="flex flex-col space-y-6">
+		<Heading
+			variant="small"
+			title="Notifications"
+			description="You always see them under the bell. Email is up to you."
+		/>
+		<label class="flex items-start gap-3">
+			<input
+				type="checkbox"
+				:checked="user.email_notifications !== false"
+				class="mt-1 size-4 cursor-pointer accent-(--color-ink)"
+				@change="setEmails"
+			/>
+			<span>
+				<span class="block font-semibold">Email me too</span>
+				<span class="block text-sm text-muted-foreground">
+					When someone adds you to a card or mentions you, and when a
+					card you're on is due within a day.
+				</span>
+			</span>
+		</label>
 	</div>
 
 	<DeleteUser />

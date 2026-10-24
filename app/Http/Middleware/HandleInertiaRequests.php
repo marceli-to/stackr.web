@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Resources\NotificationResource;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -41,6 +43,13 @@ class HandleInertiaRequests extends Middleware
 			'auth' => [
 				'user' => $request->user(),
 			],
+			'notifications' => fn () => $request->user() !== null ? [
+				'unread' => $request->user()->unreadNotifications()->count(),
+			] : null,
+			// The bell's list loads when it opens.
+			'notificationList' => Inertia::optional(fn () => NotificationResource::collection(
+				$request->user()?->notifications()->limit(30)->get() ?? [],
+			)),
 		];
 	}
 }

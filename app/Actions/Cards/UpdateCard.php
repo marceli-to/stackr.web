@@ -22,7 +22,14 @@ class UpdateCard
 			unset($data['completed']);
 		}
 
-		$card->update($data);
+		$card->fill($data);
+
+		// A new due date gets its own reminder.
+		if ($card->isDirty('due_at')) {
+			$card->due_reminded_at = null;
+		}
+
+		$card->save();
 
 		if ($card->wasChanged('completed_at')) {
 			$this->recordActivity->handle($card, $card->completed_at !== null ? 'completed' : 'reopened');

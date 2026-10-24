@@ -171,3 +171,18 @@ export type BoardStack = {
 	name: string;
 	cards: BoardCard[];
 };
+
+/** An entry under the bell. */
+export type AppNotification = {
+	id: string;
+	card_id: number;
+	card_title: string;
+	project_id: number;
+	project_name: string;
+	actor: Member | null;
+	/** Follows the actor's name, e.g. "mentioned you on". */
+	sentence: string;
+	excerpt: string | null;
+	read: boolean;
+	created_at: string;
+};

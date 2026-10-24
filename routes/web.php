@@ -8,6 +8,7 @@ use App\Http\Controllers\ChecklistController;
 use App\Http\Controllers\ChecklistItemController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LabelController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectInvitationController;
 use App\Http\Controllers\ProjectMemberController;
@@ -27,6 +28,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::redirect('dashboard', '/projects')->name('dashboard');
 
 	Route::resource('projects', ProjectController::class)->except(['create', 'edit']);
+
+	Route::post('notifications/read', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+	Route::post('notifications/{notification}/open', [NotificationController::class, 'open'])->name('notifications.open');
 
 	Route::post('projects/{project}/members', [ProjectMemberController::class, 'store'])->name('projects.members.store');
 	Route::delete('projects/{project}/members/{user}', [ProjectMemberController::class, 'destroy'])->name('projects.members.destroy');

@@ -2,6 +2,7 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
+import NotificationBell from '@/components/NotificationBell.vue';
 import ProjectMembers from '@/components/projects/ProjectMembers.vue';
 import {
 	DropdownMenu,
@@ -47,6 +48,7 @@ const project = computed(
 
 		<div class="ml-auto flex shrink-0 items-center gap-3">
 			<ProjectMembers v-if="project" />
+			<NotificationBell />
 
 			<DropdownMenu>
 				<DropdownMenuTrigger as-child>

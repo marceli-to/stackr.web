@@ -21,6 +21,7 @@ _Last updated: 2026-10-24_
 | 11. Archive for cards and lists                        | ✅ done |
 | 12. Move or copy a card from the dialog                | ✅ done |
 | 13. Activity log per card                              | ✅ done |
+| 14. Notifications (bell + email) and @mentions         | ✅ done |
 
 Everything is on `main`, pushed to GitHub (https://github.com/marceli-to/stackr.web) and deployed
 to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
@@ -145,6 +146,19 @@ to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
   as they were. The dialog shows the newest 100 mixed in with the comments ("Comments and
   activity"); `describeActivity()` in `card/board.ts` writes the sentences; "Hide details" is
   remembered in localStorage.
+- **Notifications** (`app/Notifications`, Laravel database notifications): `AssignedToCard`
+  (someone else added you), `MentionedInComment`, `CardDueSoon`. All extend `CardNotification`:
+  the database channel runs at once (`viaConnections` → `sync`), the mail goes through the queue,
+  and only if `users.email_notifications` is on (profile settings, "Email me too"). The bell
+  (`components/NotificationBell.vue`, top bar) shows the shared `notifications.unread` count and
+  loads `notificationList` (optional shared prop, 30 newest) when opened; a click posts to
+  `notifications.open`, which marks it read and opens the card. `app:send-due-reminders` (every
+  15 minutes from the scheduler) reminds a card's members once when it's due within a day
+  (`cards.due_reminded_at`, cleared when the due date changes).
+- **Mentions:** `@Full Name` in a comment mentions that project member (`App\Support\Mentions`,
+  whole names, case-insensitive, longest first). Typing `@` in a comment suggests members
+  (`components/card/MentionTextarea.vue`). New mentions notify (edits only notify people
+  mentioned for the first time); `CommentResource` wraps them in `<span class="mention">`.
 - **Projects** have a name, an optional description, an optional link (`url`, http/https) shown
   on the board, and a colour. Editing and deleting happens from the ⋮ menu on the overview tiles.
 - **Landing page** (`pages/site/Welcome.vue`) for guests at `/`; signed-in users still go straight to
@@ -210,8 +224,9 @@ Same method as the kimiyuch projects (gotaticket/usverchauft):
   wallaby's `.env`).
 - **Crontab** (append-only, the account hosts many other sites):
   `* * * * * cd ~/www/stackr.kimiyu.ch && php85 artisan queue:work --stop-when-empty` and
-  `0 3 * * * … php85 artisan app:backup-database`. No `schedule:run` yet; add one when the first
-  scheduled task exists (e.g. due-date reminders).
+  `0 3 * * * … php85 artisan app:backup-database`. **To add at the next deploy** (agreed
+  2026-10-24): `* * * * * cd ~/www/stackr.kimiyu.ch && /usr/local/php85/bin/php artisan schedule:run`
+  for the due-date reminders (`routes/console.php`).
 - **Backups:** `app:backup-database` writes a consistent snapshot (`VACUUM INTO`), gzipped, to
   `storage/app/private/database_*.sqlite.gz` and deletes ones older than 30 days. Attachments live
   next to it in `storage/app/private/attachments` and aren't in the database backup.
@@ -240,7 +255,7 @@ Same method as the kimiyuch projects (gotaticket/usverchauft):
 
 ## Next up
 
-Feature list (2026-10-24), being worked through in order (1–3 and 8 are done),
+Feature list (2026-10-24), being worked through in order (1–4, 8 and 13 are done),
 then 13 with 4 (notifications with mentions; needs the scheduler decision first).
 
 **Cards**
@@ -248,7 +263,7 @@ then 13 with 4 (notifications with mentions; needs the scheduler decision first)
 1. ~~Archive instead of delete: archive cards and lists, an archive view, restore.~~ Done.
 2. ~~Move or copy a card from the dialog: to another list or another project, at a chosen position.~~ Done.
 3. ~~Activity log per card, shown together with the comments.~~ Done.
-4. @mentions in comments, with a notification to the person mentioned.
+4. ~~@mentions in comments, with a notification to the person mentioned.~~ Done.
 5. Cover colours: a plain colour cover as well as image covers.
 6. Image thumbnails: covers and previews currently load images at full size.
 7. Card templates and duplicating a checklist.
@@ -263,8 +278,8 @@ then 13 with 4 (notifications with mentions; needs the scheduler decision first)
 
 **People and notifications**
 
-13. Notifications: in-app bell plus email when you're assigned, mentioned, or a due date is near.
-    No queue worker on the shared host, so due-date reminders need `schedule:run` from the host's cron.
+13. ~~Notifications: in-app bell plus email when you're assigned, mentioned, or a due date is near.~~
+    Done; production needs the `schedule:run` cron line (see "Production").
 14. Watching a card or board, to get notified about changes.
 15. Avatars: upload a profile picture instead of initials.
 16. Hand over ownership: the owner can't leave a project, and there's no way to pass it on.

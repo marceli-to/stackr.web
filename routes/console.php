@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function () {
-	$this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+// The server's cron runs `schedule:run` every minute (see progress.md, "Production").
+Schedule::command('app:send-due-reminders')->everyFifteenMinutes()->withoutOverlapping();

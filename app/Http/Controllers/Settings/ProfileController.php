@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Settings\NotificationSettingsRequest;
 use App\Http\Requests\Settings\ProfileDeleteRequest;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -41,6 +42,18 @@ class ProfileController extends Controller
 		$this->toast(__('Profile updated.'));
 
 		return to_route('profile.edit');
+	}
+
+	/**
+	 * Turn notification emails on or off.
+	 */
+	public function notifications(NotificationSettingsRequest $request): RedirectResponse
+	{
+		$request->user()->update(['email_notifications' => $request->boolean('email_notifications')]);
+
+		$this->toast(__('Notification settings saved.'));
+
+		return back();
 	}
 
 	/**

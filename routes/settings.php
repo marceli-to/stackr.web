@@ -14,6 +14,7 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
 	Route::delete('settings/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+	Route::patch('settings/notifications', [ProfileController::class, 'notifications'])->name('profile.notifications');
 
 	Route::get('settings/security', [SecurityController::class, 'edit'])
 		->middleware(RequirePassword::class)

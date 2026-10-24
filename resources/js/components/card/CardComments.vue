@@ -6,6 +6,7 @@ import { computed, ref } from 'vue';
 import CommentController from '@/actions/App/Http/Controllers/CommentController';
 import { describeActivity, keep, timeAgo } from '@/components/card/board';
 import { Button } from '@/components/ui/button';
+import MentionTextarea from '@/components/card/MentionTextarea.vue';
 import { getInitials } from '@/composables/useInitials';
 import type { CardActivity, CardComment, CardDetail } from '@/types';
 
@@ -115,13 +116,13 @@ function remove(comment: CardComment) {
 				>{{ getInitials(me.name) }}</span
 			>
 			<div class="min-w-0 flex-1 space-y-2">
-				<textarea
+				<MentionTextarea
 					v-model="body"
 					name="body"
 					aria-label="Write a comment"
 					:rows="writing ? 3 : 1"
 					maxlength="10000"
-					placeholder="Write a comment…"
+					placeholder="Write a comment… @ mentions someone"
 					:class="fieldClass"
 					@focus="writing = true"
 					@keydown.meta.enter.prevent="post"
@@ -203,14 +204,14 @@ function remove(comment: CardComment) {
 							class="mt-1.5 space-y-2"
 							@submit.prevent="save(entry.comment)"
 						>
-							<textarea
+							<MentionTextarea
 								v-model="editBody"
 								name="body"
 								aria-label="Edit comment"
 								rows="3"
 								maxlength="10000"
 								:class="fieldClass"
-								v-focus
+								autofocus
 								@keydown.esc.stop="editing = null"
 								@keydown.meta.enter.prevent="
 									save(entry.comment)

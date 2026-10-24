@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Card;
+use App\Models\Comment;
 use App\Support\Markdown;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -29,6 +30,9 @@ class CardResource extends JsonResource
 		]);
 		$this->resource->loadMissing(['stack', 'labels', 'members']);
 
+		/** @var list<string> $names */
+		$names = $this->stack->project->members()->pluck('name')->all();
+
 		return [
 			'id' => $this->id,
 			'title' => $this->title,
@@ -50,7 +54,7 @@ class CardResource extends JsonResource
 			'cover_attachment_id' => $this->cover_attachment_id,
 			'checklists' => ChecklistResource::collection($this->checklists),
 			'attachments' => AttachmentResource::collection($this->attachments),
-			'comments' => CommentResource::collection($this->comments),
+			'comments' => $this->comments->map(fn (Comment $comment) => (new CommentResource($comment))->mentioning($names)),
 			'activities' => ActivityResource::collection($this->activities),
 		];
 	}

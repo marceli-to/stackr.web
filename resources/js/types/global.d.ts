@@ -1,5 +1,6 @@
 import type { Directive } from 'vue';
 import type { Auth } from '@/types/auth';
+import type { AppNotification } from '@/types/projects';
 
 // Extend ImportMeta interface for Vite...
 declare module 'vite/client' {
@@ -19,6 +20,8 @@ declare module '@inertiajs/core' {
 		sharedPageProps: {
 			name: string;
 			auth: Auth;
+			notifications: { unread: number } | null;
+			notificationList?: AppNotification[];
 			[key: string]: unknown;
 		};
 	}

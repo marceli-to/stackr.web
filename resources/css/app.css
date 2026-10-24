@@ -220,6 +220,13 @@
 .card-prose hr {
 	border-color: var(--color-rule);
 }
+.card-prose .mention {
+	font-weight: 600;
+	color: var(--color-ink);
+	background: color-mix(in oklab, var(--color-label-blue) 35%, transparent);
+	border-radius: 3px;
+	padding: 0 0.2em;
+}
 
 @utility focus-field {
 	&:focus-visible {

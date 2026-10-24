@@ -23,13 +23,14 @@ use Illuminate\Support\Facades\Storage;
  * @property string $position
  * @property CarbonImmutable|null $start_at
  * @property CarbonImmutable|null $due_at
+ * @property CarbonImmutable|null $due_reminded_at
  * @property CarbonImmutable|null $completed_at
  * @property CarbonImmutable|null $archived_at
  * @property int|null $cover_attachment_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['title', 'description', 'position', 'start_at', 'due_at', 'completed_at', 'archived_at', 'cover_attachment_id'])]
+#[Fillable(['title', 'description', 'position', 'start_at', 'due_at', 'due_reminded_at', 'completed_at', 'archived_at', 'cover_attachment_id'])]
 class Card extends Model
 {
 	/** @use HasFactory<CardFactory> */
@@ -45,6 +46,7 @@ class Card extends Model
 		return [
 			'start_at' => 'datetime',
 			'due_at' => 'datetime',
+			'due_reminded_at' => 'datetime',
 			'completed_at' => 'datetime',
 			'archived_at' => 'datetime',
 		];
