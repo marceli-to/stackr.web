@@ -229,8 +229,8 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   the board's watchers, minus the actor and anyone who got a more specific notification (the person
   just added, people mentioned). It runs from `RecordActivity` (the line comes from
   `App\Support\ActivityText`) and for new comments. Leaving a board drops your watches there.
-- **Projects** have a name, an optional description, an optional link (`url`, http/https) shown
-  on the board, and a colour. Editing and deleting happens from the ⋮ menu on the overview tiles.
+- **Projects** have a name, an optional description, an optional link (`url`, http/https), and a colour.
+  Description and link show in an "Info" dialog from the board's ⋯ menu (only when one is set). Editing and deleting happens from the ⋮ menu on the overview tiles.
 - **Landing page** (`pages/site/Welcome.vue`) for guests at `/`; signed-in users still go straight to
   `/projects`. Built like the kimiyu.ch app sites (wuff, croc): header with anchors and a "Log in" pill,
   hero with the app icon, a static board mock (`components/site/BoardMock.vue`), a dark "How it works"
@@ -373,6 +373,16 @@ Feature list (2026-10-24). 1–14 are done (one commit each on 2026-10-24); 15�
 17. "My cards" page: everything assigned to me across all projects, sorted by due date.
 18. Starring or pinning projects, and archiving projects.
 19. Export a project (JSON or CSV) as a backup.
+
+**Agents**
+
+20. MCP server so AI agents (Claude Code etc.) can work a board: read the cards in a list, update
+    a card, comment, move it (e.g. To do → Pending → Done). Plan: `laravel/mcp` with an HTTP
+    server at `/mcp` (plain requests, so it runs on shared hosting), personal access tokens via
+    Sanctum (create/revoke in settings, sent as a Bearer header), tools that call the existing
+    actions (so permissions, activity log and notifications behave the same): list projects,
+    get board, get card, create card, update card, add comment, move card (list by name),
+    tick checklist items. Activity shows the token's user; maybe mark it "via agent".
 
 Not planned: realtime updates (no long-running processes on shared hosting), and browser tests
 (Playwright): the user tests the UI by hand. After UI changes, list what to check by hand, especially

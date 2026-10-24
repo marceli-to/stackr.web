@@ -5,9 +5,9 @@ import {
 	PhCalendarBlank,
 	PhCheck,
 	PhEye,
+	PhInfo,
 	PhKanban,
 	PhKeyboard,
-	PhLink,
 	PhUserPlus,
 } from '@phosphor-icons/vue';
 import { useStorage } from '@vueuse/core';
@@ -16,6 +16,7 @@ import Board from '@/components/board/Board.vue';
 import BoardArchivePanel from '@/components/board/BoardArchivePanel.vue';
 import BoardCalendar from '@/components/board/BoardCalendar.vue';
 import BoardFilterBar from '@/components/board/BoardFilterBar.vue';
+import BoardInfo from '@/components/board/BoardInfo.vue';
 import BoardShortcuts from '@/components/board/BoardShortcuts.vue';
 import { createFilter, filterKey } from '@/components/board/filter';
 import { boardKey } from '@/components/card/board';
@@ -84,16 +85,12 @@ function toggleWatching() {
 // The rarer board actions live in one menu; these are its dialogs.
 const archiveOpen = ref(false);
 const shortcutsOpen = ref(false);
+const infoOpen = ref(false);
 
 // Board or calendar, remembered per project.
 const view = useStorage<'board' | 'calendar'>(
 	`stackr.view.${props.project.id}`,
 	'board',
-);
-
-// The link as people read it: no scheme, no trailing slash.
-const urlLabel = computed(() =>
-	props.project.url?.replace(/^https?:\/\//, '').replace(/\/$/, ''),
 );
 </script>
 
@@ -102,22 +99,6 @@ const urlLabel = computed(() =>
 
 	<div class="flex h-full min-h-0 flex-1 flex-col gap-8 px-4 pt-8 md:px-8">
 		<h1 class="sr-only">{{ project.name }}</h1>
-
-		<header v-if="project.description || project.url" class="space-y-3">
-			<p v-if="project.description" class="max-w-[60ch] text-lg">
-				{{ project.description }}
-			</p>
-			<a
-				v-if="project.url"
-				:href="project.url"
-				target="_blank"
-				rel="noopener noreferrer"
-				class="inline-flex max-w-full items-center gap-1.5 rounded-sm underline decoration-current/40 underline-offset-4 hover:decoration-current focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
-			>
-				<PhLink class="size-4 shrink-0" />
-				<span class="truncate">{{ urlLabel }}</span>
-			</a>
-		</header>
 
 		<div class="flex min-h-0 flex-1 flex-col">
 			<BoardCalendar v-if="view === 'calendar'" :stacks="stacks" />
@@ -168,6 +149,13 @@ const urlLabel = computed(() =>
 				Archive…
 			</DropdownMenuItem>
 			<DropdownMenuSeparator />
+			<DropdownMenuItem
+				v-if="project.description || project.url"
+				@select="infoOpen = true"
+			>
+				<PhInfo />
+				Info
+			</DropdownMenuItem>
 			<DropdownMenuItem @select="shortcutsOpen = true">
 				<PhKeyboard />
 				Keyboard shortcuts
@@ -177,6 +165,7 @@ const urlLabel = computed(() =>
 	</Teleport>
 
 	<BoardArchivePanel v-model:open="archiveOpen" :archive="archive" />
+	<BoardInfo v-model:open="infoOpen" :project="project" />
 	<BoardShortcuts v-model:open="shortcutsOpen" />
 	<CardDialog :card="card" />
 </template>

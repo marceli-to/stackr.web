@@ -80,8 +80,8 @@
       "_wayfinder-BlCNDZ12.js"
     ]
   },
-  "_SiteHeader-Cd90Fzux.js": {
-    "file": "assets/SiteHeader-Cd90Fzux.js",
+  "_SiteHeader-CwHPLi7U.js": {
+    "file": "assets/SiteHeader-CwHPLi7U.js",
     "name": "SiteHeader",
     "imports": [
       "_wayfinder-BlCNDZ12.js",
@@ -199,7 +199,7 @@
     "name": "wayfinder"
   },
   "resources/css/app.css": {
-    "file": "assets/app-6md50H1U.css",
+    "file": "assets/app-CXhRKUbl.css",
     "name": "app",
     "names": [
       "app.css"
@@ -208,7 +208,7 @@
     "isEntry": true
   },
   "resources/js/app.ts": {
-    "file": "assets/app-BX3OIADl.js",
+    "file": "assets/app-BX3_apFG.js",
     "name": "app",
     "src": "resources/js/app.ts",
     "isEntry": true,
@@ -241,7 +241,7 @@
     ]
   },
   "resources/js/pages/auth/ConfirmPassword.vue": {
-    "file": "assets/ConfirmPassword-B6wUwwiI.js",
+    "file": "assets/ConfirmPassword-Bj996aI5.js",
     "name": "ConfirmPassword",
     "src": "resources/js/pages/auth/ConfirmPassword.vue",
     "isDynamicEntry": true,
@@ -256,7 +256,7 @@
     ]
   },
   "resources/js/pages/auth/ForgotPassword.vue": {
-    "file": "assets/ForgotPassword-tSWuzsoO.js",
+    "file": "assets/ForgotPassword-u7f2S9BY.js",
     "name": "ForgotPassword",
     "src": "resources/js/pages/auth/ForgotPassword.vue",
     "isDynamicEntry": true,
@@ -271,7 +271,7 @@
     ]
   },
   "resources/js/pages/auth/Login.vue": {
-    "file": "assets/Login-CV_qxRr_.js",
+    "file": "assets/Login-DaFDOzs0.js",
     "name": "Login",
     "src": "resources/js/pages/auth/Login.vue",
     "isDynamicEntry": true,
@@ -287,7 +287,7 @@
     ]
   },
   "resources/js/pages/auth/Register.vue": {
-    "file": "assets/Register-DZ8AfoFt.js",
+    "file": "assets/Register-CVhWPBj8.js",
     "name": "Register",
     "src": "resources/js/pages/auth/Register.vue",
     "isDynamicEntry": true,
@@ -302,7 +302,7 @@
     ]
   },
   "resources/js/pages/auth/ResetPassword.vue": {
-    "file": "assets/ResetPassword-1Un3yUyp.js",
+    "file": "assets/ResetPassword-Dp8ySrtO.js",
     "name": "ResetPassword",
     "src": "resources/js/pages/auth/ResetPassword.vue",
     "isDynamicEntry": true,
@@ -329,7 +329,7 @@
     ]
   },
   "resources/js/pages/auth/VerifyEmail.vue": {
-    "file": "assets/VerifyEmail-DKUm3slA.js",
+    "file": "assets/VerifyEmail-XkRxpP4D.js",
     "name": "VerifyEmail",
     "src": "resources/js/pages/auth/VerifyEmail.vue",
     "isDynamicEntry": true,
@@ -342,7 +342,7 @@
     ]
   },
   "resources/js/pages/projects/Index.vue": {
-    "file": "assets/Index-DtjVsmBx.js",
+    "file": "assets/Index-Cw0keIhR.js",
     "name": "Index",
     "src": "resources/js/pages/projects/Index.vue",
     "isDynamicEntry": true,
@@ -360,7 +360,7 @@
     ]
   },
   "resources/js/pages/projects/Show.vue": {
-    "file": "assets/Show-BSO0bH2y.js",
+    "file": "assets/Show-Djy1nHLI.js",
     "name": "Show",
     "src": "resources/js/pages/projects/Show.vue",
     "isDynamicEntry": true,
@@ -382,7 +382,7 @@
     ]
   },
   "resources/js/pages/settings/Appearance.vue": {
-    "file": "assets/Appearance-D8jfWlNK.js",
+    "file": "assets/Appearance-Bqq3Y_Ca.js",
     "name": "Appearance",
     "src": "resources/js/pages/settings/Appearance.vue",
     "isDynamicEntry": true,
@@ -392,7 +392,7 @@
     ]
   },
   "resources/js/pages/settings/Profile.vue": {
-    "file": "assets/Profile-DpuNxXHn.js",
+    "file": "assets/Profile-BSNWDtB7.js",
     "name": "Profile",
     "src": "resources/js/pages/settings/Profile.vue",
     "isDynamicEntry": true,
@@ -410,7 +410,7 @@
     ]
   },
   "resources/js/pages/settings/Security.vue": {
-    "file": "assets/Security-Dim4_sZ5.js",
+    "file": "assets/Security-D9wjOYt5.js",
     "name": "Security",
     "src": "resources/js/pages/settings/Security.vue",
     "isDynamicEntry": true,
@@ -431,17 +431,17 @@
     ]
   },
   "resources/js/pages/site/Legal.vue": {
-    "file": "assets/Legal-B3P9XNrL.js",
+    "file": "assets/Legal-BP-l9g6H.js",
     "name": "Legal",
     "src": "resources/js/pages/site/Legal.vue",
     "isDynamicEntry": true,
     "imports": [
       "_wayfinder-BlCNDZ12.js",
-      "_SiteHeader-Cd90Fzux.js"
+      "_SiteHeader-CwHPLi7U.js"
     ]
   },
   "resources/js/pages/site/Welcome.vue": {
-    "file": "assets/Welcome-BBUot-m7.js",
+    "file": "assets/Welcome-C8pWh1gS.js",
     "name": "Welcome",
     "src": "resources/js/pages/site/Welcome.vue",
     "isDynamicEntry": true,
@@ -450,7 +450,7 @@
       "_PhTextAlignLeft.vue-D2eKAR1s.js",
       "_types-CIY5M7rl.js",
       "resources/js/app.ts",
-      "_SiteHeader-Cd90Fzux.js"
+      "_SiteHeader-CwHPLi7U.js"
     ]
   }
 }
