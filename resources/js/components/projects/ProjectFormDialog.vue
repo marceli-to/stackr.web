@@ -26,11 +26,11 @@ const props = defineProps<{
 
 const colorNames: Record<ProjectColor, string> = {
     cobalt: 'Cobalt',
-    signal: 'Signal orange',
+    rust: 'Rust',
     moss: 'Moss',
     oxblood: 'Oxblood',
     lagoon: 'Lagoon',
-    ochre: 'Ochre',
+    plum: 'Plum',
 };
 
 const open = defineModel<boolean>('open', { required: true });
@@ -61,7 +61,7 @@ const form = computed(() =>
                     <DialogDescription>
                         {{
                             project
-                                ? 'Change the name, description or colour.'
+                                ? 'Change the name, description, link or colour.'
                                 : 'Each project gets its own board.'
                         }}
                     </DialogDescription>
@@ -97,6 +97,26 @@ const form = computed(() =>
                         class="w-full min-w-0 rounded-[var(--radius-sheet)] bg-sheet px-3 py-2 text-base shadow-xs ring-1 ring-(--control-edge) outline-hidden ring-inset placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring focus-visible:outline-solid sm:text-[0.9375rem] dark:bg-(--color-paper-2)"
                     />
                     <InputError :message="errors.description" />
+                </div>
+
+                <div class="grid gap-2">
+                    <Label for="project-url">
+                        Link
+                        <span class="font-normal text-muted-foreground"
+                            >(optional)</span
+                        >
+                    </Label>
+                    <Input
+                        id="project-url"
+                        name="url"
+                        type="url"
+                        inputmode="url"
+                        autocomplete="url"
+                        maxlength="2048"
+                        :default-value="project?.url ?? ''"
+                        placeholder="https://"
+                    />
+                    <InputError :message="errors.url" />
                 </div>
 
                 <fieldset class="grid gap-2">

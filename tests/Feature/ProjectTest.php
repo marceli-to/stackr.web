@@ -101,7 +101,7 @@ class ProjectTest extends TestCase
         }
 
         $this->assertSame(
-            ['cobalt', 'signal', 'moss'],
+            ['cobalt', 'rust', 'moss'],
             $user->projects()->orderBy('projects.id')->get()->map(fn (Project $project) => $project->color->value)->all(),
         );
     }
@@ -111,10 +111,30 @@ class ProjectTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->post(route('projects.store'), ['name' => 'Ochre one', 'color' => 'ochre'])
+            ->post(route('projects.store'), ['name' => 'Plum one', 'color' => 'plum'])
             ->assertSessionHasNoErrors();
 
-        $this->assertSame(ProjectColor::Ochre, Project::firstWhere('name', 'Ochre one')->color);
+        $this->assertSame(ProjectColor::Plum, Project::firstWhere('name', 'Plum one')->color);
+    }
+
+    public function test_a_project_can_have_a_url()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('projects.store'), ['name' => 'Site', 'url' => 'https://example.com/staging'])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame('https://example.com/staging', Project::firstWhere('name', 'Site')->url);
+    }
+
+    public function test_a_project_url_must_be_a_web_address()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('projects.store'), ['name' => 'Site', 'url' => 'javascript:alert(1)'])
+            ->assertSessionHasErrors('url');
     }
 
     public function test_a_project_colour_must_be_one_of_the_six()

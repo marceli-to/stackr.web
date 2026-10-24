@@ -32,6 +32,7 @@ class ProjectController extends Controller
                 'id' => $membership->project->id,
                 'name' => $membership->project->name,
                 'description' => $membership->project->description,
+                'url' => $membership->project->url,
                 'color' => $membership->project->color,
                 'role' => $membership->role,
                 'stacks_count' => $membership->project->stacks_count,
@@ -76,7 +77,7 @@ class ProjectController extends Controller
         $project->load('stacks.cards');
 
         return Inertia::render('projects/Show', [
-            'project' => $project->only('id', 'name', 'description', 'color'),
+            'project' => $project->only('id', 'name', 'description', 'url', 'color'),
             'stacks' => $project->stacks->map(fn (Stack $stack) => [
                 'id' => $stack->id,
                 'name' => $stack->name,

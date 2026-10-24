@@ -2,11 +2,11 @@ export type ProjectRole = 'owner' | 'member';
 
 export const projectColors = [
     'cobalt',
-    'signal',
+    'rust',
     'moss',
     'oxblood',
     'lagoon',
-    'ochre',
+    'plum',
 ] as const;
 
 export type ProjectColor = (typeof projectColors)[number];
@@ -15,6 +15,7 @@ export type Project = {
     id: number;
     name: string;
     description: string | null;
+    url: string | null;
     color: ProjectColor;
 };
 

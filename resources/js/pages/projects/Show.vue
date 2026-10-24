@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, setLayoutProps } from '@inertiajs/vue3';
-import { watchEffect } from 'vue';
+import { PhLink } from '@phosphor-icons/vue';
+import { computed, watchEffect } from 'vue';
 import Board from '@/components/board/Board.vue';
 import { index, show } from '@/routes/projects';
 import type { BoardStack, Project } from '@/types';
@@ -9,6 +10,11 @@ const props = defineProps<{
     project: Project;
     stacks: BoardStack[];
 }>();
+
+// The link as people read it: no scheme, no trailing slash.
+const urlLabel = computed(() =>
+    props.project.url?.replace(/^https?:\/\//, '').replace(/\/$/, ''),
+);
 
 watchEffect(() => {
     setLayoutProps({
@@ -33,6 +39,16 @@ watchEffect(() => {
             <p v-if="project.description" class="max-w-[60ch] text-lg">
                 {{ project.description }}
             </p>
+            <a
+                v-if="project.url"
+                :href="project.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex max-w-full items-center gap-1.5 rounded-sm underline decoration-current/40 underline-offset-4 hover:decoration-current focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
+            >
+                <PhLink class="size-4 shrink-0" />
+                <span class="truncate">{{ urlLabel }}</span>
+            </a>
         </header>
 
         <Board :project="project" :stacks="stacks" />

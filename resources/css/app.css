@@ -1,7 +1,7 @@
 /* Hallmark · shape: app screen · genre: modern-minimal · theme: custom · redesign: full
  * idea: "every project stands on its own colour: the board is a poster for the project, the overview a wall of those colours"
  * vibe: "poster fields, condensed type, white cards"
- * paper: oklch(97.6% 0.004 90) · accent: six project fields (cobalt, signal, moss, oxblood, lagoon, ochre), ink for the primary, dark grey for focus · display: Antonio 700 · body: Hanken Grotesk 400/600
+ * paper: oklch(97.6% 0.004 90) · accent: six dark project fields (cobalt, rust, moss, oxblood, lagoon, plum), ink for the primary, dark grey for focus · display: Antonio 700 · body: Hanken Grotesk 400/600
  * nav: a slim top bar (logo and user menu), replacing the sidebar · signature: the board drenched in its project's colour under a poster-size name · states: empty (projects, list), error (forms)
  * axes: light/display-condensed/chromatic-cobalt · posture: drenched on a board, restrained on paper · contrast: pass · v2.0.0 */
 /* Hallmark · pre-emit critique: P3 H3 E3 S3 R3 V3 · weakest: R, a drenched page can drown its content, so lists sit in a darker well of the field and cards stay plain white */
@@ -117,10 +117,10 @@
     --input: var(--color-rule);
     --ring: var(--color-focus);
     --chart-1: var(--color-field-cobalt);
-    --chart-2: var(--color-field-signal);
+    --chart-2: var(--color-field-rust);
     --chart-3: var(--color-field-moss);
     --chart-4: var(--color-field-oxblood);
-    --chart-5: var(--color-field-ochre);
+    --chart-5: var(--color-field-plum);
     --radius: var(--radius-tile);
     --sidebar-background: var(--color-paper-2);
     --sidebar-foreground: var(--color-ink-2);

@@ -9,11 +9,11 @@ namespace App\Enums;
 enum ProjectColor: string
 {
     case Cobalt = 'cobalt';
-    case Signal = 'signal';
+    case Rust = 'rust';
     case Moss = 'moss';
     case Oxblood = 'oxblood';
     case Lagoon = 'lagoon';
-    case Ochre = 'ochre';
+    case Plum = 'plum';
 
     public function next(): self
     {

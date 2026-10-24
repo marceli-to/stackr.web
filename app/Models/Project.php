@@ -17,11 +17,12 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property string $name
  * @property string|null $description
+ * @property string|null $url
  * @property ProjectColor $color
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'description', 'color'])]
+#[Fillable(['name', 'description', 'url', 'color'])]
 class Project extends Model
 {
     /** @use HasFactory<ProjectFactory> */

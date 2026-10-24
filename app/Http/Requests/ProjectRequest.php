@@ -19,6 +19,7 @@ class ProjectRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
+            'url' => ['nullable', 'url:http,https', 'max:2048'],
             'color' => ['sometimes', Rule::enum(ProjectColor::class)],
         ];
     }
