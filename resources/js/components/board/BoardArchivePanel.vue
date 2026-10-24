@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3';
-import { PhArchive } from '@phosphor-icons/vue';
 import { computed, ref, watch } from 'vue';
 import CardController from '@/actions/App/Http/Controllers/CardController';
 import StackController from '@/actions/App/Http/Controllers/StackController';
@@ -12,7 +11,6 @@ import {
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from '@/components/ui/dialog';
 import { Spinner } from '@/components/ui/spinner';
 import type { BoardArchive } from '@/types';
@@ -23,7 +21,8 @@ const props = defineProps<{
 
 const { project } = useBoard();
 
-const open = ref(false);
+// Opened from the board menu.
+const open = defineModel<boolean>('open', { default: false });
 const tab = ref<'cards' | 'stacks'>('cards');
 // "card-12" or "stack-3" while its delete asks for confirmation.
 const confirming = ref<string | null>(null);
@@ -76,15 +75,6 @@ const tabClass = (active: boolean) =>
 
 <template>
 	<Dialog v-model:open="open">
-		<DialogTrigger as-child>
-			<Button
-				variant="ghost"
-				class="h-9 bg-current/10 text-inherit hover:bg-current/15 hover:text-inherit data-[state=open]:bg-current/15"
-			>
-				<PhArchive />
-				Archive
-			</Button>
-		</DialogTrigger>
 		<DialogContent class="sm:max-w-lg">
 			<DialogHeader>
 				<DialogTitle>Archive</DialogTitle>

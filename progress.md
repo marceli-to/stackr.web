@@ -30,10 +30,11 @@ _Last updated: 2026-10-24_
 | 20. Card limits and collapsing lists                   | ✅ done |
 | 21. Board background photos                            | ✅ done |
 | 22. Watching cards and boards                          | ✅ done |
+| 23. Calmer board chrome (one bar, ⋯ menu)              | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 **Production is behind:** https://stackr.kimiyu.ch still runs `59a7b69` (2026-10-24, before steps
-10–22). The next deploy brings 12 new migrations; see "Before the next deploy" under "Next up".
+10–23). The next deploy brings 12 new migrations; see "Before the next deploy" under "Next up".
 (`design/field` and `feature/card-details` are merged into `main` and can be deleted.)
 
 ## Stack
@@ -74,9 +75,13 @@ Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stac
     - Type: Antonio 700 (poster heads: `--text-poster`, list names, dialog titles, the wordmark and
       the board name in the top bar) and Hanken Grotesk 400/600 for everything else, loaded via Bunny in
       `vite.config.ts`.
-    - Shell: a slim top bar (logo → projects, the user's initials → menu). On a board the wordmark
-      gives way to the board's name next to the icon; the board has no big title of its own (only a
-      hidden `h1`). No sidebar, no breadcrumbs, no project switcher.
+    - Shell: a slim top bar in three columns: logo (→ projects) and, on a board, the board's name
+      left; the board's search centred; member avatars and the ⋯ app menu right
+      (`components/AppMenu.vue`, a tinted circle like the avatar, with a yellow dot while anything is
+      unread). The user's initials (account menu, opens upwards) sit fixed in the bottom-left corner.
+      The board has no toolbar row and no big title of its own (only a hidden `h1`); it teleports
+      its search (`#topbar-search`) and its own `AppMenu` with the board items (`#topbar-actions`)
+      into the bar. No sidebar, no breadcrumbs, no project switcher.
     - Board: lists show no card count (unless they have a card limit); the list menu (and every other ⋯ menu, e.g. on project tiles) uses horizontal dots. "Add a card" is card-height
       with a faint tint, "Add a list" has the list's well colour.
     - Overview: a wall of 16:10 colour tiles that ends with a neutral "New project" tile.
@@ -97,8 +102,8 @@ Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stac
 - **Logo:** three offset bars (a stack of cards) in `AppLogoIcon.vue`; favicons in `public/` are the
   same mark on an ink tile.
 - **Members & invitations:** the board's top bar shows the other members as an avatar stack (your own
-  initials are the account menu); the owner also gets an "Invite" button pinned bottom right. Both
-  open the members dialog (`components/projects/ProjectMembers.vue`). Only the owner invites (by email) and
+  initials are the account menu); "Invite people…" ("Members…" for non-owners) in the ⋯ menu. Both
+  open the members dialog (`membersOpen` in `components/projects/members.ts` is shared between them) (`components/projects/ProjectMembers.vue`). Only the owner invites (by email) and
   removes members; anyone else can leave; the owner can't leave. An address with an account is added
   right away and gets `AddedToProjectMail`; any other address gets a `project_invitations` row and
   `ProjectInvitationMail` with `/invitations/{token}` (valid 14 days, inviting again renews it).
@@ -134,7 +139,9 @@ Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stac
   Moves and copies take thumbnails along. `app:make-thumbnails` backfills; `deploy.sh` runs it.
 - **Search and filters** (`components/board/{BoardFilterBar.vue,filter.ts}`) work in the browser:
   the board already has every card. A search field (`/` focuses it, Esc clears it) matches the
-  title and label names, every word has to match. The "Filter" popover picks members ("Cards
+  title and label names, every word has to match; an × inside the field clears it. The "Filter"
+  popover is **hidden for now** (`BoardFilterBar` renders it only with `with-filters`; the logic
+  is intact). It picks members ("Cards
   assigned to me", others, "No members"), labels ("No labels") and due dates (overdue, next day,
   next week, none, complete). Any choice within a group matches; every group has to. Filtered-out
   cards are hidden with `v-show`, not removed, so SortableJS still counts them and a drop saves
@@ -145,7 +152,7 @@ Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stac
   an archived list. The card dialog offers "Archive"; an archived card (or one in an archived
   list) shows a banner and "Restore" / "Delete" instead, so deleting a card takes two steps.
   The list menu has "Archive list"; deleting a list happens from the archive panel
-  (`components/board/BoardArchivePanel.vue`, "Archive" in the board toolbar), which loads the
+  (`components/board/BoardArchivePanel.vue`, "Archive…" in the ⋯ menu), which loads the
   `archive` prop on open (`Inertia::optional`). Restoring a card also restores its archived list.
   Project tiles count active lists and cards only.
 - **Move and copy** (`components/card/CardMoveCopy.vue`, "Move" / "Copy" in the card dialog's
@@ -166,9 +173,10 @@ Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stac
 - **Notifications** (`app/Notifications`, Laravel database notifications): `AssignedToCard`
   (someone else added you), `MentionedInComment`, `CardDueSoon`. All extend `CardNotification`:
   the database channel runs at once (`viaConnections` → `sync`), the mail goes through the queue,
-  and only if `users.email_notifications` is on (profile settings, "Email me too"). The bell
-  (`components/NotificationBell.vue`, top bar) shows the shared `notifications.unread` count and
-  loads `notificationList` (optional shared prop, 30 newest) when opened; a click posts to
+  and only if `users.email_notifications` is on (profile settings, "Email me too"). "Notifications"
+  in the ⋯ menu (`components/AppMenu.vue`) shows the shared `notifications.unread` count; the
+  dialog (`components/NotificationsDialog.vue`) loads `notificationList` (optional shared prop,
+  30 newest) when opened; a click posts to
   `notifications.open`, which marks it read and opens the card. `app:send-due-reminders` (every
   15 minutes from the scheduler) reminds a card's members once when it's due within a day
   (`cards.due_reminded_at`, cleared when the due date changes).
@@ -181,13 +189,13 @@ Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stac
   has templates; `cards.from-template` copies one (everything but comments, via `CopyCard`) to the
   bottom of the list and opens it. "Add a checklist" can copy the items (unticked) of any checklist
   on the board (`copy_from`, the lazy `checklists` prop).
-- **Calendar** (`components/board/BoardCalendar.vue`): "Board / Calendar" in the board toolbar,
+- **Calendar** (`components/board/BoardCalendar.vue`): "Board / Calendar" in the ⋯ menu,
   remembered per project in localStorage. A month grid (Monday first, six weeks) shows the cards
   with a due date on their day, honouring the search and filters; a dot shows the due state.
   Dragging a card to another day moves its due date and keeps the time.
 - **Shortcuts** (`components/board/useBoardKeys.ts`, `BoardShortcuts.vue`): `/` search, `n` add a
   card to the list holding focus (or the first), arrow keys between visible cards (`data-stack`,
-  `data-card-id`), Enter opens, `?` (or the keyboard button) lists them. `busy()` skips them while
+  `data-card-id`), Enter opens, `?` (or "Keyboard shortcuts" in the ⋯ menu) lists them. `busy()` skips them while
   typing or when a dialog, popover or menu is open.
 - **Card limits and collapsing:** "Card limit…" in the list menu sets `stacks.wip_limit` (shared,
   1–999); the header then shows "3 / 5", red when over, and nothing is blocked. "Collapse list" is
@@ -200,7 +208,7 @@ Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stac
   under a 28% black veil; overview tiles show it under their colour. Lists and cards keep their
   opaque wells, so they stay readable.
 - **Watching:** `card_watchers` and `project_watchers` (pivots). "Watch" in the card dialog's Actions
-  and in the board toolbar (`cards.watch` / `projects.watch`, DELETE to stop); cards you watch show
+  and as "Watch board" in the ⋯ menu (`cards.watch` / `projects.watch`, DELETE to stop); cards you watch show
   an eye. `NotifyWatchers` sends `CardUpdated` (bell only, never email: moves would flood inboxes)
   to the card's watchers, its members (always, so their Watch button shows "Watching", disabled) and
   the board's watchers, minus the actor and anyone who got a more specific notification (the person
@@ -245,11 +253,11 @@ Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stac
   `app/Support/{Mentions,ActivityText,Thumbnail}.php`
 - Card backend: `app/Http/Controllers/{Card,Label,CardLabel,CardMember,Checklist,ChecklistItem,Attachment,Comment}Controller.php`,
   `app/Models/{Label,Checklist,ChecklistItem,Attachment,Comment}.php`, `app/Support/Markdown.php`
-- Frontend: `resources/js/pages/projects/{Index,Show}.vue` (Show holds the toolbar and provides the
-  board context and filter), `resources/js/components/board/*` (board, calendar, filter bar, archive
+- Frontend: `resources/js/pages/projects/{Index,Show}.vue` (Show provides the
+  board context and filter and teleports its search and menu into the top bar), `resources/js/components/board/*` (board, calendar, filter bar, archive
   panel, shortcuts), `resources/js/components/card/*` (dialog, pickers, sections, move/copy, mention
   textarea; `board.ts` holds the shared helpers and `describeActivity()`),
-  `resources/js/components/projects/*`, `resources/js/components/{AppTopBar,NotificationBell}.vue`,
+  `resources/js/components/projects/*`, `resources/js/components/{AppTopBar,AppMenu,NotificationsDialog}.vue`,
   `resources/js/layouts/{AppLayout,settings/Layout,auth/AuthCardLayout}.vue`
 - Landing page and legal notice: `resources/js/pages/site/{Welcome,Legal}.vue`,
   `resources/js/components/site/{SiteHeader,SiteFooter,BoardMock}.vue`

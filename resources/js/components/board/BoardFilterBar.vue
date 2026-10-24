@@ -20,8 +20,11 @@ import {
 import { getInitials } from '@/composables/useInitials';
 import type { BoardStack } from '@/types';
 
+// The filter popover is switched off for now; search, the count and the
+// filter state itself keep working.
 const props = defineProps<{
 	stacks: BoardStack[];
+	withFilters?: boolean;
 }>();
 
 const { labels, members } = useBoard();
@@ -59,28 +62,50 @@ const row =
 </script>
 
 <template>
-	<div class="flex flex-wrap items-center gap-2">
-		<label class="relative w-full sm:w-64">
-			<span class="sr-only">Search cards</span>
-			<PhMagnifyingGlass
-				class="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 opacity-70"
-			/>
-			<input
-				ref="search"
-				v-model="filter.text"
-				type="search"
-				placeholder="Search cards"
-				aria-keyshortcuts="/"
-				class="h-9 w-full rounded-[var(--radius-sheet)] bg-current/10 pr-3 pl-8 text-[0.9375rem] outline-hidden transition-colors duration-(--dur-micro) placeholder:text-current/60 hover:bg-current/15 focus:bg-current/15 [&::-webkit-search-cancel-button]:hidden"
-				@keydown.esc="escape"
-			/>
-		</label>
+	<div class="flex items-center">
+		<div class="relative w-40 sm:w-72">
+			<label>
+				<span class="sr-only">Search cards</span>
+				<PhMagnifyingGlass
+					class="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 opacity-70"
+				/>
+				<input
+					ref="search"
+					v-model="filter.text"
+					type="search"
+					placeholder="Search cards"
+					aria-keyshortcuts="/"
+					class="h-9 w-full rounded-[var(--radius-sheet)] bg-current/10 pr-9 pl-8 text-[0.9375rem] outline-hidden transition-colors duration-(--dur-micro) placeholder:text-current/60 hover:bg-current/15 focus:bg-current/15 [&::-webkit-search-cancel-button]:hidden"
+					@keydown.esc="escape"
+				/>
+			</label>
+			<button
+				v-if="active"
+				type="button"
+				class="absolute top-1/2 right-1.5 flex size-6 -translate-y-1/2 items-center justify-center rounded-full opacity-70 transition duration-(--dur-micro) hover:bg-current/15 hover:opacity-100 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-solid"
+				aria-label="Clear search"
+				@click="clear"
+			>
+				<PhX class="size-4" />
+				<span
+					class="absolute top-1/2 left-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden"
+					aria-hidden="true"
+				/>
+			</button>
+			<p class="sr-only" aria-live="polite">
+				<template v-if="active">
+					{{ shown }} of {{ cards.length }}
+					{{ cards.length === 1 ? 'card' : 'cards' }}
+				</template>
+			</p>
+		</div>
 
-		<Popover>
+		<Popover v-if="withFilters">
 			<PopoverTrigger as-child>
 				<Button
 					variant="ghost"
-					class="h-9 bg-current/10 text-inherit hover:bg-current/15 hover:text-inherit data-[state=open]:bg-current/15"
+					class="h-9 text-inherit hover:bg-current/10 hover:text-inherit data-[state=open]:bg-current/10"
+					:class="{ 'bg-current/10': count > 0 }"
 				>
 					<PhFunnelSimple />
 					Filter
@@ -211,20 +236,5 @@ const row =
 				</ul>
 			</PopoverContent>
 		</Popover>
-
-		<template v-if="active">
-			<p class="num px-1 text-sm opacity-80" aria-live="polite">
-				{{ shown }} of {{ cards.length }}
-				{{ cards.length === 1 ? 'card' : 'cards' }}
-			</p>
-			<Button
-				variant="ghost"
-				class="h-9 px-2.5 text-inherit hover:bg-current/10 hover:text-inherit"
-				@click="clear"
-			>
-				<PhX />
-				Clear
-			</Button>
-		</template>
 	</div>
 </template>

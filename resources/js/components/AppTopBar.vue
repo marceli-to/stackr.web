@@ -2,7 +2,7 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
-import NotificationBell from '@/components/NotificationBell.vue';
+import AppMenu from '@/components/AppMenu.vue';
 import ProjectMembers from '@/components/projects/ProjectMembers.vue';
 import {
 	DropdownMenu,
@@ -16,7 +16,8 @@ import { index } from '@/routes/projects';
 const page = usePage();
 const user = computed(() => page.props.auth.user);
 
-// On a board the bar carries the project's name instead of the wordmark.
+// On a board the bar carries the project's name instead of the wordmark,
+// and the board page teleports its search and menu into the bar.
 const project = computed(
 	() => page.props.project as { name: string } | undefined,
 );
@@ -24,51 +25,61 @@ const project = computed(
 
 <template>
 	<header
-		class="flex h-14 shrink-0 items-center gap-2 border-b border-current/15 px-3 md:px-5"
+		class="grid h-14 shrink-0 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-2 border-b border-current/15 px-3 sm:grid-cols-[minmax(0,1fr)_auto_minmax(max-content,1fr)] md:px-5"
 	>
-		<Link
-			:href="index()"
-			class="mr-2 flex items-center gap-2 rounded-sm"
-			aria-label="Stackr, all projects"
-		>
-			<AppLogoIcon class="size-5 fill-current" />
-			<span
-				v-if="!project"
-				class="font-display text-xl leading-none font-bold"
+		<div class="flex min-w-0 items-center gap-2">
+			<Link
+				:href="index()"
+				class="mr-2 flex items-center gap-2 rounded-sm"
+				aria-label="Stackr, all projects"
 			>
-				{{ page.props.name }}
+				<AppLogoIcon class="size-5 fill-current" />
+				<span
+					v-if="!project"
+					class="font-display text-xl leading-none font-bold"
+				>
+					{{ page.props.name }}
+				</span>
+			</Link>
+			<span
+				v-if="project"
+				class="min-w-0 truncate font-display text-xl leading-normal font-bold"
+			>
+				{{ project.name }}
 			</span>
-		</Link>
-		<span
-			v-if="project"
-			class="min-w-0 truncate font-display text-xl leading-normal font-bold"
-		>
-			{{ project.name }}
-		</span>
+		</div>
 
-		<div class="ml-auto flex shrink-0 items-center gap-3">
+		<!-- The board's search, teleported in, sits in the middle. -->
+		<div id="topbar-search" class="flex justify-center" />
+
+		<div class="flex items-center justify-end gap-2">
 			<ProjectMembers v-if="project" />
-			<NotificationBell />
-
-			<DropdownMenu>
-				<DropdownMenuTrigger as-child>
-					<button
-						type="button"
-						class="relative flex size-9 items-center justify-center rounded-full bg-current/15 text-sm font-semibold transition-colors duration-(--dur-micro) hover:bg-current/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid data-[state=open]:bg-current/25"
-						:aria-label="`Account menu for ${user.name}`"
-						data-test="user-menu-button"
-					>
-						{{ getInitials(user.name) }}
-						<span
-							class="absolute top-1/2 left-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden"
-							aria-hidden="true"
-						/>
-					</button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent align="end" class="w-64">
-					<UserMenuContent :user="user" />
-				</DropdownMenuContent>
-			</DropdownMenu>
+			<!-- A board teleports its own menu, with its actions, in here. -->
+			<div v-if="project" id="topbar-actions" class="contents" />
+			<AppMenu v-else />
 		</div>
 	</header>
+
+	<!-- Your account waits in the bottom-left corner, out of the board's way. -->
+	<div class="fixed bottom-4 left-3 z-10 md:left-5">
+		<DropdownMenu>
+			<DropdownMenuTrigger as-child>
+				<button
+					type="button"
+					class="relative flex size-9 items-center justify-center rounded-full bg-current/15 text-sm font-semibold transition-colors duration-(--dur-micro) hover:bg-current/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid data-[state=open]:bg-current/25"
+					:aria-label="`Account menu for ${user.name}`"
+					data-test="user-menu-button"
+				>
+					{{ getInitials(user.name) }}
+					<span
+						class="absolute top-1/2 left-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden"
+						aria-hidden="true"
+					/>
+				</button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent side="top" align="start" class="w-64">
+				<UserMenuContent :user="user" />
+			</DropdownMenuContent>
+		</DropdownMenu>
+	</div>
 </template>

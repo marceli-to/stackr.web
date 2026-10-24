@@ -1,25 +1,28 @@
 <script setup lang="ts">
 import { router, usePage } from '@inertiajs/vue3';
 import { PhBell } from '@phosphor-icons/vue';
-import { computed, ref, watch } from 'vue';
+import { computed, watch } from 'vue';
 import NotificationController from '@/actions/App/Http/Controllers/NotificationController';
 import { timeAgo } from '@/components/card/board';
 import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from '@/components/ui/popover';
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/ui/dialog';
 import { Spinner } from '@/components/ui/spinner';
 import { getInitials } from '@/composables/useInitials';
 import type { AppNotification } from '@/types';
 
+// Your notifications as a list, opened from the app menu.
 const page = usePage();
 const unread = computed(() => page.props.notifications?.unread ?? 0);
 const list = computed(() => page.props.notificationList);
 
-const open = ref(false);
+const open = defineModel<boolean>('open', { default: false });
 
-// The list loads when the bell opens; the count comes with every page.
+// The list loads when the dialog opens; the count comes with every page.
 watch(open, (isOpen) => {
 	if (isOpen) {
 		router.reload({ only: ['notificationList', 'notifications'] });
@@ -45,39 +48,26 @@ function readAll() {
 </script>
 
 <template>
-	<Popover v-model:open="open">
-		<PopoverTrigger as-child>
-			<button
-				type="button"
-				class="relative flex size-9 items-center justify-center rounded-full transition-colors duration-(--dur-micro) hover:bg-current/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid data-[state=open]:bg-current/15"
-				:aria-label="
-					unread > 0
-						? `Notifications, ${unread} unread`
-						: 'Notifications'
-				"
-			>
-				<PhBell class="size-5" />
-				<span
-					v-if="unread > 0"
-					class="num absolute top-1 right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[0.625rem] leading-none font-semibold text-white"
-					aria-hidden="true"
+	<Dialog v-model:open="open">
+		<DialogContent class="gap-4 sm:max-w-lg">
+			<DialogHeader>
+				<DialogTitle>Notifications</DialogTitle>
+				<DialogDescription
+					class="flex flex-wrap items-baseline gap-x-3"
 				>
-					{{ unread > 9 ? '9+' : unread }}
-				</span>
-			</button>
-		</PopoverTrigger>
-		<PopoverContent align="end" class="w-96 max-w-[calc(100vw-1.5rem)] p-0">
-			<div class="flex items-center justify-between px-4 pt-3.5 pb-2">
-				<p class="font-semibold">Notifications</p>
-				<button
-					v-if="unread > 0"
-					type="button"
-					class="rounded-[3px] text-sm text-muted-foreground underline decoration-(--color-rule) underline-offset-4 hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-solid"
-					@click="readAll"
-				>
-					Mark all as read
-				</button>
-			</div>
+					<span class="num">{{
+						unread > 0 ? `${unread} unread` : 'All caught up'
+					}}</span>
+					<button
+						v-if="unread > 0"
+						type="button"
+						class="rounded-[3px] text-sm underline decoration-(--color-rule) underline-offset-4 hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-solid"
+						@click="readAll"
+					>
+						Mark all as read
+					</button>
+				</DialogDescription>
+			</DialogHeader>
 
 			<div v-if="!list" class="flex justify-center py-8">
 				<Spinner />
@@ -89,7 +79,11 @@ function readAll() {
 				Nothing yet. You'll hear about cards you're added to, mentions
 				and due dates here.
 			</p>
-			<ul v-else class="max-h-[min(28rem,70svh)] overflow-y-auto p-1.5">
+			<ul
+				v-else
+				role="list"
+				class="-mx-2.5 max-h-[min(32rem,65svh)] overflow-y-auto sm:-mx-4"
+			>
 				<li v-for="notification in list" :key="notification.id">
 					<button
 						type="button"
@@ -131,12 +125,12 @@ function readAll() {
 						</span>
 						<span
 							v-if="!notification.read"
-							class="mt-1.5 size-2 shrink-0 rounded-full bg-destructive"
+							class="mt-1.5 size-2 shrink-0 rounded-full bg-yellow-400"
 							aria-label="Unread"
 						/>
 					</button>
 				</li>
 			</ul>
-		</PopoverContent>
-	</Popover>
+		</DialogContent>
+	</Dialog>
 </template>

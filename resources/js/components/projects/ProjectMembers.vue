@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Form, usePage } from '@inertiajs/vue3';
-import { PhUserPlus } from '@phosphor-icons/vue';
 import { computed, ref } from 'vue';
 import ProjectInvitationController from '@/actions/App/Http/Controllers/ProjectInvitationController';
 import ProjectMemberController from '@/actions/App/Http/Controllers/ProjectMemberController';
 import InputError from '@/components/InputError.vue';
+import { membersOpen as open } from '@/components/projects/members';
 import { Button } from '@/components/ui/button';
 import {
 	Dialog,
@@ -17,9 +17,9 @@ import { Input } from '@/components/ui/input';
 import { getInitials } from '@/composables/useInitials';
 import type { ProjectInvitation, ProjectMember } from '@/types';
 
-// The board's people: an avatar stack in the top bar and, for the owner, a
-// round invite button next to it; both open the members dialog. Only the
-// owner invites and removes; anyone else can leave.
+// The board's people: an avatar stack in the top bar that opens the members
+// dialog, as does the board menu. Only the owner invites and removes; anyone
+// else can leave.
 const page = usePage<{
 	project: { id: number; name: string };
 	members: ProjectMember[];
@@ -38,7 +38,6 @@ const others = computed(() => members.value.filter((m) => m.id !== me.value));
 const shown = computed(() => others.value.slice(0, 4));
 const more = computed(() => others.value.length - shown.value.length);
 
-const open = ref(false);
 // The member whose "Remove" or "Leave" waits for a second click.
 const confirming = ref<number | null>(null);
 
@@ -50,7 +49,7 @@ const actionClass =
 	<button
 		v-if="others.length > 0"
 		type="button"
-		class="flex -space-x-2 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
+		class="flex -space-x-2 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid max-sm:hidden"
 		:aria-label="`Members of ${project.name}`"
 		@click="open = true"
 	>
@@ -76,17 +75,6 @@ const actionClass =
 				+{{ more }}
 			</span>
 		</span>
-	</button>
-
-	<button
-		v-if="canManage"
-		type="button"
-		class="flex size-9 items-center justify-center rounded-full bg-current/10 transition-colors duration-(--dur-micro) hover:bg-current/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
-		aria-label="Invite people"
-		title="Invite people"
-		@click="open = true"
-	>
-		<PhUserPlus class="size-4" />
 	</button>
 
 	<Dialog v-model:open="open" @update:open="confirming = null">

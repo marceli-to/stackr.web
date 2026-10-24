@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import { PhKeyboard } from '@phosphor-icons/vue';
 import { onKeyStroke } from '@vueuse/core';
-import { ref } from 'vue';
 import { busy } from '@/components/board/useBoardKeys';
-import { Button } from '@/components/ui/button';
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from '@/components/ui/dialog';
 
-const open = ref(false);
+// Opened from the board menu, or with ?.
+const open = defineModel<boolean>('open', { default: false });
 
 onKeyStroke('?', (event) => {
 	if (!busy(event)) {
@@ -35,17 +32,6 @@ const shortcuts = [
 
 <template>
 	<Dialog v-model:open="open">
-		<DialogTrigger as-child>
-			<Button
-				variant="ghost"
-				size="icon"
-				class="text-inherit hover:bg-current/10 hover:text-inherit data-[state=open]:bg-current/10"
-				aria-label="Keyboard shortcuts"
-				aria-keyshortcuts="?"
-			>
-				<PhKeyboard />
-			</Button>
-		</DialogTrigger>
 		<DialogContent class="sm:max-w-md">
 			<DialogHeader>
 				<DialogTitle>Shortcuts</DialogTitle>
