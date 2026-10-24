@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { LayoutGrid, Menu, Search } from '@lucide/vue';
+import { PhList, PhMagnifyingGlass, PhSquaresFour } from '@phosphor-icons/vue';
 import { computed } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
@@ -50,7 +50,7 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Projects',
         href: index(),
-        icon: LayoutGrid,
+        icon: PhSquaresFour,
     },
 ];
 </script>
@@ -68,7 +68,7 @@ const mainNavItems: NavItem[] = [
                                 size="icon"
                                 class="mr-2 h-9 w-9"
                             >
-                                <Menu class="h-5 w-5" />
+                                <PhList class="h-5 w-5" />
                             </Button>
                         </SheetTrigger>
                         <SheetContent side="left" class="w-[300px] p-6">
@@ -158,7 +158,7 @@ const mainNavItems: NavItem[] = [
                             size="icon"
                             class="group h-9 w-9 cursor-pointer"
                         >
-                            <Search
+                            <PhMagnifyingGlass
                                 class="size-5 opacity-80 group-hover:opacity-100"
                             />
                         </Button>

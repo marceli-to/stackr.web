@@ -20,6 +20,10 @@ void createInertiaApp({
         }
     },
     withApp: (app) => {
+        // Phosphor icons default to bold; small icons inside text pass
+        // weight="regular".
+        app.provide('weight', 'bold');
+
         app.directive('focus', {
             mounted: (el: HTMLElement, shouldFocus) => {
                 if (shouldFocus.value !== false) {

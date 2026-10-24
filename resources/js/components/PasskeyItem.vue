@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { KeyRound, Trash2 } from '@lucide/vue';
+import { PhKey, PhTrash } from '@phosphor-icons/vue';
 import { ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import {
@@ -37,7 +37,7 @@ const handleDelete = () => {
             <div
                 class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted"
             >
-                <KeyRound class="h-5 w-5 text-muted-foreground" />
+                <PhKey class="h-5 w-5 text-muted-foreground" />
             </div>
             <div class="space-y-1">
                 <div class="flex items-center gap-2.5">
@@ -66,7 +66,7 @@ const handleDelete = () => {
                     size="sm"
                     class="text-destructive hover:bg-destructive/10 hover:text-destructive"
                 >
-                    <Trash2 class="h-4 w-4" />
+                    <PhTrash class="h-4 w-4" />
                     <span class="sr-only">Remove</span>
                 </Button>
             </DialogTrigger>

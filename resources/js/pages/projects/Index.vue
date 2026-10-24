@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { EllipsisVertical, Pencil, Plus, Trash2 } from '@lucide/vue';
+import {
+    PhDotsThreeVertical,
+    PhPencilSimple,
+    PhPlus,
+    PhTrash,
+} from '@phosphor-icons/vue';
 import { computed, ref } from 'vue';
 import DeleteProjectDialog from '@/components/projects/DeleteProjectDialog.vue';
 import ProjectFormDialog from '@/components/projects/ProjectFormDialog.vue';
@@ -79,7 +84,7 @@ function plural(count: number, word: string) {
                 </p>
             </header>
             <Button @click="create" data-test="new-project-button">
-                <Plus />
+                <PhPlus />
                 New project
             </Button>
         </div>
@@ -95,7 +100,7 @@ function plural(count: number, word: string) {
                 </p>
             </div>
             <Button variant="outline" @click="create">
-                <Plus />
+                <PhPlus />
                 New project
             </Button>
         </div>
@@ -126,12 +131,12 @@ function plural(count: number, word: string) {
                                 class="relative z-10 -mt-1 -mr-2 size-8 text-inherit hover:bg-current/10 hover:text-inherit data-[state=open]:bg-current/10"
                                 :aria-label="`Actions for ${project.name}`"
                             >
-                                <EllipsisVertical />
+                                <PhDotsThreeVertical />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuItem @select="edit(project)">
-                                <Pencil />
+                                <PhPencilSimple />
                                 Edit
                             </DropdownMenuItem>
                             <DropdownMenuItem
@@ -139,7 +144,7 @@ function plural(count: number, word: string) {
                                 variant="destructive"
                                 @select="remove(project)"
                             >
-                                <Trash2 />
+                                <PhTrash />
                                 Delete
                             </DropdownMenuItem>
                         </DropdownMenuContent>

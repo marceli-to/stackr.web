@@ -2,7 +2,7 @@
 import type { UrlMethodPair } from '@inertiajs/core';
 import { router } from '@inertiajs/vue3';
 import { usePasskeyVerify } from '@laravel/passkeys/vue';
-import { KeyRound } from '@lucide/vue';
+import { PhKey } from '@phosphor-icons/vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -46,7 +46,7 @@ const { verify, isLoading, error, isSupported } = usePasskeyVerify({
                 :disabled="isLoading"
             >
                 <Spinner v-if="isLoading" />
-                <KeyRound v-else class="h-4 w-4" />
+                <PhKey v-else class="h-4 w-4" />
                 {{
                     isLoading
                         ? (props.loadingLabel ?? 'Authenticating...')

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Form } from '@inertiajs/vue3';
-import { Plus, X } from '@lucide/vue';
+import { PhPlus, PhX } from '@phosphor-icons/vue';
 import { ref } from 'vue';
 import CardController from '@/actions/App/Http/Controllers/CardController';
 import { Button } from '@/components/ui/button';
@@ -63,7 +63,7 @@ function submitOnEnter(event: KeyboardEvent) {
                     aria-label="Close"
                     @click="open = false"
                 >
-                    <X />
+                    <PhX />
                 </Button>
             </div>
         </Form>
@@ -74,7 +74,7 @@ function submitOnEnter(event: KeyboardEvent) {
             class="w-full justify-start text-inherit opacity-85 hover:bg-current/10 hover:text-inherit hover:opacity-100"
             @click="open = true"
         >
-            <Plus />
+            <PhPlus />
             Add a card
         </Button>
     </div>

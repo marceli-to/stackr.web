@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from "vue"
-import { Loader2Icon } from "@lucide/vue"
+import { PhCircleNotch } from "@phosphor-icons/vue"
 import { cn } from "@/lib/utils"
 
 const props = defineProps<{
@@ -9,7 +9,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <Loader2Icon
+  <PhCircleNotch
     role="status"
     aria-label="Loading"
     :class="cn('size-4 animate-spin', props.class)"

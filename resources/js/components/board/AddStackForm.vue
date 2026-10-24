@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Form } from '@inertiajs/vue3';
-import { Plus, X } from '@lucide/vue';
+import { PhPlus, PhX } from '@phosphor-icons/vue';
 import { ref } from 'vue';
 import StackController from '@/actions/App/Http/Controllers/StackController';
 import { Button } from '@/components/ui/button';
@@ -54,7 +54,7 @@ const open = ref(false);
                     aria-label="Close"
                     @click="open = false"
                 >
-                    <X />
+                    <PhX />
                 </Button>
             </div>
         </Form>
@@ -64,7 +64,7 @@ const open = ref(false);
             class="h-11 w-full justify-start rounded-[var(--radius-tile)] border-2 border-current/30 text-inherit hover:border-current/60 hover:bg-transparent hover:text-inherit"
             @click="open = true"
         >
-            <Plus />
+            <PhPlus />
             Add a list
         </Button>
     </div>

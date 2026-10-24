@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { Monitor, Moon, Sun } from '@lucide/vue';
+import { PhMonitor, PhMoon, PhSun } from '@phosphor-icons/vue';
 import { useAppearance } from '@/composables/useAppearance';
 
 const { appearance, updateAppearance } = useAppearance();
 
 const tabs = [
-    { value: 'light', Icon: Sun, label: 'Light' },
-    { value: 'dark', Icon: Moon, label: 'Dark' },
-    { value: 'system', Icon: Monitor, label: 'System' },
+    { value: 'light', Icon: PhSun, label: 'Light' },
+    { value: 'dark', Icon: PhMoon, label: 'Dark' },
+    { value: 'system', Icon: PhMonitor, label: 'System' },
 ] as const;
 </script>
 

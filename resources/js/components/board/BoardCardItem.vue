@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CalendarClock } from '@lucide/vue';
+import { PhCalendarBlank } from '@phosphor-icons/vue';
 import { computed } from 'vue';
 import type { BoardCard } from '@/types';
 
@@ -38,7 +38,7 @@ const due = computed(() => {
                     : 'text-muted-foreground'
             "
         >
-            <CalendarClock class="size-3.5" />
+            <PhCalendarBlank weight="regular" class="size-3.5" />
             <span v-if="due.overdue" class="sr-only">Overdue: </span>
             {{ due.label }}
         </p>

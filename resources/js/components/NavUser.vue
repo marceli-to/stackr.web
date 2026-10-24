@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { usePage } from '@inertiajs/vue3';
-import { ChevronsUpDown, CircleUser } from '@lucide/vue';
+import { PhCaretUpDown, PhUserCircle } from '@phosphor-icons/vue';
 import { computed } from 'vue';
 import {
     DropdownMenu,
@@ -30,11 +30,11 @@ const { isMobile, state } = useSidebar();
                         class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                         data-test="sidebar-menu-button"
                     >
-                        <CircleUser
+                        <PhUserCircle
                             class="hidden group-data-[collapsible=icon]:block"
                         />
                         <UserInfo :user="user" />
-                        <ChevronsUpDown class="ml-auto size-4" />
+                        <PhCaretUpDown class="ml-auto size-4" />
                     </SidebarMenuButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent

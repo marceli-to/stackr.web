@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { ChevronDown } from '@lucide/vue';
+import { PhCaretDown } from '@phosphor-icons/vue';
 import { computed } from 'vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import { Button } from '@/components/ui/button';
@@ -39,7 +39,7 @@ const user = computed(() => page.props.auth.user);
                     data-test="user-menu-button"
                 >
                     <span class="max-w-40 truncate">{{ user.name }}</span>
-                    <ChevronDown class="opacity-70" />
+                    <PhCaretDown class="opacity-70" />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" class="w-64">

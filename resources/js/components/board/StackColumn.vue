@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { Form } from '@inertiajs/vue3';
-import { EllipsisVertical, Pencil, Trash2 } from '@lucide/vue';
+import {
+    PhDotsThreeVertical,
+    PhPencilSimple,
+    PhTrash,
+} from '@phosphor-icons/vue';
 import { nextTick, ref, useTemplateRef } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 import type { DraggableEvent } from 'vue-draggable-plus';
@@ -133,19 +137,19 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
                         class="size-8 text-inherit hover:bg-current/10 hover:text-inherit data-[state=open]:bg-current/10"
                         :aria-label="`Actions for ${stack.name}`"
                     >
-                        <EllipsisVertical />
+                        <PhDotsThreeVertical />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                     <DropdownMenuItem @select="startRename">
-                        <Pencil />
+                        <PhPencilSimple />
                         Rename
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         variant="destructive"
                         @select="deleteOpen = true"
                     >
-                        <Trash2 />
+                        <PhTrash />
                         Delete list
                     </DropdownMenuItem>
                 </DropdownMenuContent>
