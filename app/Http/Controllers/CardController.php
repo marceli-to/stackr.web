@@ -2,35 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Cards\CreateCard;
+use App\Actions\Cards\DeleteCard;
+use App\Actions\Cards\MoveCard;
+use App\Actions\Cards\UpdateCard;
+use App\Http\Requests\CardMoveRequest;
 use App\Http\Requests\CardRequest;
 use App\Http\Requests\CardUpdateRequest;
-use App\Http\Requests\MoveRequest;
 use App\Models\Card;
 use App\Models\Stack;
-use App\Support\FractionalIndex;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
 
 class CardController extends Controller
 {
 	/**
 	 * Add a card to the bottom of a list.
 	 */
-	public function store(CardRequest $request, Stack $stack): RedirectResponse
+	public function store(CardRequest $request, Stack $stack, CreateCard $createCard): RedirectResponse
 	{
 		Gate::authorize('update', $stack->project);
 
-		DB::transaction(function () use ($request, $stack): void {
-			$last = $stack->cards()->reorder()->max('position');
-
-			$stack->cards()->create([
-				...$request->validated(),
-				'position' => FractionalIndex::between($last, null),
-			]);
-		});
+		$createCard->handle($stack, $request->validated('title'));
 
 		return back();
 	}
@@ -38,33 +31,17 @@ class CardController extends Controller
 	/**
 	 * Move a card within its list or into another list of the same project.
 	 */
-	public function move(MoveRequest $request, Card $card): RedirectResponse
+	public function move(CardMoveRequest $request, Card $card, MoveCard $moveCard): RedirectResponse
 	{
 		$project = $card->stack->project;
 
 		Gate::authorize('update', $project);
 
 		$target = $request->has('stack_id')
-			? $project->stacks()->find($request->integer('stack_id'))
+			? $project->stacks()->findOrFail($request->integer('stack_id'))
 			: $card->stack;
 
-		if ($target === null) {
-			throw ValidationException::withMessages([
-				'stack_id' => __('The list does not belong to this project.'),
-			]);
-		}
-
-		DB::transaction(function () use ($request, $card, $target): void {
-			$siblings = $target->cards()
-				->whereKeyNot($card->id)
-				->get(['id', 'position'])
-				->map(fn (Card $sibling): string => $sibling->position)
-				->all();
-
-			$card->stack()->associate($target);
-			$card->position = FractionalIndex::forIndex($siblings, $request->integer('index'));
-			$card->save();
-		});
+		$moveCard->handle($card, $target, $request->integer('index'));
 
 		return back();
 	}
@@ -72,17 +49,11 @@ class CardController extends Controller
 	/**
 	 * Change a card's title, description, dates, completion or cover.
 	 */
-	public function update(CardUpdateRequest $request, Card $card): RedirectResponse
+	public function update(CardUpdateRequest $request, Card $card, UpdateCard $updateCard): RedirectResponse
 	{
 		Gate::authorize('update', $card->stack->project);
 
-		$data = $request->safe()->except('completed');
-
-		if ($request->has('completed')) {
-			$data['completed_at'] = $request->boolean('completed') ? ($card->completed_at ?? now()) : null;
-		}
-
-		$card->update($data);
+		$updateCard->handle($card, $request->validated());
 
 		return back();
 	}
@@ -90,15 +61,15 @@ class CardController extends Controller
 	/**
 	 * Delete a card with everything on it, and close it.
 	 */
-	public function destroy(Card $card): RedirectResponse
+	public function destroy(Card $card, DeleteCard $deleteCard): RedirectResponse
 	{
 		$project = $card->stack->project;
 
 		Gate::authorize('update', $project);
 
-		$card->delete();
+		$deleteCard->handle($card);
 
-		Inertia::flash('toast', ['type' => 'success', 'message' => __('Card deleted.')]);
+		$this->toast(__('Card deleted.'));
 
 		return to_route('projects.show', $project);
 	}

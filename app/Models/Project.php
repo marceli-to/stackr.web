@@ -12,7 +12,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * @property int $id
@@ -90,6 +92,22 @@ class Project extends Model
 	public function cards(): HasManyThrough
 	{
 		return $this->hasManyThrough(Card::class, Stack::class);
+	}
+
+	/**
+	 * The project's members with their users, the owner first and the rest by name.
+	 *
+	 * @return Collection<int, ProjectMembership>
+	 */
+	public function membershipsInOrder(): Collection
+	{
+		return ProjectMembership::with('user')->where('project_id', $this->id)->get()
+			->sortBy(fn (ProjectMembership $membership) => [
+				$membership->role !== ProjectRole::Owner,
+				Str::lower($membership->user->name),
+			])
+			->values()
+			->toBase();
 	}
 
 	public function roleOf(User $user): ?ProjectRole

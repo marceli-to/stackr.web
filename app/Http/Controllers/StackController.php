@@ -2,33 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Stacks\CreateStack;
+use App\Actions\Stacks\DeleteStack;
+use App\Actions\Stacks\MoveStack;
+use App\Actions\Stacks\RenameStack;
 use App\Http\Requests\MoveRequest;
 use App\Http\Requests\StackRequest;
 use App\Models\Project;
 use App\Models\Stack;
-use App\Support\FractionalIndex;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Inertia\Inertia;
 
 class StackController extends Controller
 {
 	/**
 	 * Add a list to the end of a project's board.
 	 */
-	public function store(StackRequest $request, Project $project): RedirectResponse
+	public function store(StackRequest $request, Project $project, CreateStack $createStack): RedirectResponse
 	{
 		Gate::authorize('update', $project);
 
-		DB::transaction(function () use ($request, $project): void {
-			$last = $project->stacks()->reorder()->max('position');
-
-			$project->stacks()->create([
-				...$request->validated(),
-				'position' => FractionalIndex::between($last, null),
-			]);
-		});
+		$createStack->handle($project, $request->validated('name'));
 
 		return back();
 	}
@@ -36,11 +30,11 @@ class StackController extends Controller
 	/**
 	 * Rename a list.
 	 */
-	public function update(StackRequest $request, Stack $stack): RedirectResponse
+	public function update(StackRequest $request, Stack $stack, RenameStack $renameStack): RedirectResponse
 	{
 		Gate::authorize('update', $stack->project);
 
-		$stack->update($request->validated());
+		$renameStack->handle($stack, $request->validated('name'));
 
 		return back();
 	}
@@ -48,19 +42,11 @@ class StackController extends Controller
 	/**
 	 * Move a list to a new place on the board.
 	 */
-	public function move(MoveRequest $request, Stack $stack): RedirectResponse
+	public function move(MoveRequest $request, Stack $stack, MoveStack $moveStack): RedirectResponse
 	{
 		Gate::authorize('update', $stack->project);
 
-		DB::transaction(function () use ($request, $stack): void {
-			$siblings = $stack->project->stacks()
-				->whereKeyNot($stack->id)
-				->get(['id', 'position'])
-				->map(fn (Stack $sibling): string => $sibling->position)
-				->all();
-
-			$stack->update(['position' => FractionalIndex::forIndex($siblings, $request->integer('index'))]);
-		});
+		$moveStack->handle($stack, $request->integer('index'));
 
 		return back();
 	}
@@ -68,13 +54,13 @@ class StackController extends Controller
 	/**
 	 * Delete a list and its cards.
 	 */
-	public function destroy(Stack $stack): RedirectResponse
+	public function destroy(Stack $stack, DeleteStack $deleteStack): RedirectResponse
 	{
 		Gate::authorize('update', $stack->project);
 
-		$stack->delete();
+		$deleteStack->handle($stack);
 
-		Inertia::flash('toast', ['type' => 'success', 'message' => __('List deleted.')]);
+		$this->toast(__('List deleted.'));
 
 		return back();
 	}

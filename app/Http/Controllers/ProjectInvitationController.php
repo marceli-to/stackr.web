@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\ProjectRole;
+use App\Actions\Members\AcceptInvitation;
+use App\Actions\Members\WithdrawInvitation;
 use App\Models\ProjectInvitation;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Str;
-use Inertia\Inertia;
 
 class ProjectInvitationController extends Controller
 {
@@ -17,12 +16,12 @@ class ProjectInvitationController extends Controller
 	 * Open an invitation link. Guests sign up (or log in) first and come back
 	 * here; then the signed-in user joins the project.
 	 */
-	public function show(Request $request, string $token): RedirectResponse
+	public function show(Request $request, string $token, AcceptInvitation $acceptInvitation): RedirectResponse
 	{
 		$invitation = ProjectInvitation::with('project')->where('token', $token)->first();
 
 		if ($invitation === null || $invitation->isExpired()) {
-			Inertia::flash('toast', ['type' => 'error', 'message' => __('This invitation is no longer valid. Ask for a new one.')]);
+			$this->toast(__('This invitation is no longer valid. Ask for a new one.'), 'error');
 
 			return to_route('home');
 		}
@@ -38,20 +37,9 @@ class ProjectInvitationController extends Controller
 				: to_route('register', ['email' => $invitation->email]);
 		}
 
-		$project = $invitation->project;
+		$project = $acceptInvitation->handle($invitation, $user);
 
-		if ($project->roleOf($user) === null) {
-			$project->members()->attach($user, ['role' => ProjectRole::Member->value]);
-		}
-
-		// The link arrived at this address, which proves the user owns it.
-		if (Str::lower($user->email) === $invitation->email && ! $user->hasVerifiedEmail()) {
-			$user->markEmailAsVerified();
-		}
-
-		$invitation->delete();
-
-		Inertia::flash('toast', ['type' => 'success', 'message' => __('Welcome to :project.', ['project' => $project->name])]);
+		$this->toast(__('Welcome to :project.', ['project' => $project->name]));
 
 		return to_route('projects.show', $project);
 	}
@@ -59,13 +47,13 @@ class ProjectInvitationController extends Controller
 	/**
 	 * Withdraw an invitation that hasn't been accepted.
 	 */
-	public function destroy(ProjectInvitation $invitation): RedirectResponse
+	public function destroy(ProjectInvitation $invitation, WithdrawInvitation $withdrawInvitation): RedirectResponse
 	{
 		Gate::authorize('manageMembers', $invitation->project);
 
-		$invitation->delete();
+		$withdrawInvitation->handle($invitation);
 
-		Inertia::flash('toast', ['type' => 'success', 'message' => __('Invitation withdrawn.')]);
+		$this->toast(__('Invitation withdrawn.'));
 
 		return back();
 	}

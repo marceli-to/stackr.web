@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\LabelColor;
+use App\Actions\Labels\CreateLabel;
+use App\Actions\Labels\DeleteLabel;
+use App\Actions\Labels\UpdateLabel;
+use App\Http\Requests\LabelRequest;
 use App\Models\Label;
 use App\Models\Project;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\Rule;
 
 class LabelController extends Controller
 {
 	/**
 	 * Add a label to a project's set.
 	 */
-	public function store(Request $request, Project $project): RedirectResponse
+	public function store(LabelRequest $request, Project $project, CreateLabel $createLabel): RedirectResponse
 	{
 		Gate::authorize('update', $project);
 
-		$project->labels()->create($this->validated($request));
+		$createLabel->handle($project, $request->validated());
 
 		return back();
 	}
@@ -27,11 +28,11 @@ class LabelController extends Controller
 	/**
 	 * Rename or recolour a label on every card that has it.
 	 */
-	public function update(Request $request, Label $label): RedirectResponse
+	public function update(LabelRequest $request, Label $label, UpdateLabel $updateLabel): RedirectResponse
 	{
 		Gate::authorize('update', $label->project);
 
-		$label->update($this->validated($request));
+		$updateLabel->handle($label, $request->validated());
 
 		return back();
 	}
@@ -39,23 +40,12 @@ class LabelController extends Controller
 	/**
 	 * Delete a label; it comes off every card.
 	 */
-	public function destroy(Label $label): RedirectResponse
+	public function destroy(Label $label, DeleteLabel $deleteLabel): RedirectResponse
 	{
 		Gate::authorize('update', $label->project);
 
-		$label->delete();
+		$deleteLabel->handle($label);
 
 		return back();
-	}
-
-	/**
-	 * @return array<string, mixed>
-	 */
-	private function validated(Request $request): array
-	{
-		return $request->validate([
-			'name' => ['nullable', 'string', 'max:60'],
-			'color' => ['required', Rule::enum(LabelColor::class)],
-		]);
 	}
 }

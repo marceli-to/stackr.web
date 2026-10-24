@@ -2,59 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Attachments\DeleteAttachment;
+use App\Actions\Attachments\StoreAttachments;
+use App\Http\Requests\AttachmentRequest;
 use App\Models\Attachment;
 use App\Models\Card;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AttachmentController extends Controller
 {
 	/**
-	 * Upload one or more files to a card. The first image becomes the cover
-	 * when the card has none yet, as on Trello.
+	 * Upload one or more files to a card.
 	 */
-	public function store(Request $request, Card $card): RedirectResponse
+	public function store(AttachmentRequest $request, Card $card, StoreAttachments $storeAttachments): RedirectResponse
 	{
-		$project = $card->stack->project;
+		Gate::authorize('update', $card->stack->project);
 
-		Gate::authorize('update', $project);
+		/** @var User $user */
+		$user = $request->user();
 
-		$request->validate([
-			'files' => ['required', 'array', 'max:20'],
-			'files.*' => ['file', 'max:20480'],
-		]);
-
-		$directory = Attachment::directoryFor($project->id, $card->id);
-
-		/** @var list<UploadedFile> $files */
-		$files = $request->file('files');
-
-		foreach ($files as $file) {
-			$extension = $file->guessExtension() ?? $file->getClientOriginalExtension();
-			$path = $file->storeAs($directory, Str::uuid().($extension !== '' ? ".{$extension}" : ''), Attachment::DISK);
-			$size = str_starts_with((string) $file->getMimeType(), 'image/') ? @getimagesize($file->getRealPath()) : false;
-
-			$attachment = new Attachment([
-				'path' => $path,
-				'name' => Str::limit($file->getClientOriginalName(), 250, ''),
-				'mime_type' => $file->getMimeType() ?? 'application/octet-stream',
-				'size' => $file->getSize(),
-				'width' => $size !== false ? $size[0] : null,
-				'height' => $size !== false ? $size[1] : null,
-			]);
-			$attachment->card()->associate($card);
-			$attachment->user()->associate($request->user());
-			$attachment->save();
-
-			if ($card->cover_attachment_id === null && $attachment->isImage()) {
-				$card->update(['cover_attachment_id' => $attachment->id]);
-			}
-		}
+		$storeAttachments->handle($card, $user, $request->uploads());
 
 		return back();
 	}
@@ -85,11 +57,11 @@ class AttachmentController extends Controller
 	/**
 	 * Delete a file. A card that used it as its cover loses the cover.
 	 */
-	public function destroy(Attachment $attachment): RedirectResponse
+	public function destroy(Attachment $attachment, DeleteAttachment $deleteAttachment): RedirectResponse
 	{
 		Gate::authorize('update', $attachment->card->stack->project);
 
-		$attachment->delete();
+		$deleteAttachment->handle($attachment);
 
 		return back();
 	}

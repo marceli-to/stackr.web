@@ -6,8 +6,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * A drag & drop move: the item's new index among its siblings, and for
- * cards optionally the list it was dropped into.
+ * A drag & drop move: the item's new index among its siblings.
  */
 class MoveRequest extends FormRequest
 {
@@ -20,7 +19,6 @@ class MoveRequest extends FormRequest
 	{
 		return [
 			'index' => ['required', 'integer', 'min:0'],
-			'stack_id' => ['sometimes', 'integer'],
 		];
 	}
 }

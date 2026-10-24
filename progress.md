@@ -26,7 +26,7 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
   (`@phosphor-icons/vue`, bold by default via `app.provide('weight', 'bold')` in `app.ts`)
 - Wayfinder for typed routes (`resources/js/actions`, `resources/js/routes` are generated)
 - `vue-draggable-plus` (SortableJS) for drag & drop
-- Pest, PHPStan (level 7), Pint, vue-tsc, `vp check` for lint/format
+- Pest, PHPStan (level 7), PHP-CS-Fixer, vue-tsc, `vp check` for lint/format
 - SQLite locally. The position columns are also set up correctly for MySQL and Postgres.
 
 ## Decisions made
@@ -89,8 +89,8 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
   title, Markdown description (rendered on the server with `Str::markdown`, raw HTML stripped,
   unsafe links dropped), start and due dates plus a "complete" tick, labels (per project, 8 colours,
   `LabelColor`), members (project members), checklists with items, attachments and comments
-  (authors edit/delete their own). Shaping lives in `app/Support/CardData.php` (`face()` for the
-  board, `detail()` for the dialog).
+  (authors edit/delete their own). Shaping lives in `CardFaceResource` (the board) and
+  `CardResource` (the dialog).
 - **Attachments** are stored privately on the `local` disk under `attachments/{project}/{card}/` and
   served by `AttachmentController@show` to project members only (no `storage:link`, so shared
   hosting works). Up to 20 files of 20 MB per upload; drop files on the open card, paste an image,
@@ -107,12 +107,24 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
   production's `.env` too, along with `APP_NAME=Stackr`).
 - `/dashboard` redirects to `/projects`, so Fortify's home setting and the old links keep working.
 
+- **Code layout:** controllers stay thin: authorize (`Gate::authorize`), take a form request,
+  call one action, toast (`$this->toast()` on the base `Controller`), redirect. Every write is an
+  action class in `app/Actions/<Area>/` with a `handle()` method, injected into the controller
+  method. Validation lives in `app/Http/Requests`, and props are built by API resources in
+  `app/Http/Resources` (`JsonResource::withoutWrapping()`, so there's no `data` key).
+- **Tabs, not spaces**, everywhere except JSON, YAML and Markdown (`.editorconfig`). Pint can't
+  indent with tabs, so PHP is formatted by PHP-CS-Fixer with Pint's `laravel` rules
+  (`.php-cs-fixer.dist.php`, the same as tutor.kimiyu.ch): `composer format` / `composer format:check`.
+  The frontend uses `useTabs` in `vite.config.ts`. `resources/js/components/ui/*` (shadcn) is left as it is.
+  The switch is listed in `.git-blame-ignore-revs` (`git config blame.ignoreRevsFile .git-blame-ignore-revs`).
+
 ## Where things are
 
-- Backend: `app/Http/Controllers/{Project,Stack,Card}Controller.php`, `app/Policies/ProjectPolicy.php`,
+- Backend: `app/Http/Controllers/*`, `app/Actions/{Projects,Stacks,Cards,Labels,Checklists,Attachments,Comments,Members}/*`,
+  `app/Http/Requests/*`, `app/Http/Resources/*`, `app/Policies/ProjectPolicy.php`,
   `app/Models/{Project,ProjectMembership,Stack,Card}.php`, `routes/web.php`
 - Card backend: `app/Http/Controllers/{Card,Label,CardLabel,CardMember,Checklist,ChecklistItem,Attachment,Comment}Controller.php`,
-  `app/Models/{Label,Checklist,ChecklistItem,Attachment,Comment}.php`, `app/Support/CardData.php`
+  `app/Models/{Label,Checklist,ChecklistItem,Attachment,Comment}.php`, `app/Support/Markdown.php`
 - Frontend: `resources/js/pages/projects/{Index,Show}.vue`, `resources/js/components/board/*`,
   `resources/js/components/card/*` (dialog, pickers, sections; `board.ts` holds the shared helpers),
   `resources/js/components/projects/*`, `resources/js/components/AppTopBar.vue`,

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Cards\AssignMember;
+use App\Actions\Cards\UnassignMember;
 use App\Models\Card;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -12,14 +14,14 @@ class CardMemberController extends Controller
 	/**
 	 * Assign a project member to a card.
 	 */
-	public function store(Card $card, User $user): RedirectResponse
+	public function store(Card $card, User $user, AssignMember $assignMember): RedirectResponse
 	{
 		$project = $card->stack->project;
 
 		Gate::authorize('update', $project);
 		abort_if($project->roleOf($user) === null, 404);
 
-		$card->members()->syncWithoutDetaching([$user->id]);
+		$assignMember->handle($card, $user);
 
 		return back();
 	}
@@ -27,11 +29,11 @@ class CardMemberController extends Controller
 	/**
 	 * Take a member off a card.
 	 */
-	public function destroy(Card $card, User $user): RedirectResponse
+	public function destroy(Card $card, User $user, UnassignMember $unassignMember): RedirectResponse
 	{
 		Gate::authorize('update', $card->stack->project);
 
-		$card->members()->detach($user->id);
+		$unassignMember->handle($card, $user);
 
 		return back();
 	}
