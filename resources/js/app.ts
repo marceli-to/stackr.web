@@ -11,6 +11,9 @@ void createInertiaApp({
 	title: (title) => (title ? `${title} - ${appName}` : appName),
 	layout: (name) => {
 		switch (true) {
+			// The landing page and legal notice bring their own header and footer.
+			case name.startsWith('site/'):
+				return null;
 			case name.startsWith('auth/'):
 				return AuthLayout;
 			case name.startsWith('settings/'):

@@ -111,7 +111,14 @@ to https://stackr.kimiyu.ch (last deploy `aa410d4`, 2026-10-24).
   Deleting a card, a list or a project removes its files (model events).
 - **Projects** have a name, an optional description, an optional link (`url`, http/https) shown
   on the board, and a colour. Editing and deleting happens from the ⋮ menu on the overview tiles.
-- **No landing page:** `/` sends guests to the login and signed-in users to `/projects`.
+- **Landing page** (`pages/site/Welcome.vue`) for guests at `/`; signed-in users still go straight to
+  `/projects`. Built like the kimiyu.ch app sites (wuff, croc): header with anchors and a "Log in" pill,
+  hero with the app icon, a static board mock (`components/site/BoardMock.vue`), a dark "How it works"
+  band (projects, lists, cards), a 4×2 features grid, "Under the hood" facts, and the footer
+  "made with ❤️ by kimiyu.ch". `/legal` (`pages/site/Legal.vue`) is the small print: data, privacy
+  (cookies, Hostpoint, mail, 30-day backups), deleting your account, no warranty, contact via GitHub
+  issues. Pages under `site/` get no app layout (`app.ts`). Both work in dark mode: the dark band and
+  the icon tile use a fixed dark colour, not `--color-ink` (which turns light in dark mode).
 - **Favicons** are linked as SVG + PNG (`?v=3`), not `.ico`: Herd answers `/favicon.ico` with a 404
   status, which browsers ignore. `favicon.ico` still exists for direct requests.
 - **Auth pages** use `AuthCardLayout.vue`: a centred white card with the logo, title and fields.

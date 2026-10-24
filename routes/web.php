@@ -13,9 +13,11 @@ use App\Http\Controllers\ProjectInvitationController;
 use App\Http\Controllers\ProjectMemberController;
 use App\Http\Controllers\StackController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
-// No landing page: guests go to the login, signed-in users to their projects.
-Route::get('/', fn () => to_route(auth()->check() ? 'projects.index' : 'login'))->name('home');
+// Guests get the landing page, signed-in users go straight to their projects.
+Route::get('/', fn () => auth()->check() ? to_route('projects.index') : Inertia::render('site/Welcome'))->name('home');
+Route::inertia('legal', 'site/Legal')->name('legal');
 
 // Invitation links work signed out too: guests sign up or log in first and come back.
 Route::get('invitations/{token}', [ProjectInvitationController::class, 'show'])->name('invitations.show');
