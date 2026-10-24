@@ -37,7 +37,9 @@ const handleRegisterSuccess = () => {
 			description="Manage your passkeys for passwordless sign-in"
 		/>
 
-		<div class="overflow-hidden rounded-lg border border-border">
+		<div
+			class="overflow-hidden rounded-[var(--radius-tile)] ring-1 ring-(--surface-edge)"
+		>
 			<template v-if="passkeys.length">
 				<PasskeyItem
 					v-for="passkey in passkeys"
@@ -49,7 +51,7 @@ const handleRegisterSuccess = () => {
 
 			<div v-else class="p-8 text-center">
 				<div
-					class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted"
+					class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-(--color-paper-3)"
 				>
 					<PhKey class="h-7 w-7 text-muted-foreground" />
 				</div>

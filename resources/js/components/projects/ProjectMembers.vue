@@ -17,8 +17,8 @@ import { Input } from '@/components/ui/input';
 import { getInitials } from '@/composables/useInitials';
 import type { ProjectInvitation, ProjectMember } from '@/types';
 
-// The board's people: an avatar stack in the top bar and, for the owner, an
-// Invite button pinned to the corner; both open the members dialog. Only the
+// The board's people: an avatar stack in the top bar and, for the owner, a
+// round invite button next to it; both open the members dialog. Only the
 // owner invites and removes; anyone else can leave.
 const page = usePage<{
 	project: { id: number; name: string };
@@ -81,11 +81,12 @@ const actionClass =
 	<button
 		v-if="canManage"
 		type="button"
-		class="fixed right-5 bottom-5 z-20 flex h-11 items-center gap-2 rounded-[var(--radius-tile)] bg-field-well px-4 font-semibold text-field-ink shadow-(--float-shadow) transition-colors duration-(--dur-micro) hover:bg-field-well/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
+		class="flex size-9 items-center justify-center rounded-full bg-current/10 transition-colors duration-(--dur-micro) hover:bg-current/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
+		aria-label="Invite people"
+		title="Invite people"
 		@click="open = true"
 	>
 		<PhUserPlus class="size-4" />
-		Invite
 	</button>
 
 	<Dialog v-model:open="open" @update:open="confirming = null">

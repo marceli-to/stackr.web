@@ -24,9 +24,9 @@ export const buttonVariants = cva(
         "default": "h-9 px-3 has-[>svg]:pr-3 has-[>svg]:pl-2.5",
         "sm": "h-7 gap-1.5 px-2.5 has-[>svg]:pr-2.5 has-[>svg]:pl-2",
         "lg": "h-9 px-4 has-[>svg]:pr-4 has-[>svg]:pl-3",
-        "icon": "size-9",
-        "icon-sm": "size-7",
-        "icon-lg": "size-9",
+        "icon": "size-9 rounded-full",
+        "icon-sm": "size-7 rounded-full",
+        "icon-lg": "size-9 rounded-full",
       },
     },
     defaultVariants: {

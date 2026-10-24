@@ -131,14 +131,16 @@ function plural(count: number, word: string) {
 				</p>
 
 				<div
-					class="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 text-sm"
+					class="mt-auto flex flex-wrap items-center gap-1.5 text-sm"
 				>
-					<span class="num">{{
-						plural(project.stacks_count, 'list')
-					}}</span>
-					<span class="num">{{
-						plural(project.cards_count, 'card')
-					}}</span>
+					<span
+						class="num rounded-[var(--radius-sheet)] bg-current/10 px-2 py-0.5"
+						>{{ plural(project.stacks_count, 'list') }}</span
+					>
+					<span
+						class="num rounded-[var(--radius-sheet)] bg-current/10 px-2 py-0.5"
+						>{{ plural(project.cards_count, 'card') }}</span
+					>
 					<span
 						v-if="project.role === 'member'"
 						class="ml-auto font-semibold"

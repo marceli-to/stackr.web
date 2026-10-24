@@ -69,6 +69,10 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
       halo, `--field-focus` in `tokens.css`. Every enabled button has `cursor: pointer` (`base.css`).
     - Card dialog: no colour strip unless there's a cover; on open it focuses the sheet, not the
       close button, so no ring shows after a click.
+- **Shapes:** text buttons, inputs and labels use the 4px `--radius-sheet`; tiles, dialogs, menus
+  and the auth card the 6px `--radius-tile`. Icon-only buttons are round (`size="icon…"` is
+  `rounded-full`), like avatars. A "+" at the end of a row takes the row's shape ("+ labels"
+  stays square). The members dialog opens from a round invite button next to the avatars.
 - **Logo:** three offset bars (a stack of cards) in `AppLogoIcon.vue`; favicons in `public/` are the
   same mark on an ink tile.
 - **Members & invitations:** the board's top bar shows the other members as an avatar stack (your own
@@ -145,13 +149,49 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
 
 ## Next up
 
-1. Card details, round two: move or copy a card from the dialog, archive instead of delete, an
-   activity log, @mentions in comments, cover colours, image thumbnails (images are served in full
-   size today).
-2. Show a short message instead of Inertia's full-page 403 overlay when a move is rejected.
-3. Playwright tests for drag & drop and the card dialog. Dragging cards was not re-checked by hand
-   after cards became clickable (they open on click, drag still uses SortableJS).
-4. Production: certificate from the host, and set `APP_URL` (https), `APP_NAME=Stackr`,
-   `SESSION_LIFETIME=720` and the host's SMTP (`MAIL_MAILER=smtp`, host, port, user, password,
-   `MAIL_FROM_ADDRESS`) in its `.env`. Make sure PHP's `upload_max_filesize` and `post_max_size`
-   allow 20 MB uploads.
+Feature list (2026-10-24). Suggested order: 20 and 21 first, then 8 (search and filters) and 1 (archive),
+then 13 with 4 (notifications with mentions; needs the scheduler decision first).
+
+**Cards**
+
+1. Archive instead of delete: archive cards and lists, an archive view, restore. Today deleting is permanent.
+2. Move or copy a card from the dialog: to another list or another project, at a chosen position.
+3. Activity log per card ("Amy moved this from To do to Doing"), shown together with the comments.
+4. @mentions in comments, with a notification to the person mentioned.
+5. Cover colours: a plain colour cover as well as image covers.
+6. Image thumbnails: covers and previews currently load images at full size.
+7. Card templates and duplicating a checklist.
+
+**Board**
+
+8. Search and filters: by text, label, member or due date ("my cards", "overdue").
+9. Calendar view of cards with a due date.
+10. Keyboard shortcuts: `n` new card, `Esc` close, arrow keys between cards, `/` search.
+11. WIP limits or collapsing a list (optional).
+12. Board backgrounds: an image as well as the project colour (optional).
+
+**People and notifications**
+
+13. Notifications: in-app bell plus email when you're assigned, mentioned, or a due date is near.
+    No queue worker on the shared host, so due-date reminders need `schedule:run` from the host's cron.
+14. Watching a card or board, to get notified about changes.
+15. Avatars: upload a profile picture instead of initials.
+16. Hand over ownership: the owner can't leave a project, and there's no way to pass it on.
+
+**Overview and account**
+
+17. "My cards" page: everything assigned to me across all projects, sorted by due date.
+18. Starring or pinning projects, and archiving projects.
+19. Export a project (JSON or CSV) as a backup.
+
+**Technical**
+
+20. Show a toast instead of Inertia's full-page 403 overlay when a move is rejected.
+21. Playwright tests for drag & drop and the card dialog. Dragging hasn't been re-checked by hand
+    since cards became clickable (they open on click, drag still uses SortableJS).
+22. Go-live: certificate from the host, and set `APP_URL` (https), `APP_NAME=Stackr`,
+    `SESSION_LIFETIME=720` and the host's SMTP (`MAIL_MAILER=smtp`, host, port, user, password,
+    `MAIL_FROM_ADDRESS`) in its `.env`. Make sure PHP's `upload_max_filesize` and `post_max_size`
+    allow 20 MB uploads.
+
+Not planned: realtime updates (no long-running processes on shared hosting).

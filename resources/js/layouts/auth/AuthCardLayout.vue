@@ -16,7 +16,7 @@ const name = usePage().props.name;
 		class="flex min-h-svh flex-col items-center justify-center bg-background px-4 py-12"
 	>
 		<div
-			class="w-full max-w-sm rounded-xl bg-sheet p-8 shadow-(--float-shadow) ring-1 ring-(--surface-edge) sm:p-10"
+			class="w-full max-w-sm rounded-[var(--radius-tile)] bg-sheet p-8 shadow-(--float-shadow) ring-1 ring-(--surface-edge) sm:p-10"
 		>
 			<Link
 				:href="home()"

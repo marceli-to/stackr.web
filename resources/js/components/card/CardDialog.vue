@@ -357,7 +357,7 @@ const sideButton =
 										<Button
 											variant="secondary"
 											size="icon"
-											class="size-8"
+											class="size-8 rounded-[var(--radius-sheet)]"
 											aria-label="Change labels"
 										>
 											<PhPlus />

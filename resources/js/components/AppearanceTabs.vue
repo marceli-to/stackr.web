@@ -20,7 +20,7 @@ const tabs = [
 			:key="value"
 			@click="updateAppearance(value)"
 			:class="[
-				'flex items-center rounded-md px-3.5 py-1.5 transition-colors',
+				'flex items-center rounded-[var(--radius-sheet)] px-3.5 py-1.5 transition-colors',
 				appearance === value
 					? 'bg-sheet font-semibold shadow-xs'
 					: 'text-muted-foreground hover:bg-sheet/60 hover:text-foreground',
