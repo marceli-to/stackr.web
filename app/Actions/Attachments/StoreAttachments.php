@@ -24,7 +24,7 @@ class StoreAttachments
 	 */
 	public function handle(Card $card, User $user, array $files): void
 	{
-		$directory = Attachment::directoryFor($card->stack->project_id, $card->id);
+		$directory = Attachment::directoryFor($card->stack->board_id, $card->id);
 
 		foreach ($files as $file) {
 			$extension = $file->guessExtension() ?? $file->getClientOriginalExtension();

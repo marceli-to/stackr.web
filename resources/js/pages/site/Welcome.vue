@@ -26,7 +26,7 @@ import BoardMock from '@/components/site/BoardMock.vue';
 import SiteFooter from '@/components/site/SiteFooter.vue';
 import SiteHeader from '@/components/site/SiteHeader.vue';
 import { login, register } from '@/routes';
-import { projectColors, solidProjectColors } from '@/types';
+import { boardColors, solidBoardColors } from '@/types';
 
 const repository = 'https://github.com/marceli-to/stackr.web';
 
@@ -49,7 +49,7 @@ const features = [
 	{
 		icon: PhTag,
 		title: 'Labels',
-		body: 'Eight colours per project, with or without a name, to sort the cards at a glance.',
+		body: 'Eight colours per board, with or without a name, to sort the cards at a glance.',
 	},
 	{
 		icon: PhCheckSquare,
@@ -109,7 +109,7 @@ const features = [
 	{
 		icon: PhPaintBrush,
 		title: 'Make it yours',
-		body: 'Eleven colours for your projects, five of them gradients, or a photo of your own behind the board.',
+		body: 'Eleven colours for your boards, five of them gradients, or a photo of your own behind the board.',
 	},
 ];
 
@@ -139,7 +139,7 @@ const agentLog = [
 const facts = [
 	{ label: 'Ads and tracking', value: 'None' },
 	{ label: 'Price', value: 'Free' },
-	{ label: 'Projects and members', value: 'Unlimited' },
+	{ label: 'Boards and members', value: 'Unlimited' },
 	{ label: 'Hosted in', value: 'Switzerland' },
 ];
 </script>
@@ -149,7 +149,7 @@ const facts = [
 		<title>A board for every project</title>
 		<meta
 			name="description"
-			content="Stackr is a small board for small teams: every project gets its own colour and its own board of lists and cards, and AI agents can work them too."
+			content="Stackr is a small kanban app for small teams: every board gets its own colour, its own lists and cards, and AI agents can work them too."
 		/>
 	</Head>
 
@@ -181,10 +181,10 @@ const facts = [
 						<p
 							class="mx-auto mt-6 max-w-[50ch] text-lg/7 text-pretty text-(--color-ink-2) sm:text-xl/7.5"
 						>
-							Stackr is a small board for small teams. Every
-							project gets its own colour and its own board of
-							lists and cards. Drag the cards along as the work
-							moves, and keep everything about it on the card.
+							Stackr is a small kanban app for small teams. Every
+							board gets its own colour and its own lists and
+							cards. Drag the cards along as the work moves, and
+							keep everything about it on the card.
 						</p>
 						<div
 							class="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-4"
@@ -226,12 +226,12 @@ const facts = [
 						<h2
 							class="mt-2 max-w-[24ch] font-display text-5xl leading-[1.1] font-bold tracking-(--tracking-display) text-balance sm:text-6xl"
 						>
-							Projects, lists and cards
+							Boards, lists and cards
 						</h2>
 						<p
 							class="mt-6 max-w-[52ch] text-lg/7 text-pretty text-white/70"
 						>
-							That’s the whole idea. A project is a board, a list
+							That’s the whole idea. A board is a project, a list
 							is a step, and a card is a piece of work. Everything
 							else lives on the card.
 						</p>
@@ -239,20 +239,17 @@ const facts = [
 						<div
 							class="mt-16 grid grid-cols-1 gap-8 sm:mt-20 lg:grid-cols-3"
 						>
-							<!-- Projects -->
+							<!-- Boards -->
 							<div
 								class="flex flex-col rounded-[var(--radius-tile)] bg-white/5 p-8 ring-1 ring-white/10"
 							>
 								<div class="flex items-center gap-x-3">
 									<span class="text-base/6 font-semibold"
-										>Projects</span
+										>Boards</span
 									>
 									<span
 										class="rounded-full px-2 text-sm/5.5 font-medium text-(--color-label-sky) ring-1 ring-(--color-label-sky)/50"
-										>{{
-											projectColors.length
-										}}
-										colours</span
+										>{{ boardColors.length }} colours</span
 									>
 								</div>
 								<p
@@ -263,16 +260,16 @@ const facts = [
 								<p
 									class="mt-2 text-base/6 text-pretty text-white/70"
 								>
-									Give each project a name, a link and a
-									colour, or a photo. The whole board stands
-									on it, so you always know where you are.
+									Give each board a name, a link and a colour,
+									or a photo. The whole board stands on it, so
+									you always know where you are.
 								</p>
 								<ul
 									class="mt-auto grid grid-cols-3 gap-2 pt-8"
-									aria-label="Six of the project colours"
+									aria-label="Six of the board colours"
 								>
 									<li
-										v-for="color in solidProjectColors"
+										v-for="color in solidBoardColors"
 										:key="color"
 										:data-field="color"
 										class="flex aspect-[16/10] items-end rounded-[var(--radius-sheet)] field-fill p-2 text-xs font-semibold capitalize"
@@ -428,7 +425,7 @@ const facts = [
 							class="mt-6 max-w-[48ch] text-lg/7 text-pretty text-(--color-ink-2)"
 						>
 							No workspaces, no automations, no power-ups. Make a
-							project, add a few lists and get going.
+							board, add a few lists and get going.
 						</p>
 
 						<dl
@@ -614,7 +611,7 @@ const facts = [
 								Stackr is built with Laravel and Vue and runs on
 								a small server in Switzerland. Your boards are
 								backed up every night, and your files stay
-								private: only the members of a project can open
+								private: only the members of a board can open
 								them.
 							</p>
 						</div>

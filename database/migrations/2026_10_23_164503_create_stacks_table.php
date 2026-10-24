@@ -13,7 +13,7 @@ return new class extends Migration
 	{
 		Schema::create('stacks', function (Blueprint $table) {
 			$table->id();
-			$table->foreignId('project_id')->constrained()->cascadeOnDelete();
+			$table->foreignId('board_id')->constrained()->cascadeOnDelete();
 			$table->string('name');
 			// Fractional-index keys must sort byte by byte, not by locale rules.
 			$table->string('position')->collation(match (Schema::getConnection()->getDriverName()) {
@@ -23,7 +23,7 @@ return new class extends Migration
 			});
 			$table->timestamps();
 
-			$table->index(['project_id', 'position']);
+			$table->index(['board_id', 'position']);
 		});
 	}
 

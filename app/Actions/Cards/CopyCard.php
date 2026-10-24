@@ -60,11 +60,11 @@ class CopyCard
 			}
 
 			if (in_array('attachments', $keep, true)) {
-				$this->copyAttachments($card, $copy, $target->project_id);
+				$this->copyAttachments($card, $copy, $target->board_id);
 			}
 
-			if ($target->project_id !== $card->stack->project_id) {
-				$this->carryCardOver->handle($copy, $target->project);
+			if ($target->board_id !== $card->stack->board_id) {
+				$this->carryCardOver->handle($copy, $target->board);
 			}
 
 			$this->recordActivity->handle($copy, $card->is_template ? 'from_template' : 'copied', ['from' => $card->title]);
@@ -85,10 +85,10 @@ class CopyCard
 		});
 	}
 
-	private function copyAttachments(Card $card, Card $copy, int $projectId): void
+	private function copyAttachments(Card $card, Card $copy, int $boardId): void
 	{
 		$disk = Storage::disk(Attachment::DISK);
-		$directory = Attachment::directoryFor($projectId, $copy->id);
+		$directory = Attachment::directoryFor($boardId, $copy->id);
 
 		// Oldest first, so the copies keep the same order.
 		foreach ($card->attachments()->reorder()->oldest('id')->get() as $attachment) {

@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Enums\ProjectRole;
+use App\Enums\BoardRole;
+use App\Models\Board;
 use App\Models\Card;
-use App\Models\Project;
 use App\Models\Stack;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,14 +17,14 @@ class BoardTest extends TestCase
 
 	private User $user;
 
-	private Project $project;
+	private Board $board;
 
 	protected function setUp(): void
 	{
 		parent::setUp();
 
 		$this->user = User::factory()->create();
-		$this->project = Project::factory()->ownedBy($this->user)->create();
+		$this->board = Board::factory()->ownedBy($this->user)->create();
 	}
 
 	/**
@@ -32,7 +32,7 @@ class BoardTest extends TestCase
 	 */
 	private function stackNames(): array
 	{
-		return $this->project->stacks()->pluck('name')->all();
+		return $this->board->stacks()->pluck('name')->all();
 	}
 
 	/**
@@ -45,16 +45,16 @@ class BoardTest extends TestCase
 
 	public function test_the_board_shows_lists_and_cards_in_order()
 	{
-		$todo = Stack::factory()->for($this->project)->create(['name' => 'To do']);
-		$done = Stack::factory()->for($this->project)->create(['name' => 'Done']);
+		$todo = Stack::factory()->for($this->board)->create(['name' => 'To do']);
+		$done = Stack::factory()->for($this->board)->create(['name' => 'Done']);
 		Card::factory()->for($todo)->create(['title' => 'First']);
 		Card::factory()->for($todo)->create(['title' => 'Second']);
 		$todo->update(['position' => 'b0']);
 
 		$this->actingAs($this->user)
-			->get(route('projects.show', $this->project))
+			->get(route('boards.show', $this->board))
 			->assertInertia(fn (Assert $page) => $page
-				->component('projects/Show')
+				->component('boards/Show')
 				->has('stacks', 2)
 				->where('stacks.0.id', $done->id)
 				->where('stacks.1.name', 'To do')
@@ -67,7 +67,7 @@ class BoardTest extends TestCase
 	{
 		foreach (['To do', 'Doing', 'Done'] as $name) {
 			$this->actingAs($this->user)
-				->post(route('stacks.store', $this->project), ['name' => $name])
+				->post(route('stacks.store', $this->board), ['name' => $name])
 				->assertSessionHasNoErrors();
 		}
 
@@ -77,13 +77,13 @@ class BoardTest extends TestCase
 	public function test_a_list_needs_a_name()
 	{
 		$this->actingAs($this->user)
-			->post(route('stacks.store', $this->project), ['name' => ''])
+			->post(route('stacks.store', $this->board), ['name' => ''])
 			->assertSessionHasErrors('name');
 	}
 
 	public function test_a_list_can_be_renamed()
 	{
-		$stack = Stack::factory()->for($this->project)->create(['name' => 'Old']);
+		$stack = Stack::factory()->for($this->board)->create(['name' => 'Old']);
 
 		$this->actingAs($this->user)
 			->patch(route('stacks.update', $stack), ['name' => 'New'])
@@ -94,7 +94,7 @@ class BoardTest extends TestCase
 
 	public function test_a_list_can_have_a_card_limit()
 	{
-		$stack = Stack::factory()->for($this->project)->create();
+		$stack = Stack::factory()->for($this->board)->create();
 
 		$this->actingAs($this->user)
 			->patch(route('stacks.limit', $stack), ['wip_limit' => 3])
@@ -102,7 +102,7 @@ class BoardTest extends TestCase
 		$this->assertSame(3, $stack->fresh()->wip_limit);
 
 		$this->actingAs($this->user)
-			->get(route('projects.show', $this->project))
+			->get(route('boards.show', $this->board))
 			->assertInertia(fn (Assert $page) => $page->where('stacks.0.wip_limit', 3));
 
 		$this->actingAs($this->user)
@@ -117,9 +117,9 @@ class BoardTest extends TestCase
 
 	public function test_lists_can_be_reordered()
 	{
-		$a = Stack::factory()->for($this->project)->create(['name' => 'A']);
-		Stack::factory()->for($this->project)->create(['name' => 'B']);
-		Stack::factory()->for($this->project)->create(['name' => 'C']);
+		$a = Stack::factory()->for($this->board)->create(['name' => 'A']);
+		Stack::factory()->for($this->board)->create(['name' => 'B']);
+		Stack::factory()->for($this->board)->create(['name' => 'C']);
 
 		$this->actingAs($this->user)
 			->patch(route('stacks.move', $a), ['index' => 2])
@@ -137,7 +137,7 @@ class BoardTest extends TestCase
 
 	public function test_deleting_a_list_deletes_its_cards()
 	{
-		$stack = Stack::factory()->for($this->project)->create();
+		$stack = Stack::factory()->for($this->board)->create();
 		$card = Card::factory()->for($stack)->create();
 
 		$this->actingAs($this->user)
@@ -150,7 +150,7 @@ class BoardTest extends TestCase
 
 	public function test_new_cards_are_added_to_the_bottom_of_a_list()
 	{
-		$stack = Stack::factory()->for($this->project)->create();
+		$stack = Stack::factory()->for($this->board)->create();
 
 		foreach (['One', 'Two', 'Three'] as $title) {
 			$this->actingAs($this->user)
@@ -163,7 +163,7 @@ class BoardTest extends TestCase
 
 	public function test_a_card_needs_a_title()
 	{
-		$stack = Stack::factory()->for($this->project)->create();
+		$stack = Stack::factory()->for($this->board)->create();
 
 		$this->actingAs($this->user)
 			->post(route('cards.store', $stack), ['title' => ''])
@@ -172,7 +172,7 @@ class BoardTest extends TestCase
 
 	public function test_cards_can_be_reordered_within_a_list()
 	{
-		$stack = Stack::factory()->for($this->project)->create();
+		$stack = Stack::factory()->for($this->board)->create();
 		$one = Card::factory()->for($stack)->create(['title' => 'One']);
 		Card::factory()->for($stack)->create(['title' => 'Two']);
 		Card::factory()->for($stack)->create(['title' => 'Three']);
@@ -186,8 +186,8 @@ class BoardTest extends TestCase
 
 	public function test_cards_can_be_moved_to_another_list()
 	{
-		$todo = Stack::factory()->for($this->project)->create();
-		$done = Stack::factory()->for($this->project)->create();
+		$todo = Stack::factory()->for($this->board)->create();
+		$done = Stack::factory()->for($this->board)->create();
 		$card = Card::factory()->for($todo)->create(['title' => 'Ship it']);
 		Card::factory()->for($done)->create(['title' => 'A']);
 		Card::factory()->for($done)->create(['title' => 'B']);
@@ -202,8 +202,8 @@ class BoardTest extends TestCase
 
 	public function test_cards_can_be_dropped_into_an_empty_list()
 	{
-		$todo = Stack::factory()->for($this->project)->create();
-		$empty = Stack::factory()->for($this->project)->create();
+		$todo = Stack::factory()->for($this->board)->create();
+		$empty = Stack::factory()->for($this->board)->create();
 		$card = Card::factory()->for($todo)->create();
 
 		$this->actingAs($this->user)
@@ -215,8 +215,8 @@ class BoardTest extends TestCase
 
 	public function test_cards_cannot_be_moved_onto_a_board_the_user_isnt_on()
 	{
-		$card = Card::factory()->for(Stack::factory()->for($this->project))->create();
-		$foreign = Stack::factory()->for(Project::factory())->create();
+		$card = Card::factory()->for(Stack::factory()->for($this->board))->create();
+		$foreign = Stack::factory()->for(Board::factory())->create();
 
 		$this->actingAs($this->user)
 			->patch(route('cards.move', $card), ['stack_id' => $foreign->id, 'index' => 0])
@@ -228,10 +228,10 @@ class BoardTest extends TestCase
 	public function test_members_can_edit_the_board()
 	{
 		$member = User::factory()->create();
-		$this->project->members()->attach($member, ['role' => ProjectRole::Member->value]);
+		$this->board->members()->attach($member, ['role' => BoardRole::Member->value]);
 
 		$this->actingAs($member)
-			->post(route('stacks.store', $this->project), ['name' => 'From a member'])
+			->post(route('stacks.store', $this->board), ['name' => 'From a member'])
 			->assertSessionHasNoErrors();
 
 		$this->assertSame(['From a member'], $this->stackNames());
@@ -240,10 +240,10 @@ class BoardTest extends TestCase
 	public function test_non_members_cannot_touch_the_board()
 	{
 		$stranger = User::factory()->create();
-		$stack = Stack::factory()->for($this->project)->create(['name' => 'Mine']);
+		$stack = Stack::factory()->for($this->board)->create(['name' => 'Mine']);
 		$card = Card::factory()->for($stack)->create();
 
-		$this->actingAs($stranger)->post(route('stacks.store', $this->project), ['name' => 'X'])->assertForbidden();
+		$this->actingAs($stranger)->post(route('stacks.store', $this->board), ['name' => 'X'])->assertForbidden();
 		$this->actingAs($stranger)->patch(route('stacks.update', $stack), ['name' => 'X'])->assertForbidden();
 		$this->actingAs($stranger)->patch(route('stacks.move', $stack), ['index' => 0])->assertForbidden();
 		$this->actingAs($stranger)->delete(route('stacks.destroy', $stack))->assertForbidden();

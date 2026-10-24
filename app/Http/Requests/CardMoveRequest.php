@@ -32,7 +32,7 @@ class CardMoveRequest extends MoveRequest
 		$user = $this->user();
 
 		return Rule::exists('stacks', 'id')
-			->whereIn('project_id', $user->memberships()->pluck('project_id'))
+			->whereIn('board_id', $user->memberships()->pluck('board_id'))
 			->whereNull('archived_at');
 	}
 

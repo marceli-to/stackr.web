@@ -22,7 +22,7 @@ const props = defineProps<{
 	card: BoardCard;
 }>();
 
-const { project, labels, members } = useBoard();
+const { board, labels, members } = useBoard();
 
 const cardLabels = computed(() =>
 	labels.value.filter((label) => props.card.labels.includes(label.id)),
@@ -70,7 +70,7 @@ const hasBadges = computed(
 );
 
 function open() {
-	openCard(project.value.key, props.card.id);
+	openCard(board.value.key, props.card.id);
 }
 </script>
 

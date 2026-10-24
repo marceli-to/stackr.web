@@ -2,12 +2,12 @@
 
 namespace App\Mcp;
 
+use App\Models\Board;
 use App\Models\Card;
 use App\Models\Checklist;
 use App\Models\ChecklistItem;
 use App\Models\Comment;
 use App\Models\Label;
-use App\Models\Project;
 use App\Models\Stack;
 use App\Models\User;
 
@@ -20,13 +20,13 @@ class Shapes
 	/**
 	 * @return array<string, mixed>
 	 */
-	public static function project(Project $project): array
+	public static function summary(Board $board): array
 	{
 		return [
-			'key' => $project->key,
-			'name' => $project->name,
-			'description' => $project->description,
-			'url' => route('projects.show', $project),
+			'key' => $board->key,
+			'name' => $board->name,
+			'description' => $board->description,
+			'url' => route('boards.show', $board),
 		];
 	}
 
@@ -36,9 +36,9 @@ class Shapes
 	 *
 	 * @return array<string, mixed>
 	 */
-	public static function board(Project $project): array
+	public static function board(Board $board): array
 	{
-		$stacks = $project->stacks()
+		$stacks = $board->stacks()
 			->active()
 			->with(['cards' => fn ($query) => $query
 				->active()
@@ -48,15 +48,15 @@ class Shapes
 			->get();
 
 		return [
-			...self::project($project),
+			...self::summary($board),
 			'lists' => $stacks->map(fn (Stack $stack): array => [
 				'id' => $stack->id,
 				'name' => $stack->name,
 				'wip_limit' => $stack->wip_limit,
 				'cards' => $stack->cards->map(fn (Card $card): array => self::face($card))->all(),
 			])->all(),
-			'labels' => $project->labels()->get()->map(fn (Label $label): array => self::label($label))->all(),
-			'members' => $project->members()->orderBy('name')->get()->map(fn (User $user): array => self::member($user))->all(),
+			'labels' => $board->labels()->get()->map(fn (Label $label): array => self::label($label))->all(),
+			'members' => $board->members()->orderBy('name')->get()->map(fn (User $user): array => self::member($user))->all(),
 		];
 	}
 
@@ -88,14 +88,14 @@ class Shapes
 	 */
 	public static function card(Card $card): array
 	{
-		$card->load(['stack.project', 'labels', 'members', 'checklists.items']);
-		$project = $card->stack->project;
+		$card->load(['stack.board', 'labels', 'members', 'checklists.items']);
+		$board = $card->stack->board;
 
 		return [
 			'id' => $card->id,
 			'title' => $card->title,
 			'description' => $card->description,
-			'project' => ['key' => $project->key, 'name' => $project->name],
+			'board' => ['key' => $board->key, 'name' => $board->name],
 			'list' => ['id' => $card->stack->id, 'name' => $card->stack->name],
 			'start_at' => $card->start_at?->toIso8601String(),
 			'due_at' => $card->due_at?->toIso8601String(),
@@ -119,7 +119,7 @@ class Shapes
 					'via_agent' => $comment->via_agent,
 					'created_at' => $comment->created_at?->toIso8601String(),
 				])->all(),
-			'url' => route('projects.show', [$project, 'card' => $card->id]),
+			'url' => route('boards.show', [$board, 'card' => $card->id]),
 		];
 	}
 

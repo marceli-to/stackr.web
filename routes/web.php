@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\AttachmentController;
+use App\Http\Controllers\BoardBackgroundController;
+use App\Http\Controllers\BoardController;
+use App\Http\Controllers\BoardInvitationController;
+use App\Http\Controllers\BoardMemberController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\CardLabelController;
 use App\Http\Controllers\CardMemberController;
@@ -10,50 +14,44 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\InviteLinkController;
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\ProjectBackgroundController;
-use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\ProjectInvitationController;
-use App\Http\Controllers\ProjectMemberController;
 use App\Http\Controllers\StackController;
 use App\Http\Controllers\WatchController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Guests get the landing page, signed-in users go straight to their projects.
-Route::get('/', fn () => auth()->check() ? to_route('projects.index') : Inertia::render('site/Welcome'))->name('home');
+// Guests get the landing page, signed-in users go straight to their boards.
+Route::get('/', fn () => auth()->check() ? to_route('boards.index') : Inertia::render('site/Welcome'))->name('home');
 Route::inertia('legal', 'site/Legal')->name('legal');
 
 // Invitation links work signed out too: guests sign up or log in first and come back.
-Route::get('invitations/{token}', [ProjectInvitationController::class, 'show'])->name('invitations.show');
+Route::get('invitations/{token}', [BoardInvitationController::class, 'show'])->name('invitations.show');
 Route::get('join/{token}', [InviteLinkController::class, 'show'])->name('invite-link.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-	// Fortify sends users here after login; projects are the home screen.
-	Route::redirect('dashboard', '/projects')->name('dashboard');
+	// Fortify sends users here after login; boards are the home screen.
+	Route::redirect('dashboard', '/boards')->name('dashboard');
 
-	// Board URLs used to carry the id; old links and stale tabs land on the key URL.
-	Route::get('projects/{id}', [ProjectController::class, 'legacy'])->whereNumber('id');
-	Route::resource('projects', ProjectController::class)->except(['create', 'edit']);
+	Route::resource('boards', BoardController::class)->except(['create', 'edit']);
 
 	Route::post('notifications/read', [NotificationController::class, 'readAll'])->name('notifications.read-all');
 	Route::post('notifications/{notification}/open', [NotificationController::class, 'open'])->name('notifications.open');
 
-	Route::get('projects/{project}/background', [ProjectBackgroundController::class, 'show'])->name('projects.background');
-	Route::post('projects/{project}/background', [ProjectBackgroundController::class, 'store'])->name('projects.background.store');
-	Route::delete('projects/{project}/background', [ProjectBackgroundController::class, 'destroy'])->name('projects.background.destroy');
+	Route::get('boards/{board}/background', [BoardBackgroundController::class, 'show'])->name('boards.background');
+	Route::post('boards/{board}/background', [BoardBackgroundController::class, 'store'])->name('boards.background.store');
+	Route::delete('boards/{board}/background', [BoardBackgroundController::class, 'destroy'])->name('boards.background.destroy');
 
-	Route::post('projects/{project}/watch', [WatchController::class, 'project'])->name('projects.watch');
-	Route::delete('projects/{project}/watch', [WatchController::class, 'project'])->name('projects.unwatch');
+	Route::post('boards/{board}/watch', [WatchController::class, 'board'])->name('boards.watch');
+	Route::delete('boards/{board}/watch', [WatchController::class, 'board'])->name('boards.unwatch');
 	Route::post('cards/{card}/watch', [WatchController::class, 'card'])->name('cards.watch');
 	Route::delete('cards/{card}/watch', [WatchController::class, 'card'])->name('cards.unwatch');
 
-	Route::post('projects/{project}/members', [ProjectMemberController::class, 'store'])->name('projects.members.store');
-	Route::delete('projects/{project}/members/{user}', [ProjectMemberController::class, 'destroy'])->name('projects.members.destroy');
-	Route::post('projects/{project}/invite-link', [InviteLinkController::class, 'store'])->name('invite-link.store');
-	Route::delete('projects/{project}/invite-link', [InviteLinkController::class, 'destroy'])->name('invite-link.destroy');
-	Route::delete('invitations/{invitation}', [ProjectInvitationController::class, 'destroy'])->name('invitations.destroy');
+	Route::post('boards/{board}/members', [BoardMemberController::class, 'store'])->name('boards.members.store');
+	Route::delete('boards/{board}/members/{user}', [BoardMemberController::class, 'destroy'])->name('boards.members.destroy');
+	Route::post('boards/{board}/invite-link', [InviteLinkController::class, 'store'])->name('invite-link.store');
+	Route::delete('boards/{board}/invite-link', [InviteLinkController::class, 'destroy'])->name('invite-link.destroy');
+	Route::delete('invitations/{invitation}', [BoardInvitationController::class, 'destroy'])->name('invitations.destroy');
 
-	Route::post('projects/{project}/stacks', [StackController::class, 'store'])->name('stacks.store');
+	Route::post('boards/{board}/stacks', [StackController::class, 'store'])->name('stacks.store');
 	Route::patch('stacks/{stack}', [StackController::class, 'update'])->name('stacks.update');
 	Route::patch('stacks/{stack}/limit', [StackController::class, 'limit'])->name('stacks.limit');
 	Route::patch('stacks/{stack}/move', [StackController::class, 'move'])->name('stacks.move');
@@ -70,7 +68,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::patch('cards/{card}/restore', [CardController::class, 'restore'])->name('cards.restore');
 	Route::delete('cards/{card}', [CardController::class, 'destroy'])->name('cards.destroy');
 
-	Route::post('projects/{project}/labels', [LabelController::class, 'store'])->name('labels.store');
+	Route::post('boards/{board}/labels', [LabelController::class, 'store'])->name('labels.store');
 	Route::patch('labels/{label}', [LabelController::class, 'update'])->name('labels.update');
 	Route::delete('labels/{label}', [LabelController::class, 'destroy'])->name('labels.destroy');
 	Route::post('cards/{card}/labels/{label}', [CardLabelController::class, 'store'])->name('cards.labels.store');

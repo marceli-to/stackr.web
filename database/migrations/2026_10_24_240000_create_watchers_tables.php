@@ -17,10 +17,10 @@ return new class extends Migration
 			$table->primary(['card_id', 'user_id']);
 		});
 
-		Schema::create('project_watchers', function (Blueprint $table) {
-			$table->foreignId('project_id')->constrained()->cascadeOnDelete();
+		Schema::create('board_watchers', function (Blueprint $table) {
+			$table->foreignId('board_id')->constrained()->cascadeOnDelete();
 			$table->foreignId('user_id')->constrained()->cascadeOnDelete();
-			$table->primary(['project_id', 'user_id']);
+			$table->primary(['board_id', 'user_id']);
 		});
 	}
 
@@ -29,7 +29,7 @@ return new class extends Migration
 	 */
 	public function down(): void
 	{
-		Schema::dropIfExists('project_watchers');
+		Schema::dropIfExists('board_watchers');
 		Schema::dropIfExists('card_watchers');
 	}
 };

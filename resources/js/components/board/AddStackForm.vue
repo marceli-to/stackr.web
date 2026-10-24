@@ -4,10 +4,10 @@ import { PhPlus, PhX } from '@phosphor-icons/vue';
 import { ref } from 'vue';
 import StackController from '@/actions/App/Http/Controllers/StackController';
 import { Button } from '@/components/ui/button';
-import type { Project } from '@/types';
+import type { Board } from '@/types';
 
 defineProps<{
-	project: Project;
+	board: Board;
 }>();
 
 const open = ref(false);
@@ -18,7 +18,7 @@ const open = ref(false);
 		<!-- Stays open after adding, so several lists can be typed in a row. -->
 		<Form
 			v-if="open"
-			v-bind="StackController.store.form(project.key)"
+			v-bind="StackController.store.form(board.key)"
 			:options="{ preserveScroll: true, preserveState: true }"
 			reset-on-success
 			class="space-y-2 rounded-[var(--radius-tile)] bg-field-well p-2"

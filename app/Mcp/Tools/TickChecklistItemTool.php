@@ -3,7 +3,7 @@
 namespace App\Mcp\Tools;
 
 use App\Actions\Checklists\UpdateChecklistItem;
-use App\Mcp\Boards;
+use App\Mcp\Lookup;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
@@ -19,16 +19,16 @@ use Laravel\Mcp\Server\Tools\Annotations\IsIdempotent;
 #[IsIdempotent]
 class TickChecklistItemTool extends Tool
 {
-	public function handle(Request $request, Boards $boards, UpdateChecklistItem $updateChecklistItem): Response
+	public function handle(Request $request, Lookup $lookup, UpdateChecklistItem $updateChecklistItem): Response
 	{
-		$user = $boards->user($request);
+		$user = $lookup->user($request);
 
 		$data = $request->validate([
 			'item_id' => ['required', 'integer'],
 			'done' => ['sometimes', 'boolean'],
 		]);
 
-		$item = $boards->checklistItem($user, (int) $data['item_id']);
+		$item = $lookup->checklistItem($user, (int) $data['item_id']);
 
 		$updateChecklistItem->handle($item, ['done' => $data['done'] ?? true]);
 

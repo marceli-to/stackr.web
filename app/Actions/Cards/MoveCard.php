@@ -19,12 +19,12 @@ class MoveCard
 	/**
 	 * Places the card at the given index among the target list's other cards
 	 * (the ones on the board; archived cards keep their places). The list
-	 * may be on another project's board; the card's files move with it.
+	 * may be on another board; the card's files move with it.
 	 */
 	public function handle(Card $card, Stack $target, int $index): void
 	{
 		$source = $card->stack;
-		$from = $source->project_id;
+		$from = $source->board_id;
 
 		DB::transaction(function () use ($card, $target, $index, $source, $from): void {
 			$siblings = $target->cards()
@@ -38,12 +38,12 @@ class MoveCard
 			$card->position = FractionalIndex::forIndex($siblings, $index);
 			$card->save();
 
-			if ($target->project_id !== $from) {
-				$this->carryCardOver->handle($card, $target->project);
-				$this->moveFiles($card, $from, $target->project_id);
+			if ($target->board_id !== $from) {
+				$this->carryCardOver->handle($card, $target->board);
+				$this->moveFiles($card, $from, $target->board_id);
 				$this->recordActivity->handle($card, 'moved_board', [
-					'from' => $source->project->name,
-					'to' => $target->project->name,
+					'from' => $source->board->name,
+					'to' => $target->board->name,
 				]);
 			} elseif ($target->id !== $source->id) {
 				$this->recordActivity->handle($card, 'moved', ['from' => $source->name, 'to' => $target->name]);

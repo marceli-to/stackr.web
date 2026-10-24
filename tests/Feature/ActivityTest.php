@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Enums\ProjectRole;
+use App\Enums\BoardRole;
 use App\Models\Attachment;
+use App\Models\Board;
 use App\Models\Card;
-use App\Models\Project;
 use App\Models\Stack;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -20,7 +20,7 @@ class ActivityTest extends TestCase
 
 	private User $user;
 
-	private Project $project;
+	private Board $board;
 
 	private Stack $todo;
 
@@ -29,8 +29,8 @@ class ActivityTest extends TestCase
 		parent::setUp();
 
 		$this->user = User::factory()->create(['name' => 'Amy']);
-		$this->project = Project::factory()->ownedBy($this->user)->create();
-		$this->todo = Stack::factory()->for($this->project)->create(['name' => 'To do']);
+		$this->board = Board::factory()->ownedBy($this->user)->create();
+		$this->todo = Stack::factory()->for($this->board)->create(['name' => 'To do']);
 	}
 
 	/**
@@ -44,9 +44,9 @@ class ActivityTest extends TestCase
 	public function test_a_cards_life_is_logged()
 	{
 		Storage::fake(Attachment::DISK);
-		$doing = Stack::factory()->for($this->project)->create(['name' => 'Doing']);
+		$doing = Stack::factory()->for($this->board)->create(['name' => 'Doing']);
 		$bob = User::factory()->create(['name' => 'Bob']);
-		$this->project->members()->attach($bob, ['role' => ProjectRole::Member]);
+		$this->board->members()->attach($bob, ['role' => BoardRole::Member]);
 
 		$this->actingAs($this->user)->post(route('cards.store', $this->todo), ['title' => 'Brief']);
 		$card = $this->todo->cards()->sole();
@@ -79,7 +79,7 @@ class ActivityTest extends TestCase
 		$card = $this->todo->cards()->sole();
 		$this->patch(route('cards.archive', $card));
 
-		$this->get(route('projects.show', [$this->project, 'card' => $card->id]))
+		$this->get(route('boards.show', [$this->board, 'card' => $card->id]))
 			->assertInertia(fn (Assert $page) => $page
 				->has('card.activities', 2)
 				->where('card.activities.0.type', 'archived')

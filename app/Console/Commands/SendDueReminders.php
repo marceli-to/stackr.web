@@ -25,7 +25,7 @@ class SendDueReminders extends Command
 			->whereNull('completed_at')
 			->whereNull('due_reminded_at')
 			->whereBetween('due_at', [now(), now()->addDay()])
-			->with(['members', 'stack.project'])
+			->with(['members', 'stack.board'])
 			->get();
 
 		foreach ($cards as $card) {

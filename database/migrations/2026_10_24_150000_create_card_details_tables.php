@@ -14,7 +14,7 @@ return new class extends Migration
 	{
 		Schema::create('labels', function (Blueprint $table) {
 			$table->id();
-			$table->foreignId('project_id')->constrained()->cascadeOnDelete();
+			$table->foreignId('board_id')->constrained()->cascadeOnDelete();
 			$table->string('name', 60)->nullable();
 			$table->string('color', 16);
 			$table->timestamps();

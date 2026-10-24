@@ -14,7 +14,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class CommentResource extends JsonResource
 {
 	/**
-	 * The project members' names, to highlight their mentions.
+	 * The board members' names, to highlight their mentions.
 	 *
 	 * @var list<string>
 	 */

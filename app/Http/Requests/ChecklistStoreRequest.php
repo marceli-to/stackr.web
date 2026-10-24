@@ -23,7 +23,7 @@ class ChecklistStoreRequest extends ChecklistRequest
 			...parent::rules(),
 			'copy_from' => [
 				'nullable', 'integer',
-				Rule::exists('checklists', 'id')->whereIn('card_id', $card->stack->project->cards()->pluck('cards.id')),
+				Rule::exists('checklists', 'id')->whereIn('card_id', $card->stack->board->cards()->pluck('cards.id')),
 			],
 		];
 	}

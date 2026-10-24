@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Project;
+use App\Models\Board;
 use App\Models\Stack;
 use App\Support\FractionalIndex;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -25,7 +25,7 @@ class StackFactory extends Factory
 	public function definition(): array
 	{
 		return [
-			'project_id' => Project::factory(),
+			'board_id' => Board::factory(),
 			'name' => fake()->word(),
 			'position' => fn () => self::$lastPosition = FractionalIndex::between(self::$lastPosition, null),
 		];

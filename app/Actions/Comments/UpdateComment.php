@@ -15,7 +15,7 @@ class UpdateComment
 	 */
 	public function handle(Comment $comment, string $body): void
 	{
-		$members = $comment->card->stack->project->members()->get();
+		$members = $comment->card->stack->board->members()->get();
 		$before = Mentions::in($comment->body, $members)->pluck('id');
 
 		$comment->update(['body' => $body]);

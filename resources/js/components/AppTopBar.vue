@@ -3,16 +3,16 @@ import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import AccountMenu from '@/components/AccountMenu.vue';
-import ProjectMembers from '@/components/projects/ProjectMembers.vue';
-import { index } from '@/routes/projects';
-import type { Project } from '@/types';
+import BoardMembers from '@/components/board/BoardMembers.vue';
+import { index } from '@/routes/boards';
+import type { Board } from '@/types';
 
 const page = usePage();
 
-// On a board the bar carries the project's name instead of the wordmark,
+// On a board the bar carries the board's name instead of the wordmark,
 // and the board page teleports its search and menu into the bar.
-const project = computed(
-	() => page.props.project as Pick<Project, 'name' | 'color'> | undefined,
+const board = computed(
+	() => page.props.board as Pick<Board, 'name' | 'color'> | undefined,
 );
 </script>
 
@@ -24,21 +24,21 @@ const project = computed(
 			<Link
 				:href="index()"
 				class="mr-2 flex items-center gap-2 rounded-sm"
-				aria-label="Stackr, all projects"
+				aria-label="Stackr, all boards"
 			>
 				<AppLogoIcon class="size-5 fill-current" />
 				<span
-					v-if="!project"
+					v-if="!board"
 					class="font-display text-xl leading-none font-bold"
 				>
 					{{ page.props.name }}
 				</span>
 			</Link>
 			<span
-				v-if="project"
+				v-if="board"
 				class="min-w-0 truncate font-display text-xl leading-normal font-bold"
 			>
-				{{ project.name }}
+				{{ board.name }}
 			</span>
 		</div>
 
@@ -46,9 +46,9 @@ const project = computed(
 		<div id="topbar-search" class="flex justify-center" />
 
 		<div class="flex items-center justify-end gap-2">
-			<ProjectMembers v-if="project" />
+			<BoardMembers v-if="board" />
 			<!-- A board teleports its own menu, with its actions, in here. -->
-			<div v-if="project" id="topbar-actions" class="contents" />
+			<div v-if="board" id="topbar-actions" class="contents" />
 			<AccountMenu v-else />
 		</div>
 	</header>

@@ -4,7 +4,7 @@ namespace App\Mcp\Tools;
 
 use App\Actions\Comments\CreateComment;
 use App\Http\Requests\CommentRequest;
-use App\Mcp\Boards;
+use App\Mcp\Lookup;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
@@ -18,16 +18,16 @@ use Laravel\Mcp\Server\Tool;
 #[Description('Comment on a card, in Markdown. Mention a member with @Name to notify them.')]
 class AddCommentTool extends Tool
 {
-	public function handle(Request $request, Boards $boards, CreateComment $createComment): Response
+	public function handle(Request $request, Lookup $lookup, CreateComment $createComment): Response
 	{
-		$user = $boards->user($request);
+		$user = $lookup->user($request);
 
 		$data = $request->validate([
 			'card_id' => ['required', 'integer'],
 			...(new CommentRequest)->rules(),
 		]);
 
-		$card = $boards->card($user, (int) $data['card_id']);
+		$card = $lookup->card($user, (int) $data['card_id']);
 
 		$comment = $createComment->handle($card, $user, $data['body']);
 

@@ -3,7 +3,7 @@
 namespace App\Mcp\Tools;
 
 use App\Actions\Cards\UpdateCard;
-use App\Mcp\Boards;
+use App\Mcp\Lookup;
 use App\Mcp\Shapes;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\Validation\Rule;
@@ -21,13 +21,13 @@ use Laravel\Mcp\Server\Tools\Annotations\IsIdempotent;
 #[IsIdempotent]
 class UpdateCardTool extends Tool
 {
-	public function handle(Request $request, Boards $boards, UpdateCard $updateCard): Response
+	public function handle(Request $request, Lookup $lookup, UpdateCard $updateCard): Response
 	{
-		$user = $boards->user($request);
+		$user = $lookup->user($request);
 
 		$request->validate(['card_id' => ['required', 'integer']]);
 
-		$card = $boards->card($user, (int) $request->get('card_id'));
+		$card = $lookup->card($user, (int) $request->get('card_id'));
 
 		// The same rules as CardUpdateRequest, without the cover (that's for people).
 		$data = $request->validate([

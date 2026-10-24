@@ -2,7 +2,7 @@
 
 namespace App\Mcp\Tools;
 
-use App\Mcp\Boards;
+use App\Mcp\Lookup;
 use App\Mcp\Shapes;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
@@ -19,15 +19,15 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 #[IsReadOnly]
 class GetBoardTool extends Tool
 {
-	public function handle(Request $request, Boards $boards): Response
+	public function handle(Request $request, Lookup $lookup): Response
 	{
-		$user = $boards->user($request);
+		$user = $lookup->user($request);
 
-		$request->validate(['project' => ['required', 'string']]);
+		$request->validate(['board' => ['required', 'string']]);
 
-		$project = $boards->project($user, $request->get('project'), 'view');
+		$board = $lookup->board($user, $request->get('board'), 'view');
 
-		return Response::json(Shapes::board($project));
+		return Response::json(Shapes::board($board));
 	}
 
 	/**
@@ -36,7 +36,7 @@ class GetBoardTool extends Tool
 	public function schema(JsonSchema $schema): array
 	{
 		return [
-			'project' => $schema->string()->description('The project key from list_projects, or the project\'s exact name.')->required(),
+			'board' => $schema->string()->description('The board key from list_boards, or the board\'s exact name.')->required(),
 		];
 	}
 }

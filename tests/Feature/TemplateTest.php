@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Board;
 use App\Models\Card;
-use App\Models\Project;
 use App\Models\Stack;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -16,7 +16,7 @@ class TemplateTest extends TestCase
 
 	private User $user;
 
-	private Project $project;
+	private Board $board;
 
 	private Stack $stack;
 
@@ -25,8 +25,8 @@ class TemplateTest extends TestCase
 		parent::setUp();
 
 		$this->user = User::factory()->create();
-		$this->project = Project::factory()->ownedBy($this->user)->create();
-		$this->stack = Stack::factory()->for($this->project)->create();
+		$this->board = Board::factory()->ownedBy($this->user)->create();
+		$this->stack = Stack::factory()->for($this->board)->create();
 	}
 
 	public function test_a_card_becomes_a_template_and_starts_new_cards()
@@ -41,13 +41,13 @@ class TemplateTest extends TestCase
 			->assertSessionHasNoErrors();
 		$this->assertTrue($template->fresh()->is_template);
 
-		$other = Stack::factory()->for($this->project)->create();
+		$other = Stack::factory()->for($this->board)->create();
 		Card::factory()->for($other)->create();
 
 		$response = $this->actingAs($this->user)->post(route('cards.from-template', [$other, $template]));
 
 		$card = $other->cards()->where('title', 'Bug report')->sole();
-		$response->assertRedirect(route('projects.show', [$this->project, 'card' => $card->id]));
+		$response->assertRedirect(route('boards.show', [$this->board, 'card' => $card->id]));
 		$this->assertFalse($card->is_template);
 		$this->assertSame('Steps:', $card->description);
 		$this->assertSame(1, $card->members()->count());
@@ -59,7 +59,7 @@ class TemplateTest extends TestCase
 	public function test_only_templates_of_the_same_board_can_start_cards()
 	{
 		$plain = Card::factory()->for($this->stack)->create();
-		$foreign = Card::factory()->for(Stack::factory()->for(Project::factory()->ownedBy($this->user)))->create(['is_template' => true]);
+		$foreign = Card::factory()->for(Stack::factory()->for(Board::factory()->ownedBy($this->user)))->create(['is_template' => true]);
 
 		$this->actingAs($this->user)->post(route('cards.from-template', [$this->stack, $plain]))->assertNotFound();
 		$this->actingAs($this->user)->post(route('cards.from-template', [$this->stack, $foreign]))->assertNotFound();
@@ -74,7 +74,7 @@ class TemplateTest extends TestCase
 		$card = Card::factory()->for($this->stack)->create();
 
 		$this->actingAs($this->user)
-			->get(route('projects.show', [$this->project, 'card' => $card->id]))
+			->get(route('boards.show', [$this->board, 'card' => $card->id]))
 			->assertInertia(fn (Assert $page) => $page
 				->missing('checklists')
 				->reloadOnly('checklists', fn (Assert $reload) => $reload
@@ -95,7 +95,7 @@ class TemplateTest extends TestCase
 
 	public function test_checklists_cant_be_copied_from_other_boards()
 	{
-		$foreign = Card::factory()->for(Stack::factory()->for(Project::factory()->ownedBy($this->user)))->create();
+		$foreign = Card::factory()->for(Stack::factory()->for(Board::factory()->ownedBy($this->user)))->create();
 		$list = $foreign->checklists()->create(['title' => 'Secret']);
 		$card = Card::factory()->for($this->stack)->create();
 

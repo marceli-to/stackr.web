@@ -19,7 +19,7 @@ class ChecklistController extends Controller
 	 */
 	public function store(ChecklistStoreRequest $request, Card $card, CreateChecklist $createChecklist): RedirectResponse
 	{
-		Gate::authorize('update', $card->stack->project);
+		Gate::authorize('update', $card->stack->board);
 
 		$copyFrom = $request->filled('copy_from') ? Checklist::query()->find($request->integer('copy_from')) : null;
 
@@ -33,7 +33,7 @@ class ChecklistController extends Controller
 	 */
 	public function update(ChecklistRequest $request, Checklist $checklist, RenameChecklist $renameChecklist): RedirectResponse
 	{
-		Gate::authorize('update', $checklist->card->stack->project);
+		Gate::authorize('update', $checklist->card->stack->board);
 
 		$renameChecklist->handle($checklist, $request->validated('title'));
 
@@ -45,7 +45,7 @@ class ChecklistController extends Controller
 	 */
 	public function destroy(Checklist $checklist, DeleteChecklist $deleteChecklist): RedirectResponse
 	{
-		Gate::authorize('update', $checklist->card->stack->project);
+		Gate::authorize('update', $checklist->card->stack->board);
 
 		$deleteChecklist->handle($checklist);
 

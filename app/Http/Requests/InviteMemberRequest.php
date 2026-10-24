@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Project;
+use App\Models\Board;
 use App\Models\User;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -25,17 +25,17 @@ class InviteMemberRequest extends FormRequest
 	 */
 	public function rules(): array
 	{
-		/** @var Project $project */
-		$project = $this->route('project');
+		/** @var Board $board */
+		$board = $this->route('board');
 
 		return [
 			'email' => [
 				'required', 'string', 'email', 'max:255',
-				function (string $attribute, mixed $value, Closure $fail) use ($project): void {
+				function (string $attribute, mixed $value, Closure $fail) use ($board): void {
 					$user = User::where('email', $value)->first();
 
-					if ($user !== null && $project->roleOf($user) !== null) {
-						$fail(__(':name is already on this project.', ['name' => $user->name]));
+					if ($user !== null && $board->roleOf($user) !== null) {
+						$fail(__(':name is already on this board.', ['name' => $user->name]));
 					}
 				},
 			],

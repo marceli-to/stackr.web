@@ -25,10 +25,10 @@ class HomeTest extends TestCase
 			->assertInertia(fn (Assert $page) => $page->component('site/Legal'));
 	}
 
-	public function test_signed_in_users_are_sent_to_their_projects()
+	public function test_signed_in_users_are_sent_to_their_boards()
 	{
 		$this->actingAs(User::factory()->create())
 			->get(route('home'))
-			->assertRedirect(route('projects.index'));
+			->assertRedirect(route('boards.index'));
 	}
 }

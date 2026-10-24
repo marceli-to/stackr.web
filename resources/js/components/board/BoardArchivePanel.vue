@@ -19,7 +19,7 @@ const props = defineProps<{
 	archive?: BoardArchive;
 }>();
 
-const { project } = useBoard();
+const { board } = useBoard();
 
 // Opened from the board menu.
 const open = defineModel<boolean>('open', { default: false });
@@ -61,7 +61,7 @@ function deleteStack(id: number) {
 
 function show(id: number) {
 	open.value = false;
-	openCard(project.value.key, id);
+	openCard(board.value.key, id);
 }
 
 const cards = computed(() => props.archive?.cards ?? []);

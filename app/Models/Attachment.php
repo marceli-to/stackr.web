@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Storage;
 
 /**
  * A file on a card. Files live on the private "local" disk under
- * attachments/{project}/{card}/ and are served by AttachmentController to
- * project members only.
+ * attachments/{board}/{card}/ and are served by AttachmentController to
+ * board members only.
  *
  * @property int $id
  * @property int $card_id
@@ -41,9 +41,9 @@ class Attachment extends Model
 	/**
 	 * The folder that holds a card's files.
 	 */
-	public static function directoryFor(int $projectId, int $cardId): string
+	public static function directoryFor(int $boardId, int $cardId): string
 	{
-		return "attachments/{$projectId}/{$cardId}";
+		return "attachments/{$boardId}/{$cardId}";
 	}
 
 	public function isImage(): bool

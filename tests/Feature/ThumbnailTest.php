@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Attachment;
+use App\Models\Board;
 use App\Models\Card;
-use App\Models\Project;
 use App\Models\Stack;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,8 +27,8 @@ class ThumbnailTest extends TestCase
 		Storage::fake(Attachment::DISK);
 
 		$this->user = User::factory()->create();
-		$project = Project::factory()->ownedBy($this->user)->create();
-		$this->card = Card::factory()->for(Stack::factory()->for($project))->create();
+		$board = Board::factory()->ownedBy($this->user)->create();
+		$this->card = Card::factory()->for(Stack::factory()->for($board))->create();
 	}
 
 	private function upload(UploadedFile $file): Attachment

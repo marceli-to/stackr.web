@@ -6,21 +6,21 @@ use App\Actions\Labels\CreateLabel;
 use App\Actions\Labels\DeleteLabel;
 use App\Actions\Labels\UpdateLabel;
 use App\Http\Requests\LabelRequest;
+use App\Models\Board;
 use App\Models\Label;
-use App\Models\Project;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 
 class LabelController extends Controller
 {
 	/**
-	 * Add a label to a project's set.
+	 * Add a label to a board's set.
 	 */
-	public function store(LabelRequest $request, Project $project, CreateLabel $createLabel): RedirectResponse
+	public function store(LabelRequest $request, Board $board, CreateLabel $createLabel): RedirectResponse
 	{
-		Gate::authorize('update', $project);
+		Gate::authorize('update', $board);
 
-		$createLabel->handle($project, $request->validated());
+		$createLabel->handle($board, $request->validated());
 
 		return back();
 	}
@@ -30,7 +30,7 @@ class LabelController extends Controller
 	 */
 	public function update(LabelRequest $request, Label $label, UpdateLabel $updateLabel): RedirectResponse
 	{
-		Gate::authorize('update', $label->project);
+		Gate::authorize('update', $label->board);
 
 		$updateLabel->handle($label, $request->validated());
 
@@ -42,7 +42,7 @@ class LabelController extends Controller
 	 */
 	public function destroy(Label $label, DeleteLabel $deleteLabel): RedirectResponse
 	{
-		Gate::authorize('update', $label->project);
+		Gate::authorize('update', $label->board);
 
 		$deleteLabel->handle($label);
 

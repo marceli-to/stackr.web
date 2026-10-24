@@ -21,15 +21,15 @@ class NotificationController extends Controller
 		$entry->markAsRead();
 
 		$cardId = $entry->data['card_id'] ?? null;
-		$card = is_int($cardId) ? Card::query()->with('stack.project')->find($cardId) : null;
+		$card = is_int($cardId) ? Card::query()->with('stack.board')->find($cardId) : null;
 
-		if ($card === null || $user->cannot('view', $card->stack->project)) {
+		if ($card === null || $user->cannot('view', $card->stack->board)) {
 			$this->toast(__('That card is gone.'), 'error');
 
 			return back();
 		}
 
-		return to_route('projects.show', [$card->stack->project, 'card' => $card->id]);
+		return to_route('boards.show', [$card->stack->board, 'card' => $card->id]);
 	}
 
 	/**

@@ -1,6 +1,6 @@
 import type { Directive } from 'vue';
 import type { Auth, NewAgentToken } from '@/types/auth';
-import type { AppNotification } from '@/types/projects';
+import type { AppNotification } from '@/types/boards';
 import type { FlashToast } from '@/types/ui';
 
 // Extend ImportMeta interface for Vite...

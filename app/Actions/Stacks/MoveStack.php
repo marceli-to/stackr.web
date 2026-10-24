@@ -15,7 +15,7 @@ class MoveStack
 	public function handle(Stack $stack, int $index): void
 	{
 		DB::transaction(function () use ($stack, $index): void {
-			$siblings = $stack->project->stacks()
+			$siblings = $stack->board->stacks()
 				->active()
 				->whereKeyNot($stack->id)
 				->get(['id', 'position'])

@@ -214,7 +214,7 @@ function revoke(id: number) {
 		/>
 
 		<CodeSnippet
-			label="Claude Code: run this once in a terminal. --scope user makes it available in every project, without the token ending up in a repository."
+			label="Claude Code: run this once in a terminal. --scope user makes it available in every board, without the token ending up in a repository."
 			:code="claudeCommand"
 		/>
 

@@ -12,7 +12,7 @@ const props = defineProps<{
 	stacks: BoardStack[];
 }>();
 
-const { project, labels } = useBoard();
+const { board, labels } = useBoard();
 const { shows } = useFilter();
 
 // The first of the month on show.
@@ -228,7 +228,7 @@ function drop(date: Date) {
 							card.completed_at ? 'text-muted-foreground' : ''
 						"
 						:title="card.title"
-						@click="openCard(project.key, card.id)"
+						@click="openCard(board.key, card.id)"
 						@dragstart="dragging = card"
 						@dragend="
 							dragging = null;

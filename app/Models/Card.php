@@ -75,7 +75,7 @@ class Card extends Model
 	{
 		static::deleting(function (Card $card): void {
 			Storage::disk(Attachment::DISK)->deleteDirectory(
-				Attachment::directoryFor($card->stack->project_id, $card->id),
+				Attachment::directoryFor($card->stack->board_id, $card->id),
 			);
 		});
 	}
@@ -97,7 +97,7 @@ class Card extends Model
 	}
 
 	/**
-	 * The project members assigned to the card.
+	 * The board members assigned to the card.
 	 *
 	 * @return BelongsToMany<User, $this>
 	 */

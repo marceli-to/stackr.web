@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Enums\BoardRole;
 use App\Enums\LabelColor;
-use App\Enums\ProjectRole;
 use App\Models\Attachment;
+use App\Models\Board;
 use App\Models\Card;
-use App\Models\Project;
 use App\Models\Stack;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,7 +21,7 @@ class MoveCopyCardTest extends TestCase
 
 	private User $user;
 
-	private Project $project;
+	private Board $board;
 
 	private Stack $stack;
 
@@ -34,16 +34,16 @@ class MoveCopyCardTest extends TestCase
 		Storage::fake(Attachment::DISK);
 
 		$this->user = User::factory()->create();
-		$this->project = Project::factory()->ownedBy($this->user)->create();
-		$this->stack = Stack::factory()->for($this->project)->create(['name' => 'To do']);
+		$this->board = Board::factory()->ownedBy($this->user)->create();
+		$this->stack = Stack::factory()->for($this->board)->create(['name' => 'To do']);
 		$this->card = Card::factory()->for($this->stack)->create(['title' => 'Brief']);
 	}
 
 	private function otherBoard(): Stack
 	{
-		$project = Project::factory()->ownedBy($this->user)->create(['name' => 'Other']);
+		$board = Board::factory()->ownedBy($this->user)->create(['name' => 'Other']);
 
-		return Stack::factory()->for($project)->create(['name' => 'Inbox']);
+		return Stack::factory()->for($board)->create(['name' => 'Inbox']);
 	}
 
 	public function test_the_destinations_list_the_users_boards_and_lists()
@@ -52,7 +52,7 @@ class MoveCopyCardTest extends TestCase
 		Card::factory()->for($inbox)->count(2)->create();
 
 		$this->actingAs($this->user)
-			->get(route('projects.show', [$this->project, 'card' => $this->card->id]))
+			->get(route('boards.show', [$this->board, 'card' => $this->card->id]))
 			->assertInertia(fn (Assert $page) => $page
 				->missing('destinations')
 				->where('card.index', 0)
@@ -70,12 +70,12 @@ class MoveCopyCardTest extends TestCase
 		$inbox = $this->otherBoard();
 		$both = User::factory()->create();
 		$onlyHere = User::factory()->create();
-		$this->project->members()->attach([$both->id, $onlyHere->id], ['role' => ProjectRole::Member]);
-		$inbox->project->members()->attach($both->id, ['role' => ProjectRole::Member]);
+		$this->board->members()->attach([$both->id, $onlyHere->id], ['role' => BoardRole::Member]);
+		$inbox->board->members()->attach($both->id, ['role' => BoardRole::Member]);
 
-		$label = $this->project->labels()->create(['name' => 'Bug', 'color' => LabelColor::Red]);
-		$inbox->project->labels()->create(['name' => 'Bug', 'color' => LabelColor::Red]);
-		$unnamed = $this->project->labels()->create(['name' => null, 'color' => LabelColor::Blue]);
+		$label = $this->board->labels()->create(['name' => 'Bug', 'color' => LabelColor::Red]);
+		$inbox->board->labels()->create(['name' => 'Bug', 'color' => LabelColor::Red]);
+		$unnamed = $this->board->labels()->create(['name' => null, 'color' => LabelColor::Blue]);
 		$this->card->labels()->attach([$label->id, $unnamed->id]);
 		$this->card->members()->attach([$both->id, $onlyHere->id]);
 
@@ -85,26 +85,26 @@ class MoveCopyCardTest extends TestCase
 
 		$this->actingAs($this->user)
 			->patch(route('cards.move', $this->card), ['stack_id' => $inbox->id, 'index' => 0])
-			->assertRedirect(route('projects.show', $this->project));
+			->assertRedirect(route('boards.show', $this->board));
 
 		$card = $this->card->fresh();
 		$this->assertSame($inbox->id, $card->stack_id);
 		$this->assertEqualsCanonicalizing(
-			$inbox->project->labels()->pluck('id')->all(),
+			$inbox->board->labels()->pluck('id')->all(),
 			$card->labels()->pluck('labels.id')->all(),
 		);
-		$this->assertSame(2, $inbox->project->labels()->count());
+		$this->assertSame(2, $inbox->board->labels()->count());
 		$this->assertSame([$both->id], $card->members()->pluck('users.id')->all());
 
 		$new = $card->attachments()->sole()->path;
-		$this->assertStringStartsWith("attachments/{$inbox->project_id}/{$card->id}/", $new);
+		$this->assertStringStartsWith("attachments/{$inbox->board_id}/{$card->id}/", $new);
 		Storage::disk(Attachment::DISK)->assertExists($new);
 		Storage::disk(Attachment::DISK)->assertMissing($old);
 	}
 
 	public function test_a_card_cant_move_to_a_board_the_user_isnt_on()
 	{
-		$foreign = Stack::factory()->for(Project::factory()->create())->create();
+		$foreign = Stack::factory()->for(Board::factory()->create())->create();
 
 		$this->actingAs($this->user)
 			->patch(route('cards.move', $this->card), ['stack_id' => $foreign->id, 'index' => 0])
@@ -113,7 +113,7 @@ class MoveCopyCardTest extends TestCase
 
 	public function test_a_copy_keeps_what_was_picked()
 	{
-		$label = $this->project->labels()->create(['name' => 'Bug', 'color' => LabelColor::Red]);
+		$label = $this->board->labels()->create(['name' => 'Bug', 'color' => LabelColor::Red]);
 		$this->card->labels()->attach($label);
 		$this->card->members()->attach($this->user);
 		$this->card->update(['description' => 'Notes', 'due_at' => now()->addDay(), 'completed_at' => now()]);
@@ -153,7 +153,7 @@ class MoveCopyCardTest extends TestCase
 	public function test_a_copy_on_another_board_gets_that_boards_labels()
 	{
 		$inbox = $this->otherBoard();
-		$label = $this->project->labels()->create(['name' => 'Bug', 'color' => LabelColor::Red]);
+		$label = $this->board->labels()->create(['name' => 'Bug', 'color' => LabelColor::Red]);
 		$this->card->labels()->attach($label);
 
 		$this->actingAs($this->user)
@@ -166,7 +166,7 @@ class MoveCopyCardTest extends TestCase
 			->assertSessionHasNoErrors();
 
 		$copy = $inbox->cards()->sole();
-		$this->assertSame($inbox->project->labels()->sole()->id, $copy->labels()->sole()->id);
+		$this->assertSame($inbox->board->labels()->sole()->id, $copy->labels()->sole()->id);
 		$this->assertSame([$label->id], $this->card->labels()->pluck('labels.id')->all());
 	}
 

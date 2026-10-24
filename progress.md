@@ -1,6 +1,6 @@
 # stackr — progress
 
-A Trello clone: projects, each with its own board of lists and cards.
+A Trello clone: boards of lists and cards.
 
 _Last updated: 2026-10-24_
 
@@ -8,8 +8,8 @@ _Last updated: 2026-10-24_
 
 | Step                                                   | Status  |
 | ------------------------------------------------------ | ------- |
-| 1. Data model (projects, members, lists, cards)        | ✅ done |
-| 2. Projects overview (create, rename, delete)          | ✅ done |
+| 1. Data model (boards, members, lists, cards)          | ✅ done |
+| 2. Boards overview (create, rename, delete)            | ✅ done |
 | 3. Board (lists + cards, drag & drop)                  | ✅ done |
 | 4. Branding (name, logo, login screen)                 | ✅ done |
 | 5. Design: "Field" (see below)                         | ✅ done |
@@ -31,8 +31,8 @@ _Last updated: 2026-10-24_
 | 21. Board background photos                            | ✅ done |
 | 22. Watching cards and boards                          | ✅ done |
 | 23. Calmer board chrome (one bar, ⋯ menu)              | ✅ done |
-| 24. Gradient project colours                           | ✅ done |
-| 25. Project keys in URLs, join links                   | ✅ done |
+| 24. Gradient board colours                             | ✅ done |
+| 25. Board keys in URLs, join links                     | ✅ done |
 | 26. MCP server for agents (Settings → Agents)          | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
@@ -52,14 +52,18 @@ Still open there: a manual check, see "After the deploy" under "Next up".
 
 ## Decisions made
 
+- **"Board" everywhere.** Until 2026-10-24 the code called a board a `Project` (tables, routes,
+  MCP tools); it was renamed in full to `Board` (`boards`, `board_user`, `board_id`, `/boards/{key}`,
+  `list_boards`), and the production data was copied into the renamed schema. Old `/projects/…` links
+  are gone. The landing page still says "a board for every project", meaning the user's own work.
 - **No realtime.** Reverb and Pusher were set up, then removed at the user's request. Changes by
   other people show up after a reload, and the last write wins. Production is likely shared hosting,
   so nothing may rely on a long-running process.
-- **A project is a board.** There's no workspace level above it. You can have as many projects as you like.
+- **Boards are the top level.** There’s no workspace above them. You can have as many boards as you like.
 - **Lists are called `Stack` in code**, because PHP doesn't allow a class named `List`. The UI says "list".
-- **Roles:** `owner` or `member`, stored on `project_user` (`ProjectMembership` pivot,
-  `ProjectRole` enum). Members can view and edit the project and its board; only the owner can delete it.
-  Deleting a user deletes the projects they own.
+- **Roles:** `owner` or `member`, stored on `board_user` (`BoardMembership` pivot,
+  `BoardRole` enum). Members can view and edit the board; only the owner can delete it.
+  Deleting a user deletes the boards they own.
 - **Order uses fractional indexing.** `app/Support/FractionalIndex.php` is a PHP port of
   rocicorp/fractional-indexing. It matched the JS original on 20,000 random insertions. The server
   computes the keys: the client sends `{ index, stack_id? }`, and the server places the item among its
@@ -68,9 +72,9 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   (`resources/js/components/board/useBoardMove.ts`, `async` Inertia visits). Once all moves have
   finished it takes the server's order again, which also undoes a rejected move. A rejected or
   failed move shows one error toast instead of Inertia's full-page error overlay.
-- **Design "Field"** (chosen out of three directions explored with the Hallmark skill). Every project
+- **Design "Field"** (chosen out of three directions explored with the Hallmark skill). Every board
   stands on its own dark colour (cobalt, rust, moss, oxblood, lagoon, plum, or one of five gradients
-  blending two of them: dusk, ember, tide, grove, fig; `ProjectColor` enum, `projects.color`); the
+  blending two of them: dusk, ember, tide, grove, fig; `BoardColor` enum, `boards.color`); the
   board page, top bar included, is drenched in it, lists sit in a darker well of it, cards are plain
   white. Solid colours carry a faint diagonal sheen; the `field-fill` utility paints a field's
   `--field-fill` (sheen or gradient), and a gradient's `--field` is its two colours' midpoint. Everything else is neutral warm paper with ink.
@@ -80,21 +84,21 @@ Still open there: a manual check, see "After the deploy" under "Next up".
     - Type: Antonio 700 (poster heads: `--text-poster`, list names, dialog titles, the wordmark and
       the board name in the top bar) and Hanken Grotesk 400/600 for everything else, loaded via Bunny in
       `vite.config.ts`.
-    - Shell: a slim top bar in three columns: logo (→ projects) and, on a board, the board's name
+    - Shell: a slim top bar in three columns: logo (→ boards) and, on a board, the board's name
       left; the board's search centred; member avatars and the ⋯ app menu right
       (`components/AppMenu.vue`, a tinted circle like the avatar, with a yellow dot while anything is
       unread) on a board, ending with the account (name, Settings, Log out); there's no avatar in
-      the corner any more. Off the boards (projects overview, settings) the same place holds the
+      the corner any more. Off the boards (boards overview, settings) the same place holds the
       user's initials (`components/AccountMenu.vue`) with notifications, settings and log out, and
       the unread dot on the initials. Page titles there are `text-4xl` / `md:text-[2.75rem]`,
-      not poster size. On a board the menu is frosted glass in the project's colour with white ink (`menu-glass`
+      not poster size. On a board the menu is frosted glass in the board's colour with white ink (`menu-glass`
       utility; the menu is teleported, so it carries its own `data-field`), like the frosted search.
       The board has no toolbar row and no big title of its own (only a hidden `h1`); it teleports
       its search (`#topbar-search`) and its own `AppMenu` with the board items (`#topbar-actions`)
-      into the bar. No sidebar, no breadcrumbs, no project switcher.
-    - Board: lists show no card count (unless they have a card limit); the list menu (and every other ⋯ menu, e.g. on project tiles) uses horizontal dots. "Add a card" is card-height
+      into the bar. No sidebar, no breadcrumbs, no board switcher.
+    - Board: lists show no card count (unless they have a card limit); the list menu (and every other ⋯ menu, e.g. on board tiles) uses horizontal dots. "Add a card" is card-height
       with a faint tint, "Add a list" has the list's well colour.
-    - Overview: a wall of 16:10 colour tiles (1–4 per row: sm 2, lg 3, xl 4) that ends with a neutral "New project" tile.
+    - Overview: a wall of 16:10 colour tiles (1–4 per row: sm 2, lg 3, xl 4) that ends with a neutral "New board" tile.
     - Controls: 4px corners, ink primary buttons, white inputs with an ink hairline (`--control-edge`),
       white menus/dialogs/toasts with `--surface-edge` and `--float-shadow`, dark-grey focus ring.
       Focus outlines need `focus-visible:outline-solid` (Tailwind 4's `outline-none` clears the style).
@@ -113,22 +117,21 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   same mark on an ink tile.
 - **Members & invitations:** the board's top bar shows the other members as an avatar stack (your own
   initials are the account menu); "Invite people…" ("Members…" for non-owners) in the ⋯ menu. Both
-  open the members dialog (`membersOpen` in `components/projects/members.ts` is shared between them) (`components/projects/ProjectMembers.vue`). Only the owner invites (by email) and
+  open the members dialog (`membersOpen` in `components/board/members.ts` is shared between them) (`components/board/BoardMembers.vue`). Only the owner invites (by email) and
   removes members; anyone else can leave; the owner can't leave. An address with an account is added
-  right away and gets `AddedToProjectMail`; any other address gets a `project_invitations` row and
-  `ProjectInvitationMail` with `/invitations/{token}` (valid 14 days, inviting again renews it).
+  right away and gets `AddedToBoardMail`; any other address gets a `board_invitations` row and
+  `BoardInvitationMail` with `/invitations/{token}` (valid 14 days, inviting again renews it).
   Guests opening the link go to register (or login) with the email filled in and come back via
   `url.intended`; accepting also marks the email verified when it matches. Removing a member also
-  takes them off the project's cards.
-- **Join link:** besides email, the owner can turn on a shareable link (`projects.invite_token`,
+  takes them off the board's cards.
+- **Join link:** besides email, the owner can turn on a shareable link (`boards.invite_token`,
   `/join/{token}`, `InviteLinkController`). Anyone opening it joins as a member (guests register
   first and come back via `url.intended`). It doesn't expire; "New link" replaces it, "Turn off"
   clears it. Only the owner sees it (`inviteLink` prop).
-- **Project URLs use a random key, not the id:** `projects.key` (10 lowercase letters/digits, set on
-  create) is the route key (`/projects/k3f9x2qa7m`). Old numeric URLs (`/projects/5?card=7`)
-  redirect members to the key URL. The frontend passes `project.key` to Wayfinder; `id` is still in
-  the resource for things like move/copy destinations. Cards still show up as `?card=<id>`.
-- **Mail:** the project mails (`AddedToProjectMail`, `ProjectInvitationMail`) are queued
+- **Board URLs use a random key, not the id:** `boards.key` (10 lowercase letters/digits, set on
+  create) is the route key (`/boards/k3f9x2qa7m`). The frontend passes `board.key` to Wayfinder; `id`
+  is still in the resource for things like move/copy destinations. Cards still show up as `?card=<id>`.
+- **Mail:** the board mails (`AddedToBoardMail`, `BoardInvitationMail`) are queued
   (`ShouldQueue`, database queue); in production a cron job works through the queue every minute.
   Laravel's verification and password-reset mails are still sent right away. Locally, run
   `php artisan queue:work` (or `queue:listen`) to actually send queued mail. Templates are Laravel's published
@@ -138,15 +141,15 @@ Still open there: a manual check, see "After the deploy" under "Next up".
 - **Cards** open in a dialog from the board; the URL carries `?card=<id>`, so a card can be linked
   and the browser's back button closes it. Opening reloads only the `card` prop. A card has:
   title, Markdown description (rendered on the server with `Str::markdown`, raw HTML stripped,
-  unsafe links dropped), start and due dates plus a "complete" tick, labels (per project, 8 colours,
-  `LabelColor`), members (project members), checklists with items, attachments and comments
+  unsafe links dropped), start and due dates plus a "complete" tick, labels (per board, 8 colours,
+  `LabelColor`), members (board members), checklists with items, attachments and comments
   (authors edit/delete their own). Shaping lives in `CardFaceResource` (the board) and
   `CardResource` (the dialog).
-- **Attachments** are stored privately on the `local` disk under `attachments/{project}/{card}/` and
-  served by `AttachmentController@show` to project members only (no `storage:link`, so shared
+- **Attachments** are stored privately on the `local` disk under `attachments/{board}/{card}/` and
+  served by `AttachmentController@show` to board members only (no `storage:link`, so shared
   hosting works). Up to 20 files of 20 MB per upload; drop files on the open card, paste an image,
   or use the file picker. The first image becomes the cover; any image can be made the cover.
-  Deleting a card, a list or a project removes its files (model events).
+  Deleting a card, a list or a board removes its files (model events).
   A card can have a colour cover instead (`cards.cover_color`, the 8 label colours): "Cover" in
   the dialog (`CardCoverPicker.vue`) picks a colour or one of the card's images; choosing one
   clears the other, and a new upload doesn't replace a colour cover.
@@ -172,7 +175,7 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   The list menu has "Archive list"; deleting a list happens from the archive panel
   (`components/board/BoardArchivePanel.vue`, "Archive…" in the ⋯ menu), which loads the
   `archive` prop on open (`Inertia::optional`). Restoring a card also restores its archived list.
-  Project tiles count active lists and cards only.
+  Board tiles count active lists and cards only.
 - **Move and copy** (`components/card/CardMoveCopy.vue`, "Move" / "Copy" in the card dialog's
   Actions): pick a board (any the user is on, from the lazy `destinations` prop), a list and a
   position. `cards.move` takes any active list on the user's boards; a card that leaves the board
@@ -180,7 +183,7 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   completion or comments); checklists, labels, members and attachments are optional (files are
   copied, the cover follows). Arriving on another board, `CarryCardOver` maps labels by name and
   colour (creating missing ones) and drops members who aren't on that board; a moved card's files
-  move to `attachments/{new project}/{card}/`.
+  move to `attachments/{new board}/{card}/`.
 - **Activity log:** `activities` (card, user, `type`, `data` json, `created_at` only). The actions
   record through `RecordActivity` (the signed-in user is the actor): created, copied, moved
   (between lists), moved_board, archived, restored, completed, reopened, due_set, due_removed,
@@ -198,7 +201,7 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   `notifications.open`, which marks it read and opens the card. `app:send-due-reminders` (every
   15 minutes from the scheduler) reminds a card's members once when it's due within a day
   (`cards.due_reminded_at`, cleared when the due date changes).
-- **Mentions:** `@Full Name` in a comment mentions that project member (`App\Support\Mentions`,
+- **Mentions:** `@Full Name` in a comment mentions that board member (`App\Support\Mentions`,
   whole names, case-insensitive, longest first). Typing `@` in a comment suggests members
   (`components/card/MentionTextarea.vue`). New mentions notify (edits only notify people
   mentioned for the first time); `CommentResource` wraps them in `<span class="mention">`.
@@ -208,7 +211,7 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   bottom of the list and opens it. "Add a checklist" can copy the items (unticked) of any checklist
   on the board (`copy_from`, the lazy `checklists` prop).
 - **Calendar** (`components/board/BoardCalendar.vue`): "Board / Calendar" in the ⋯ menu,
-  remembered per project in localStorage. A month grid (Monday first, six weeks) shows the cards
+  remembered per board in localStorage. A month grid (Monday first, six weeks) shows the cards
   with a due date on their day, honouring the search and filters; a dot shows the due state.
   Dragging a card to another day moves its due date and keeps the time.
 - **Shortcuts** (`components/board/useBoardKeys.ts`, `BoardShortcuts.vue`): `/` search, `n` add a
@@ -217,28 +220,28 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   typing or when a dialog, popover or menu is open.
 - **Card limits and collapsing:** "Card limit…" in the list menu sets `stacks.wip_limit` (shared,
   1–999); the header then shows "3 / 5", red when over, and nothing is blocked. "Collapse list" is
-  personal (localStorage `stackr.collapsed.<project>`): the list shrinks to a narrow column with
+  personal (localStorage `stackr.collapsed.<board>`): the list shrinks to a narrow column with
   its name on its side and the card count; click it to expand. Collapsed lists can still be dragged.
-- **Background photos:** "Background photo" in the project's edit dialog uploads at once
-  (`ProjectBackgroundController`, `SetBackground`): JPEG/PNG/WebP up to 20 MB, shrunk to 2400px
-  WebP when wider, stored privately under `backgrounds/{project}/` and served to members only
-  (`projects.background`, `?v=<file name>` so it caches for good). The board page stands on it
+- **Background photos:** "Background photo" in the board's edit dialog uploads at once
+  (`BoardBackgroundController`, `SetBackground`): JPEG/PNG/WebP up to 20 MB, shrunk to 2400px
+  WebP when wider, stored privately under `backgrounds/{board}/` and served to members only
+  (`boards.background`, `?v=<file name>` so it caches for good). The board page stands on it
   under a black veil that deepens downwards (45% → 70%); overview tiles show it under their colour.
   Lists and cards keep their opaque wells, so they stay readable; the top bar's search field is
   frosted (`backdrop-blur`) so it holds up over a busy photo.
-- **Watching:** `card_watchers` and `project_watchers` (pivots). "Watch" in the card dialog's Actions
-  and as "Watch board" in the ⋯ menu (`cards.watch` / `projects.watch`, DELETE to stop); cards you watch show
+- **Watching:** `card_watchers` and `board_watchers` (pivots). "Watch" in the card dialog's Actions
+  and as "Watch board" in the ⋯ menu (`cards.watch` / `boards.watch`, DELETE to stop); cards you watch show
   an eye. `NotifyWatchers` sends `CardUpdated` (bell only, never email: moves would flood inboxes)
   to the card's watchers, its members (always, so their Watch button shows "Watching", disabled) and
   the board's watchers, minus the actor and anyone who got a more specific notification (the person
   just added, people mentioned). It runs from `RecordActivity` (the line comes from
   `App\Support\ActivityText`) and for new comments. Leaving a board drops your watches there.
-- **Projects** have a name, an optional description, an optional link (`url`, http/https), and a colour.
+- **Boards** have a name, an optional description, an optional link (`url`, http/https), and a colour.
   Description and link show in an "Info" dialog from the board's ⋯ menu (only when one is set). Editing and deleting happens from the ⋮ menu on the overview tiles.
 - **Landing page** (`pages/site/Welcome.vue`) for guests at `/`; signed-in users still go straight to
-  `/projects`. Built like the kimiyu.ch app sites (wuff, croc): header with anchors and a "Log in" pill,
+  `/boards`. Built like the kimiyu.ch app sites (wuff, croc): header with anchors and a "Log in" pill,
   hero with the app icon, a static board mock (`components/site/BoardMock.vue`), a dark "How it works"
-  band (projects, lists, cards), a 4×4 features grid, a dark "Agents" band (MCP: what an agent
+  band (boards, lists, cards), a 4×4 features grid, a dark "Agents" band (MCP: what an agent
   can and can't do, a mock prompt and a card history marked "via agent"; nav link "Agents"),
   "Under the hood" facts, and the footer
   "made with ❤️ by kimiyu.ch". `/legal` (`pages/site/Legal.vue`) is the small print: data, privacy
@@ -252,19 +255,19 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   Passkeys can be managed in Security settings but are not offered on the login screen.
   The login has no "Remember me"; instead sessions last 12 hours (`SESSION_LIFETIME=720`, set it in
   production's `.env` too, along with `APP_NAME=Stackr`).
-- `/dashboard` redirects to `/projects`, so Fortify's home setting and the old links keep working.
+- `/dashboard` redirects to `/boards`, so Fortify's home setting and the old links keep working.
 - **Agents (MCP).** `laravel/mcp` serves `App\Mcp\Servers\StackrServer` at `POST /mcp`
   (`routes/ai.php`, plain HTTP requests, so it works on shared hosting), behind `auth:sanctum` and
   `throttle:120,1`. Agents send a Sanctum personal access token as `Authorization: Bearer …`.
   Tokens are made and revoked in Settings → Agents (`AgentController`, behind the password
   confirmation like Security). They never expire, act as their user on all of that user's boards,
   and are shown once (flashed as `agentToken`) together with a filled-in `claude mcp add` command
-  and a `.mcp.json` snippet. There are 15 tools in `app/Mcp/Tools`: list_projects, get_board,
+  and a `.mcp.json` snippet. There are 15 tools in `app/Mcp/Tools`: list_boards, get_board,
   get_card, create_card, update_card, move_card, add_comment, add_checklist, add_checklist_item,
   tick_checklist_item, assign_member, unassign_member, add_label, remove_label, archive_card.
   There's no deleting, no board settings and no inviting. Tools call the same actions as the
-  controllers. Permissions: `App\Mcp\Boards` only finds things on the user's own boards (other
-  boards read as "not found") and runs the same `ProjectPolicy` check. Validation reuses the form
+  controllers. Permissions: `App\Mcp\Lookup` only finds things on the user's own boards (other
+  boards read as "not found") and runs the same `BoardPolicy` check. Validation reuses the form
   requests' rules. Lists, members and labels can be named by name (any case) or id; an ambiguous
   name asks for the id. Archived cards and lists and templates are invisible to agents.
   `activities.via_agent` and `comments.via_agent` are set when the request came in on a token
@@ -283,26 +286,26 @@ Still open there: a manual check, see "After the deploy" under "Next up".
 
 ## Where things are
 
-- Backend: `app/Http/Controllers/*`, `app/Actions/{Projects,Stacks,Cards,Labels,Checklists,Attachments,Comments,Members}/*`,
-  `app/Http/Requests/*`, `app/Http/Resources/*`, `app/Policies/ProjectPolicy.php`,
-  `app/Models/{Project,ProjectMembership,Stack,Card,Activity}.php`, `routes/web.php`,
+- Backend: `app/Http/Controllers/*`, `app/Actions/{Boards,Stacks,Cards,Labels,Checklists,Attachments,Comments,Members}/*`,
+  `app/Http/Requests/*`, `app/Http/Resources/*`, `app/Policies/BoardPolicy.php`,
+  `app/Models/{Board,BoardMembership,Stack,Card,Activity}.php`, `routes/web.php`,
   `routes/console.php` (schedule), `app/Console/Commands/*` (backup, due reminders, thumbnails)
 - Notifications: `app/Notifications/*` (`CardNotification` base), `app/Http/Controllers/{Notification,Watch}Controller.php`,
   `app/Support/{Mentions,ActivityText,Thumbnail}.php`
 - Card backend: `app/Http/Controllers/{Card,Label,CardLabel,CardMember,Checklist,ChecklistItem,Attachment,Comment}Controller.php`,
   `app/Models/{Label,Checklist,ChecklistItem,Attachment,Comment}.php`, `app/Support/Markdown.php`
-- Frontend: `resources/js/pages/projects/{Index,Show}.vue` (Show provides the
+- Frontend: `resources/js/pages/boards/{Index,Show}.vue` (Show provides the
   board context and filter and teleports its search and menu into the top bar), `resources/js/components/board/*` (board, calendar, filter bar, archive
   panel, shortcuts), `resources/js/components/card/*` (dialog, pickers, sections, move/copy, mention
   textarea; `board.ts` holds the shared helpers and `describeActivity()`),
-  `resources/js/components/projects/*`, `resources/js/components/{AppTopBar,AppMenu,NotificationsDialog}.vue`,
+  `resources/js/components/board/*`, `resources/js/components/{AppTopBar,AppMenu,NotificationsDialog}.vue`,
   `resources/js/layouts/{AppLayout,settings/Layout,auth/AuthCardLayout}.vue`
 - Agents: `routes/ai.php`, `app/Mcp/{Servers/StackrServer,Boards,Shapes}.php`, `app/Mcp/Tools/*`,
   `app/Http/Controllers/Settings/AgentController.php`, `app/Actions/Agents/*`,
   `resources/js/pages/settings/Agents.vue`, `resources/js/components/CodeSnippet.vue`
 - Landing page and legal notice: `resources/js/pages/site/{Welcome,Legal}.vue`,
   `resources/js/components/site/{SiteHeader,SiteFooter,BoardMock}.vue`
-- Tests: `tests/Feature/*Test.php` (one file per area: Project, ProjectMembers, Board, CardDetails, Archive,
+- Tests: `tests/Feature/*Test.php` (one file per area: BoardManagement, BoardMembers, Board, CardDetails, Archive,
   MoveCopyCard, Activity, Notification, Watch, Template, Thumbnail, Background, …), `tests/Unit/FractionalIndexTest.php`
   (193 tests on 2026-10-24, including `McpTest` and `Settings/AgentTokensTest`)
 
@@ -311,7 +314,7 @@ Still open there: a manual check, see "After the deploy" under "Next up".
 Live at https://stackr.kimiyu.ch (Hostpoint, `pumutuxu@pumutuxu.myhostpoint.ch:~/www/stackr.kimiyu.ch`,
 the subdomain's document root is `public/`; certificate set up by the user in the Hostpoint panel).
 First deployed 2026-10-24; the user registered there and confirmed that mail (verification) arrives.
-Same method as the kimiyuch projects (gotaticket/usverchauft):
+Same method as the kimiyuch boards (gotaticket/usverchauft):
 
 - **Deploy:** `./deploy.sh` from the Mac (own SSH key). It refuses uncommitted changes and a missing
   `public/build`, runs the tests, exports `HEAD` with `git archive`, runs `composer install --no-dev`
@@ -371,7 +374,7 @@ Feature list (2026-10-24). 1–14 are done (one commit each on 2026-10-24); 15�
 **Cards**
 
 1. ~~Archive instead of delete: archive cards and lists, an archive view, restore.~~ Done.
-2. ~~Move or copy a card from the dialog: to another list or another project, at a chosen position.~~ Done.
+2. ~~Move or copy a card from the dialog: to another list or another board, at a chosen position.~~ Done.
 3. ~~Activity log per card, shown together with the comments.~~ Done.
 4. ~~@mentions in comments, with a notification to the person mentioned.~~ Done.
 5. ~~Cover colours: a plain colour cover as well as image covers.~~ Done.
@@ -384,7 +387,7 @@ Feature list (2026-10-24). 1–14 are done (one commit each on 2026-10-24); 15�
 9. ~~Calendar view of cards with a due date.~~ Done.
 10. ~~Keyboard shortcuts: `n` new card, `Esc` close, arrow keys between cards, `/` search.~~ Done.
 11. ~~WIP limits or collapsing a list.~~ Done.
-12. ~~Board backgrounds: an image as well as the project colour.~~ Done.
+12. ~~Board backgrounds: an image as well as the board colour.~~ Done.
 
 **People and notifications**
 
@@ -392,13 +395,13 @@ Feature list (2026-10-24). 1–14 are done (one commit each on 2026-10-24); 15�
     Done; production runs it via the `schedule:run` cron line (see "Production").
 14. ~~Watching a card or board, to get notified about changes.~~ Done (bell only).
 15. Avatars: upload a profile picture instead of initials.
-16. Hand over ownership: the owner can't leave a project, and there's no way to pass it on.
+16. Hand over ownership: the owner can't leave a board, and there's no way to pass it on.
 
 **Overview and account**
 
-17. "My cards" page: everything assigned to me across all projects, sorted by due date.
-18. Starring or pinning projects, and archiving projects.
-19. Export a project (JSON or CSV) as a backup.
+17. "My cards" page: everything assigned to me across all boards, sorted by due date.
+18. Starring or pinning boards, and archiving boards.
+19. Export a board (JSON or CSV) as a backup.
 
 **Agents**
 
@@ -406,7 +409,7 @@ Feature list (2026-10-24). 1–14 are done (one commit each on 2026-10-24); 15�
     a card, comment, move it (e.g. To do → Pending → Done). Plan: `laravel/mcp` with an HTTP
     server at `/mcp` (plain requests, so it runs on shared hosting), personal access tokens via
     Sanctum (create/revoke in settings, sent as a Bearer header), tools that call the existing
-    actions (so permissions, activity log and notifications behave the same): list projects,
+    actions (so permissions, activity log and notifications behave the same): list boards,
     get board, get card, create card, update card, add comment, move card (list by name),
     tick checklist items. Activity shows the token's user; maybe mark it "via agent".~~
     Done, see "Agents (MCP)" under "Decisions made".

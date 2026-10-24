@@ -48,7 +48,7 @@ const lists: { name: string; cards: MockCard[] }[] = [
 		name: 'Doing',
 		cards: [
 			{
-				title: 'Design the project tiles',
+				title: 'Design the board tiles',
 				cover: true,
 				labels: [{ color: 'blue', name: 'Design' }],
 				due: { label: 'Tomorrow', state: 'soon' },

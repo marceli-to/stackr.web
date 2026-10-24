@@ -14,18 +14,16 @@ import {
 import UserInfo from '@/components/UserInfo.vue';
 import { logout } from '@/routes';
 import { edit as editProfile } from '@/routes/profile';
-import type { Project } from '@/types';
+import type { Board } from '@/types';
 
 // The board's ⋯ menu at the end of the top bar: notifications, whatever the
 // board adds below them (view, people, archive), and your account last.
-// A yellow dot on the button says there's something unread. On a project
-// it's frosted glass of the project's colour.
+// A yellow dot on the button says there's something unread. On a board
+// it's frosted glass of the board's colour.
 const page = usePage();
 const user = computed(() => page.props.auth.user);
 const unread = computed(() => page.props.notifications?.unread ?? 0);
-const field = computed(
-	() => (page.props.project as Project | undefined)?.color,
-);
+const field = computed(() => (page.props.board as Board | undefined)?.color);
 
 const notificationsOpen = ref(false);
 </script>

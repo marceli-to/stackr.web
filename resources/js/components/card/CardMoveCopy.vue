@@ -17,10 +17,10 @@ const props = defineProps<{
 	mode: 'move' | 'copy';
 }>();
 
-const { project, destinations } = useBoard();
+const { board, destinations } = useBoard();
 
 const open = ref(false);
-const projectId = ref(project.value.id);
+const boardId = ref(board.value.id);
 const stackId = ref<number | null>(null);
 const position = ref(0);
 const title = ref('');
@@ -54,7 +54,7 @@ watch(open, (isOpen) => {
 		return;
 	}
 
-	projectId.value = project.value.id;
+	boardId.value = board.value.id;
 	stackId.value = props.card.stack.id;
 	title.value = props.card.title;
 	kept.value = extras.value.map((extra) => extra.value);
@@ -62,13 +62,11 @@ watch(open, (isOpen) => {
 	router.reload({ only: ['destinations'], onSuccess: placeDefault });
 });
 
-const board = computed(() =>
-	destinations.value?.find(
-		(destination) => destination.id === projectId.value,
-	),
+const target = computed(() =>
+	destinations.value?.find((destination) => destination.id === boardId.value),
 );
 const stack = computed(() =>
-	board.value?.stacks.find((stack) => stack.id === stackId.value),
+	target.value?.stacks.find((stack) => stack.id === stackId.value),
 );
 
 // The card's own list counts it already, unless it's archived.
@@ -93,7 +91,7 @@ function placeDefault() {
 }
 
 function pickBoard() {
-	const stacks = board.value?.stacks ?? [];
+	const stacks = target.value?.stacks ?? [];
 
 	stackId.value =
 		stacks.find((stack) => stack.id === props.card.stack.id)?.id ??
@@ -190,7 +188,7 @@ const field =
 						>
 						<select
 							id="move-board"
-							v-model="projectId"
+							v-model="boardId"
 							:class="field"
 							@change="pickBoard"
 						>
@@ -201,7 +199,7 @@ const field =
 							>
 								{{ destination.name
 								}}{{
-									destination.id === project.id
+									destination.id === board.id
 										? ' (this board)'
 										: ''
 								}}
@@ -217,11 +215,11 @@ const field =
 								id="move-list"
 								v-model="stackId"
 								:class="field"
-								:disabled="!board?.stacks.length"
+								:disabled="!target?.stacks.length"
 								@change="placeDefault"
 							>
 								<option
-									v-for="option in board?.stacks"
+									v-for="option in target?.stacks"
 									:key="option.id"
 									:value="option.id"
 								>
@@ -253,7 +251,7 @@ const field =
 						</div>
 					</div>
 					<p
-						v-if="board && board.stacks.length === 0"
+						v-if="target && target.stacks.length === 0"
 						class="text-sm text-muted-foreground"
 					>
 						This board has no lists yet.

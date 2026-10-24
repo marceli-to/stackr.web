@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Enums\BoardRole;
 use App\Enums\LabelColor;
-use App\Enums\ProjectRole;
 use App\Mcp\Servers\StackrServer;
 use App\Mcp\Tools\AddChecklistItemTool;
 use App\Mcp\Tools\AddChecklistTool;
@@ -19,8 +19,8 @@ use App\Mcp\Tools\RemoveLabelTool;
 use App\Mcp\Tools\TickChecklistItemTool;
 use App\Mcp\Tools\UnassignMemberTool;
 use App\Mcp\Tools\UpdateCardTool;
+use App\Models\Board;
 use App\Models\Card;
-use App\Models\Project;
 use App\Models\Stack;
 use App\Models\User;
 use App\Notifications\AssignedToCard;
@@ -35,7 +35,7 @@ class McpTest extends TestCase
 
 	private User $user;
 
-	private Project $project;
+	private Board $board;
 
 	private Stack $todo;
 
@@ -48,9 +48,9 @@ class McpTest extends TestCase
 		parent::setUp();
 
 		$this->user = User::factory()->create(['name' => 'Amy']);
-		$this->project = Project::factory()->ownedBy($this->user)->create(['name' => 'Website']);
-		$this->todo = Stack::factory()->for($this->project)->create(['name' => 'To do']);
-		$this->done = Stack::factory()->for($this->project)->create(['name' => 'Done']);
+		$this->board = Board::factory()->ownedBy($this->user)->create(['name' => 'Website']);
+		$this->todo = Stack::factory()->for($this->board)->create(['name' => 'To do']);
+		$this->done = Stack::factory()->for($this->board)->create(['name' => 'Done']);
 		$this->card = Card::factory()->for($this->todo)->create(['title' => 'Write the brief']);
 	}
 
@@ -75,9 +75,9 @@ class McpTest extends TestCase
 	private function strangersCard(): Card
 	{
 		$stranger = User::factory()->create();
-		$project = Project::factory()->ownedBy($stranger)->create(['name' => 'Secret']);
+		$board = Board::factory()->ownedBy($stranger)->create(['name' => 'Secret']);
 
-		return Card::factory()->for(Stack::factory()->for($project)->create(['name' => 'Done']))->create();
+		return Card::factory()->for(Stack::factory()->for($board)->create(['name' => 'Done']))->create();
 	}
 
 	public function test_agents_need_a_token()
@@ -93,19 +93,19 @@ class McpTest extends TestCase
 	{
 		$token = $this->user->createToken('Laptop');
 
-		$this->callTool($token->plainTextToken, 'list_projects')->assertOk();
+		$this->callTool($token->plainTextToken, 'list_boards')->assertOk();
 
 		$token->accessToken->delete();
 		$this->app['auth']->forgetGuards();
 
-		$this->callTool($token->plainTextToken, 'list_projects')->assertUnauthorized();
+		$this->callTool($token->plainTextToken, 'list_boards')->assertUnauthorized();
 	}
 
-	public function test_a_token_lists_only_its_users_projects()
+	public function test_a_token_lists_only_its_users_boards()
 	{
 		$this->strangersCard();
 
-		$this->callTool($this->user->createToken('Laptop')->plainTextToken, 'list_projects')
+		$this->callTool($this->user->createToken('Laptop')->plainTextToken, 'list_boards')
 			->assertOk()
 			->assertSee('Website')
 			->assertDontSee('Secret');
@@ -139,16 +139,16 @@ class McpTest extends TestCase
 	{
 		Card::factory()->for($this->todo)->create(['title' => 'Old card', 'archived_at' => now()]);
 		Card::factory()->for($this->todo)->create(['title' => 'Bug template', 'is_template' => true]);
-		Stack::factory()->for($this->project)->create(['name' => 'Someday', 'archived_at' => now()]);
+		Stack::factory()->for($this->board)->create(['name' => 'Someday', 'archived_at' => now()]);
 
 		StackrServer::actingAs($this->user)
-			->tool(GetBoardTool::class, ['project' => $this->project->key])
+			->tool(GetBoardTool::class, ['board' => $this->board->key])
 			->assertOk()
 			->assertSee(['To do', 'Done', 'Write the brief'])
 			->assertDontSee(['Old card', 'Bug template', 'Someday']);
 
 		StackrServer::actingAs($this->user)
-			->tool(GetBoardTool::class, ['project' => 'website'])
+			->tool(GetBoardTool::class, ['board' => 'website'])
 			->assertOk()
 			->assertSee('Write the brief');
 	}
@@ -158,8 +158,8 @@ class McpTest extends TestCase
 		$card = $this->strangersCard();
 
 		StackrServer::actingAs($this->user)
-			->tool(GetBoardTool::class, ['project' => $card->stack->project->key])
-			->assertHasErrors(['no project called']);
+			->tool(GetBoardTool::class, ['board' => $card->stack->board->key])
+			->assertHasErrors(['no board called']);
 
 		StackrServer::actingAs($this->user)
 			->tool(GetCardTool::class, ['card_id' => $card->id])
@@ -193,7 +193,7 @@ class McpTest extends TestCase
 	{
 		StackrServer::actingAs($this->user)
 			->tool(CreateCardTool::class, [
-				'project' => $this->project->key,
+				'board' => $this->board->key,
 				'list' => 'TO DO',
 				'title' => 'Pick fonts',
 				'description' => 'Two at most',
@@ -234,7 +234,7 @@ class McpTest extends TestCase
 
 	public function test_move_card_asks_for_an_id_when_names_clash()
 	{
-		Stack::factory()->for($this->project)->create(['name' => 'done']);
+		Stack::factory()->for($this->board)->create(['name' => 'done']);
 
 		StackrServer::actingAs($this->user)
 			->tool(MoveCardTool::class, ['card_id' => $this->card->id, 'list' => 'Done'])
@@ -243,7 +243,7 @@ class McpTest extends TestCase
 
 	public function test_move_card_to_another_of_the_users_boards()
 	{
-		$other = Project::factory()->ownedBy($this->user)->create();
+		$other = Board::factory()->ownedBy($this->user)->create();
 		$inbox = Stack::factory()->for($other)->create(['name' => 'Inbox']);
 
 		StackrServer::actingAs($this->user)
@@ -295,7 +295,7 @@ class McpTest extends TestCase
 	{
 		Notification::fake();
 		$bob = User::factory()->create(['name' => 'Bob', 'email' => 'bob@example.com']);
-		$this->project->members()->attach($bob, ['role' => ProjectRole::Member]);
+		$this->board->members()->attach($bob, ['role' => BoardRole::Member]);
 
 		StackrServer::actingAs($this->user)
 			->tool(AssignMemberTool::class, ['card_id' => $this->card->id, 'member' => 'BOB@example.com'])
@@ -324,7 +324,7 @@ class McpTest extends TestCase
 
 	public function test_labels_by_name()
 	{
-		$label = $this->project->labels()->create(['name' => 'Urgent', 'color' => LabelColor::Orange]);
+		$label = $this->board->labels()->create(['name' => 'Urgent', 'color' => LabelColor::Orange]);
 
 		StackrServer::actingAs($this->user)
 			->tool(AddLabelTool::class, ['card_id' => $this->card->id, 'label' => 'urgent'])

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\ProjectRole;
+use App\Enums\BoardRole;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -69,34 +69,34 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
 	}
 
 	/**
-	 * Delete the projects a user owns along with the user.
+	 * Delete the boards a user owns along with the user.
 	 */
 	protected static function booted(): void
 	{
 		static::deleting(function (User $user): void {
-			$user->projects()
-				->wherePivot('role', ProjectRole::Owner->value)
+			$user->boards()
+				->wherePivot('role', BoardRole::Owner->value)
 				->get()
 				->each->delete();
 		});
 	}
 
 	/**
-	 * @return BelongsToMany<Project, $this, ProjectMembership>
+	 * @return BelongsToMany<Board, $this, BoardMembership>
 	 */
-	public function projects(): BelongsToMany
+	public function boards(): BelongsToMany
 	{
-		return $this->belongsToMany(Project::class)
-			->using(ProjectMembership::class)
+		return $this->belongsToMany(Board::class)
+			->using(BoardMembership::class)
 			->withPivot('id', 'role')
 			->withTimestamps();
 	}
 
 	/**
-	 * @return HasMany<ProjectMembership, $this>
+	 * @return HasMany<BoardMembership, $this>
 	 */
 	public function memberships(): HasMany
 	{
-		return $this->hasMany(ProjectMembership::class);
+		return $this->hasMany(BoardMembership::class);
 	}
 }

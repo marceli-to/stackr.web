@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Enums\ProjectRole;
+use App\Enums\BoardRole;
+use App\Models\Board;
 use App\Models\Card;
-use App\Models\Project;
 use App\Models\Stack;
 use App\Models\User;
 use App\Notifications\AssignedToCard;
@@ -24,7 +24,7 @@ class NotificationTest extends TestCase
 
 	private User $bob;
 
-	private Project $project;
+	private Board $board;
 
 	private Card $card;
 
@@ -34,9 +34,9 @@ class NotificationTest extends TestCase
 
 		$this->amy = User::factory()->create(['name' => 'Amy Rossi']);
 		$this->bob = User::factory()->create(['name' => 'Bob']);
-		$this->project = Project::factory()->ownedBy($this->amy)->create(['name' => 'Website']);
-		$this->project->members()->attach($this->bob, ['role' => ProjectRole::Member]);
-		$this->card = Card::factory()->for(Stack::factory()->for($this->project))->create(['title' => 'Brief', 'due_at' => null]);
+		$this->board = Board::factory()->ownedBy($this->amy)->create(['name' => 'Website']);
+		$this->board->members()->attach($this->bob, ['role' => BoardRole::Member]);
+		$this->card = Card::factory()->for(Stack::factory()->for($this->board))->create(['title' => 'Brief', 'due_at' => null]);
 	}
 
 	public function test_mentions_match_whole_member_names()
@@ -72,7 +72,7 @@ class NotificationTest extends TestCase
 		$this->actingAs($this->amy)->post(route('comments.store', $this->card), ['body' => '@Bob hi']);
 		$comment = $this->card->comments()->sole();
 		$carol = User::factory()->create(['name' => 'Carol']);
-		$this->project->members()->attach($carol, ['role' => ProjectRole::Member]);
+		$this->board->members()->attach($carol, ['role' => BoardRole::Member]);
 
 		Notification::fake();
 
@@ -86,7 +86,7 @@ class NotificationTest extends TestCase
 	{
 		$this->actingAs($this->amy)->post(route('comments.store', $this->card), ['body' => 'Over to @Bob']);
 
-		$this->get(route('projects.show', [$this->project, 'card' => $this->card->id]))
+		$this->get(route('boards.show', [$this->board, 'card' => $this->card->id]))
 			->assertInertia(fn (Assert $page) => $page
 				->where('card.comments.0.body_html', "<p>Over to <span class=\"mention\">@Bob</span></p>\n")
 			);
@@ -115,7 +115,7 @@ class NotificationTest extends TestCase
 		$this->actingAs($this->amy)->post(route('cards.members.store', [$this->card, $this->bob]));
 
 		$this->actingAs($this->bob)
-			->get(route('projects.index'))
+			->get(route('boards.index'))
 			->assertInertia(fn (Assert $page) => $page
 				->where('notifications.unread', 1)
 				->missing('notificationList')
@@ -137,7 +137,7 @@ class NotificationTest extends TestCase
 
 		$this->assertStringContainsString('Amy Rossi mentioned you on “Brief” on Website.', $html);
 		$this->assertStringContainsString('@Bob can you look?', $html);
-		$this->assertStringContainsString(e(route('projects.show', [$this->project, 'card' => $this->card->id])), $html);
+		$this->assertStringContainsString(e(route('boards.show', [$this->board, 'card' => $this->card->id])), $html);
 	}
 
 	public function test_opening_a_notification_marks_it_read_and_opens_the_card()
@@ -147,7 +147,7 @@ class NotificationTest extends TestCase
 
 		$this->actingAs($this->bob)
 			->post(route('notifications.open', $id))
-			->assertRedirect(route('projects.show', [$this->project, 'card' => $this->card->id]));
+			->assertRedirect(route('boards.show', [$this->board, 'card' => $this->card->id]));
 
 		$this->assertSame(0, $this->bob->unreadNotifications()->count());
 	}

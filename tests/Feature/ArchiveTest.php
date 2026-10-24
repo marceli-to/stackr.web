@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Board;
 use App\Models\Card;
-use App\Models\Project;
 use App\Models\Stack;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -16,7 +16,7 @@ class ArchiveTest extends TestCase
 
 	private User $user;
 
-	private Project $project;
+	private Board $board;
 
 	private Stack $stack;
 
@@ -25,8 +25,8 @@ class ArchiveTest extends TestCase
 		parent::setUp();
 
 		$this->user = User::factory()->create();
-		$this->project = Project::factory()->ownedBy($this->user)->create();
-		$this->stack = Stack::factory()->for($this->project)->create(['name' => 'To do']);
+		$this->board = Board::factory()->ownedBy($this->user)->create();
+		$this->stack = Stack::factory()->for($this->board)->create(['name' => 'To do']);
 	}
 
 	public function test_an_archived_card_leaves_the_board_but_still_opens()
@@ -41,7 +41,7 @@ class ArchiveTest extends TestCase
 		$this->assertNotNull($card->fresh()->archived_at);
 
 		$this->actingAs($this->user)
-			->get(route('projects.show', [$this->project, 'card' => $card->id]))
+			->get(route('boards.show', [$this->board, 'card' => $card->id]))
 			->assertInertia(fn (Assert $page) => $page
 				->has('stacks.0.cards', 1)
 				->where('stacks.0.cards.0.title', 'Current')
@@ -54,11 +54,11 @@ class ArchiveTest extends TestCase
 	public function test_the_archive_loads_on_request()
 	{
 		$card = Card::factory()->for($this->stack)->create(['title' => 'Old card', 'archived_at' => now()]);
-		$list = Stack::factory()->for($this->project)->create(['name' => 'Old list', 'archived_at' => now()]);
+		$list = Stack::factory()->for($this->board)->create(['name' => 'Old list', 'archived_at' => now()]);
 		Card::factory()->for($list)->count(2)->create();
 
 		$this->actingAs($this->user)
-			->get(route('projects.show', $this->project))
+			->get(route('boards.show', $this->board))
 			->assertInertia(fn (Assert $page) => $page
 				->missing('archive')
 				->reloadOnly('archive', fn (Assert $reload) => $reload
@@ -102,7 +102,7 @@ class ArchiveTest extends TestCase
 	public function test_cards_cant_be_dropped_into_an_archived_list()
 	{
 		$card = Card::factory()->for($this->stack)->create();
-		$archived = Stack::factory()->for($this->project)->create(['archived_at' => now()]);
+		$archived = Stack::factory()->for($this->board)->create(['archived_at' => now()]);
 
 		$this->actingAs($this->user)
 			->patch(route('cards.move', $card), ['index' => 0, 'stack_id' => $archived->id])
@@ -112,24 +112,24 @@ class ArchiveTest extends TestCase
 	public function test_an_archived_list_takes_its_cards_off_the_board()
 	{
 		Card::factory()->for($this->stack)->create();
-		$done = Stack::factory()->for($this->project)->create(['name' => 'Done']);
+		$done = Stack::factory()->for($this->board)->create(['name' => 'Done']);
 
 		$this->actingAs($this->user)
 			->patch(route('stacks.archive', $this->stack))
 			->assertSessionHasNoErrors();
 
 		$this->actingAs($this->user)
-			->get(route('projects.show', $this->project))
+			->get(route('boards.show', $this->board))
 			->assertInertia(fn (Assert $page) => $page
 				->has('stacks', 1)
 				->where('stacks.0.id', $done->id)
 			);
 
 		$this->actingAs($this->user)
-			->get(route('projects.index'))
+			->get(route('boards.index'))
 			->assertInertia(fn (Assert $page) => $page
-				->where('projects.0.stacks_count', 1)
-				->where('projects.0.cards_count', 0)
+				->where('boards.0.stacks_count', 1)
+				->where('boards.0.cards_count', 0)
 			);
 
 		$this->actingAs($this->user)->patch(route('stacks.restore', $this->stack));

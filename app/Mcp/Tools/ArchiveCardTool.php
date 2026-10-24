@@ -3,7 +3,7 @@
 namespace App\Mcp\Tools;
 
 use App\Actions\Cards\ArchiveCard;
-use App\Mcp\Boards;
+use App\Mcp\Lookup;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
@@ -17,13 +17,13 @@ use Laravel\Mcp\Server\Tool;
 #[Description('Archive a card: it leaves the board but can be restored from the board\'s archive in the app.')]
 class ArchiveCardTool extends Tool
 {
-	public function handle(Request $request, Boards $boards, ArchiveCard $archiveCard): Response
+	public function handle(Request $request, Lookup $lookup, ArchiveCard $archiveCard): Response
 	{
-		$user = $boards->user($request);
+		$user = $lookup->user($request);
 
 		$request->validate(['card_id' => ['required', 'integer']]);
 
-		$card = $boards->card($user, (int) $request->get('card_id'));
+		$card = $lookup->card($user, (int) $request->get('card_id'));
 
 		$archiveCard->handle($card);
 

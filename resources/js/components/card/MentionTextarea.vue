@@ -4,7 +4,7 @@ import { useBoard } from '@/components/card/board';
 import { getInitials } from '@/composables/useInitials';
 import type { Member } from '@/types';
 
-// A textarea that suggests project members after "@" and inserts
+// A textarea that suggests board members after "@" and inserts
 // "@Full Name", which the server reads as a mention.
 defineOptions({ inheritAttrs: false });
 

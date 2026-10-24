@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Project;
+use App\Models\Board;
 use App\Models\Stack;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -11,7 +11,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * A board a card can be moved or copied to, with its lists. Expects the
  * active stacks loaded with their active cards counted.
  *
- * @mixin Project
+ * @mixin Board
  */
 class DestinationResource extends JsonResource
 {

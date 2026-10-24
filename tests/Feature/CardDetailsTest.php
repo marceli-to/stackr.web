@@ -3,11 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\Attachment;
+use App\Models\Board;
 use App\Models\Card;
 use App\Models\Checklist;
 use App\Models\Comment;
 use App\Models\Label;
-use App\Models\Project;
 use App\Models\Stack;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,7 +22,7 @@ class CardDetailsTest extends TestCase
 
 	private User $user;
 
-	private Project $project;
+	private Board $board;
 
 	private Card $card;
 
@@ -33,8 +33,8 @@ class CardDetailsTest extends TestCase
 		Storage::fake(Attachment::DISK);
 
 		$this->user = User::factory()->create();
-		$this->project = Project::factory()->ownedBy($this->user)->create();
-		$stack = Stack::factory()->for($this->project)->create(['name' => 'To do']);
+		$this->board = Board::factory()->ownedBy($this->user)->create();
+		$stack = Stack::factory()->for($this->board)->create(['name' => 'To do']);
 		$this->card = Card::factory()->for($stack)->create(['title' => 'Write copy', 'description' => null, 'due_at' => null]);
 	}
 
@@ -43,7 +43,7 @@ class CardDetailsTest extends TestCase
 		$this->card->update(['description' => 'Some **bold** text']);
 
 		$this->actingAs($this->user)
-			->get(route('projects.show', ['project' => $this->project, 'card' => $this->card->id]))
+			->get(route('boards.show', ['board' => $this->board, 'card' => $this->card->id]))
 			->assertInertia(fn (Assert $page) => $page
 				->where('card.id', $this->card->id)
 				->where('card.stack.name', 'To do')
@@ -56,7 +56,7 @@ class CardDetailsTest extends TestCase
 		$other = Card::factory()->create();
 
 		$this->actingAs($this->user)
-			->get(route('projects.show', ['project' => $this->project, 'card' => $other->id]))
+			->get(route('boards.show', ['board' => $this->board, 'card' => $other->id]))
 			->assertInertia(fn (Assert $page) => $page->where('card', null));
 	}
 
@@ -65,7 +65,7 @@ class CardDetailsTest extends TestCase
 		$this->card->update(['description' => "<script>alert(1)</script>\n\n[x](javascript:alert(1))"]);
 
 		$this->actingAs($this->user)
-			->get(route('projects.show', ['project' => $this->project, 'card' => $this->card->id]))
+			->get(route('boards.show', ['board' => $this->board, 'card' => $this->card->id]))
 			->assertInertia(fn (Assert $page) => $page->where('card.description_html', fn (string $html) => ! str_contains($html, '<script') && ! str_contains($html, 'javascript:')));
 	}
 
@@ -102,24 +102,24 @@ class CardDetailsTest extends TestCase
 		$this->actingAs($this->user)
 			->post(route('attachments.store', $this->card), ['files' => [UploadedFile::fake()->image('a.png')]]);
 
-		$directory = Attachment::directoryFor($this->project->id, $this->card->id);
+		$directory = Attachment::directoryFor($this->board->id, $this->card->id);
 		$this->assertNotEmpty(Storage::disk(Attachment::DISK)->files($directory));
 
 		$this->actingAs($this->user)
 			->delete(route('cards.destroy', $this->card))
-			->assertRedirect(route('projects.show', $this->project));
+			->assertRedirect(route('boards.show', $this->board));
 
 		$this->assertModelMissing($this->card);
 		$this->assertEmpty(Storage::disk(Attachment::DISK)->allFiles($directory));
 	}
 
-	public function test_labels_belong_to_the_project_and_go_on_cards()
+	public function test_labels_belong_to_the_board_and_go_on_cards()
 	{
 		$this->actingAs($this->user)
-			->post(route('labels.store', $this->project), ['name' => 'Urgent', 'color' => 'red'])
+			->post(route('labels.store', $this->board), ['name' => 'Urgent', 'color' => 'red'])
 			->assertSessionHasNoErrors();
 
-		$label = $this->project->labels()->firstOrFail();
+		$label = $this->board->labels()->firstOrFail();
 
 		$this->actingAs($this->user)->post(route('cards.labels.store', [$this->card, $label]));
 		$this->assertSame([$label->id], $this->card->labels()->pluck('labels.id')->all());
@@ -128,16 +128,16 @@ class CardDetailsTest extends TestCase
 		$this->assertSame(0, $this->card->labels()->count());
 	}
 
-	public function test_a_label_from_another_project_cannot_go_on_a_card()
+	public function test_a_label_from_another_board_cannot_go_on_a_card()
 	{
-		$foreign = Label::forceCreate(['project_id' => Project::factory()->create()->id, 'color' => 'blue']);
+		$foreign = Label::forceCreate(['board_id' => Board::factory()->create()->id, 'color' => 'blue']);
 
 		$this->actingAs($this->user)
 			->post(route('cards.labels.store', [$this->card, $foreign]))
 			->assertNotFound();
 	}
 
-	public function test_only_project_members_can_be_assigned()
+	public function test_only_board_members_can_be_assigned()
 	{
 		$this->actingAs($this->user)->post(route('cards.members.store', [$this->card, $this->user]));
 		$this->assertSame([$this->user->id], $this->card->members()->pluck('users.id')->all());
@@ -159,7 +159,7 @@ class CardDetailsTest extends TestCase
 		$this->assertNotNull($item->fresh()->completed_at);
 
 		$this->actingAs($this->user)
-			->get(route('projects.show', ['project' => $this->project, 'card' => $this->card->id]))
+			->get(route('boards.show', ['board' => $this->board, 'card' => $this->card->id]))
 			->assertInertia(fn (Assert $page) => $page
 				->where('stacks.0.cards.0.checklist', ['done' => 1, 'total' => 1])
 				->where('card.checklists.0.items.0.title', 'DNS')
@@ -244,7 +244,7 @@ class CardDetailsTest extends TestCase
 		$comment = Comment::firstOrFail();
 
 		$other = User::factory()->create();
-		$this->project->members()->attach($other, ['role' => 'member']);
+		$this->board->members()->attach($other, ['role' => 'member']);
 
 		$this->actingAs($other)
 			->patch(route('comments.update', $comment), ['body' => 'Changed'])
@@ -277,6 +277,6 @@ class CardDetailsTest extends TestCase
 
 		$this->actingAs($this->user)->delete(route('stacks.destroy', $this->card->stack));
 
-		$this->assertEmpty(Storage::disk(Attachment::DISK)->allFiles("attachments/{$this->project->id}"));
+		$this->assertEmpty(Storage::disk(Attachment::DISK)->allFiles("attachments/{$this->board->id}"));
 	}
 }

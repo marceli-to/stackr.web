@@ -3,7 +3,7 @@
 namespace App\Mcp\Tools;
 
 use App\Actions\Cards\MoveCard;
-use App\Mcp\Boards;
+use App\Mcp\Lookup;
 use App\Mcp\Shapes;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\Validation\Rule;
@@ -19,9 +19,9 @@ use Laravel\Mcp\Server\Tool;
 #[Description('Move a card to another list, e.g. from "To do" to "Done". A list name is looked up on the card\'s own board; a list id may be on another of your boards.')]
 class MoveCardTool extends Tool
 {
-	public function handle(Request $request, Boards $boards, MoveCard $moveCard): Response
+	public function handle(Request $request, Lookup $lookup, MoveCard $moveCard): Response
 	{
-		$user = $boards->user($request);
+		$user = $lookup->user($request);
 
 		$data = $request->validate([
 			'card_id' => ['required', 'integer'],
@@ -29,8 +29,8 @@ class MoveCardTool extends Tool
 			'position' => ['sometimes', Rule::in(['top', 'bottom'])],
 		]);
 
-		$card = $boards->card($user, (int) $data['card_id']);
-		$target = $boards->stack($user, $card->stack->project, $data['list']);
+		$card = $lookup->card($user, (int) $data['card_id']);
+		$target = $lookup->stack($user, $card->stack->board, $data['list']);
 
 		$index = ($data['position'] ?? 'bottom') === 'top'
 			? 0

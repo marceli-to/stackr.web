@@ -4,7 +4,7 @@ namespace App\Mcp\Tools;
 
 use App\Actions\Checklists\CreateChecklistItem;
 use App\Http\Requests\ChecklistItemRequest;
-use App\Mcp\Boards;
+use App\Mcp\Lookup;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
@@ -18,16 +18,16 @@ use Laravel\Mcp\Server\Tool;
 #[Description('Add an item to the end of an existing checklist. Checklist ids come from get_card.')]
 class AddChecklistItemTool extends Tool
 {
-	public function handle(Request $request, Boards $boards, CreateChecklistItem $createChecklistItem): Response
+	public function handle(Request $request, Lookup $lookup, CreateChecklistItem $createChecklistItem): Response
 	{
-		$user = $boards->user($request);
+		$user = $lookup->user($request);
 
 		$data = $request->validate([
 			'checklist_id' => ['required', 'integer'],
 			...(new ChecklistItemRequest)->rules(),
 		]);
 
-		$checklist = $boards->checklist($user, (int) $data['checklist_id']);
+		$checklist = $lookup->checklist($user, (int) $data['checklist_id']);
 
 		$item = $createChecklistItem->handle($checklist, $data['title']);
 

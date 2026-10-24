@@ -2,23 +2,23 @@
 
 namespace App\Actions\Members;
 
-use App\Enums\ProjectRole;
-use App\Models\Project;
-use App\Models\ProjectInvitation;
+use App\Enums\BoardRole;
+use App\Models\Board;
+use App\Models\BoardInvitation;
 use App\Models\User;
 use Illuminate\Support\Str;
 
 class AcceptInvitation
 {
 	/**
-	 * Adds the user to the invitation's project and uses up the invitation.
+	 * Adds the user to the invitation's board and uses up the invitation.
 	 */
-	public function handle(ProjectInvitation $invitation, User $user): Project
+	public function handle(BoardInvitation $invitation, User $user): Board
 	{
-		$project = $invitation->project;
+		$board = $invitation->board;
 
-		if ($project->roleOf($user) === null) {
-			$project->members()->attach($user, ['role' => ProjectRole::Member->value]);
+		if ($board->roleOf($user) === null) {
+			$board->members()->attach($user, ['role' => BoardRole::Member->value]);
 		}
 
 		// The link arrived at this address, which proves the user owns it.
@@ -28,6 +28,6 @@ class AcceptInvitation
 
 		$invitation->delete();
 
-		return $project;
+		return $board;
 	}
 }

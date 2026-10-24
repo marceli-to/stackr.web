@@ -21,7 +21,7 @@ class AttachmentController extends Controller
 	 */
 	public function store(AttachmentRequest $request, Card $card, StoreAttachments $storeAttachments): RedirectResponse
 	{
-		Gate::authorize('update', $card->stack->project);
+		Gate::authorize('update', $card->stack->board);
 
 		/** @var User $user */
 		$user = $request->user();
@@ -32,12 +32,12 @@ class AttachmentController extends Controller
 	}
 
 	/**
-	 * Serve a file to project members. Images and PDFs open in the browser;
+	 * Serve a file to board members. Images and PDFs open in the browser;
 	 * ?download=1 saves them instead.
 	 */
 	public function show(Request $request, Attachment $attachment): StreamedResponse
 	{
-		Gate::authorize('view', $attachment->card->stack->project);
+		Gate::authorize('view', $attachment->card->stack->board);
 
 		$inline = ! $request->boolean('download')
 			&& ($attachment->isImage() || $attachment->mime_type === 'application/pdf');
@@ -59,7 +59,7 @@ class AttachmentController extends Controller
 	 */
 	public function thumbnail(Attachment $attachment): StreamedResponse
 	{
-		Gate::authorize('view', $attachment->card->stack->project);
+		Gate::authorize('view', $attachment->card->stack->board);
 
 		$path = $attachment->thumb_path ?? $attachment->path;
 
@@ -75,7 +75,7 @@ class AttachmentController extends Controller
 	 */
 	public function destroy(Attachment $attachment, DeleteAttachment $deleteAttachment): RedirectResponse
 	{
-		Gate::authorize('update', $attachment->card->stack->project);
+		Gate::authorize('update', $attachment->card->stack->board);
 
 		$deleteAttachment->handle($attachment);
 

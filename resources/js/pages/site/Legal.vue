@@ -59,10 +59,10 @@ const link =
 								address and your password, which is only kept as
 								a hash. Everything you put on a board, like
 								lists, cards, comments and files, is stored so
-								you and your project’s members can see it.
+								you and your board’s members can see it.
 							</p>
 							<p>
-								Only the members of a project can see its board
+								Only the members of a board can see its board
 								and open its files. Files aren’t public: they’re
 								handed out by the app, and only to members.
 							</p>
@@ -122,8 +122,8 @@ const link =
 							<p>
 								You can delete your account any time under
 								Settings, Profile. That deletes your account and
-								every project you own, with its cards and files.
-								In other people’s projects, your comments and
+								every board you own, with its cards and files.
+								In other people’s boards, your comments and
 								files stay without your name. Nightly copies of
 								the database are gone after 30 days.
 							</p>

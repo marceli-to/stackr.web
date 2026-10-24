@@ -20,13 +20,13 @@ class NotifyWatchers
 	 */
 	public function handle(Card $card, string $what, array $except = []): void
 	{
-		$project = $card->stack->project;
+		$board = $card->stack->board;
 		$actor = Auth::user();
 		$actor = $actor instanceof User ? $actor : null;
 
 		$ids = $card->watchers()->pluck('users.id')
 			->merge($card->members()->pluck('users.id'))
-			->merge($project->watchers()->pluck('users.id'))
+			->merge($board->watchers()->pluck('users.id'))
 			->unique()
 			->reject(fn (int $id): bool => $id === $actor?->id || in_array($id, $except, true));
 
@@ -34,7 +34,7 @@ class NotifyWatchers
 			return;
 		}
 
-		$recipients = $project->members()->whereIn('users.id', $ids)->get();
+		$recipients = $board->members()->whereIn('users.id', $ids)->get();
 
 		Notification::send($recipients, new CardUpdated($card, $actor, $what));
 	}

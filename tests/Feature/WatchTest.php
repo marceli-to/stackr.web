@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Enums\ProjectRole;
+use App\Enums\BoardRole;
+use App\Models\Board;
 use App\Models\Card;
-use App\Models\Project;
 use App\Models\Stack;
 use App\Models\User;
 use App\Notifications\AssignedToCard;
@@ -23,7 +23,7 @@ class WatchTest extends TestCase
 
 	private User $bob;
 
-	private Project $project;
+	private Board $board;
 
 	private Stack $todo;
 
@@ -35,9 +35,9 @@ class WatchTest extends TestCase
 
 		$this->amy = User::factory()->create(['name' => 'Amy']);
 		$this->bob = User::factory()->create(['name' => 'Bob']);
-		$this->project = Project::factory()->ownedBy($this->amy)->create();
-		$this->project->members()->attach($this->bob, ['role' => ProjectRole::Member]);
-		$this->todo = Stack::factory()->for($this->project)->create(['name' => 'To do']);
+		$this->board = Board::factory()->ownedBy($this->amy)->create();
+		$this->board->members()->attach($this->bob, ['role' => BoardRole::Member]);
+		$this->todo = Stack::factory()->for($this->board)->create(['name' => 'To do']);
 		$this->card = Card::factory()->for($this->todo)->create(['title' => 'Brief']);
 	}
 
@@ -46,7 +46,7 @@ class WatchTest extends TestCase
 		$this->actingAs($this->bob)->post(route('cards.watch', $this->card))->assertRedirect();
 
 		$this->actingAs($this->bob)
-			->get(route('projects.show', [$this->project, 'card' => $this->card->id]))
+			->get(route('boards.show', [$this->board, 'card' => $this->card->id]))
 			->assertInertia(fn (Assert $page) => $page
 				->where('stacks.0.cards.0.watching', true)
 				->where('card.watching', true)
@@ -54,7 +54,7 @@ class WatchTest extends TestCase
 			);
 
 		$this->actingAs($this->amy)
-			->get(route('projects.show', $this->project))
+			->get(route('boards.show', $this->board))
 			->assertInertia(fn (Assert $page) => $page->where('stacks.0.cards.0.watching', false));
 
 		$this->actingAs($this->bob)->delete(route('cards.unwatch', $this->card));
@@ -65,7 +65,7 @@ class WatchTest extends TestCase
 	{
 		Notification::fake();
 		$this->actingAs($this->bob)->post(route('cards.watch', $this->card));
-		$doing = Stack::factory()->for($this->project)->create(['name' => 'Doing']);
+		$doing = Stack::factory()->for($this->board)->create(['name' => 'Doing']);
 
 		$this->actingAs($this->amy)->patch(route('cards.move', $this->card), ['index' => 0, 'stack_id' => $doing->id]);
 
@@ -80,8 +80,8 @@ class WatchTest extends TestCase
 	public function test_board_watchers_and_card_members_hear_about_comments()
 	{
 		$carol = User::factory()->create(['name' => 'Carol']);
-		$this->project->members()->attach($carol, ['role' => ProjectRole::Member]);
-		$this->actingAs($carol)->post(route('projects.watch', $this->project));
+		$this->board->members()->attach($carol, ['role' => BoardRole::Member]);
+		$this->actingAs($carol)->post(route('boards.watch', $this->board));
 		$this->card->members()->attach($this->bob);
 
 		Notification::fake();
@@ -95,7 +95,7 @@ class WatchTest extends TestCase
 
 	public function test_someone_added_to_a_card_gets_the_assignment_not_an_update()
 	{
-		$this->actingAs($this->bob)->post(route('projects.watch', $this->project));
+		$this->actingAs($this->bob)->post(route('boards.watch', $this->board));
 
 		Notification::fake();
 		$this->actingAs($this->amy)->post(route('cards.members.store', [$this->card, $this->bob]));
@@ -111,12 +111,12 @@ class WatchTest extends TestCase
 
 	public function test_leaving_the_board_stops_the_watching()
 	{
-		$this->actingAs($this->bob)->post(route('projects.watch', $this->project));
+		$this->actingAs($this->bob)->post(route('boards.watch', $this->board));
 		$this->actingAs($this->bob)->post(route('cards.watch', $this->card));
 
-		$this->actingAs($this->amy)->delete(route('projects.members.destroy', [$this->project, $this->bob]));
+		$this->actingAs($this->amy)->delete(route('boards.members.destroy', [$this->board, $this->bob]));
 
-		$this->assertSame(0, $this->project->watchers()->count());
+		$this->assertSame(0, $this->board->watchers()->count());
 		$this->assertSame(0, $this->card->watchers()->count());
 	}
 
@@ -125,6 +125,6 @@ class WatchTest extends TestCase
 		$outsider = User::factory()->create();
 
 		$this->actingAs($outsider)->post(route('cards.watch', $this->card))->assertForbidden();
-		$this->actingAs($outsider)->post(route('projects.watch', $this->project))->assertForbidden();
+		$this->actingAs($outsider)->post(route('boards.watch', $this->board))->assertForbidden();
 	}
 }

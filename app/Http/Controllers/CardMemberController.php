@@ -12,14 +12,14 @@ use Illuminate\Support\Facades\Gate;
 class CardMemberController extends Controller
 {
 	/**
-	 * Assign a project member to a card.
+	 * Assign a board member to a card.
 	 */
 	public function store(Card $card, User $user, AssignMember $assignMember): RedirectResponse
 	{
-		$project = $card->stack->project;
+		$board = $card->stack->board;
 
-		Gate::authorize('update', $project);
-		abort_if($project->roleOf($user) === null, 404);
+		Gate::authorize('update', $board);
+		abort_if($board->roleOf($user) === null, 404);
 
 		$assignMember->handle($card, $user);
 
@@ -31,7 +31,7 @@ class CardMemberController extends Controller
 	 */
 	public function destroy(Card $card, User $user, UnassignMember $unassignMember): RedirectResponse
 	{
-		Gate::authorize('update', $card->stack->project);
+		Gate::authorize('update', $card->stack->board);
 
 		$unassignMember->handle($card, $user);
 

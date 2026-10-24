@@ -10,10 +10,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 /**
- * A coloured label, defined per project and put on its cards.
+ * A coloured label, defined per board and put on its cards.
  *
  * @property int $id
- * @property int $project_id
+ * @property int $board_id
  * @property string|null $name
  * @property LabelColor $color
  * @property Carbon|null $created_at
@@ -33,11 +33,11 @@ class Label extends Model
 	}
 
 	/**
-	 * @return BelongsTo<Project, $this>
+	 * @return BelongsTo<Board, $this>
 	 */
-	public function project(): BelongsTo
+	public function board(): BelongsTo
 	{
-		return $this->belongsTo(Project::class);
+		return $this->belongsTo(Board::class);
 	}
 
 	/**

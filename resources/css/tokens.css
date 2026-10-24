@@ -1,5 +1,5 @@
 /* Field tokens. A neutral paper for the overview, and six fields: each
-   project's board stands on one. shadcn already owns --color-accent and
+   board stands on one. shadcn already owns --color-accent and
    --color-muted, so the third ink is --color-ink-3. */
 :root {
 	--text-xs: 0.75rem;

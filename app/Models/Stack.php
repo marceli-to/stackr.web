@@ -15,10 +15,10 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * A list of cards on a project's board.
+ * A list of cards on a board.
  *
  * @property int $id
- * @property int $project_id
+ * @property int $board_id
  * @property string $name
  * @property string $position
  * @property int|null $wip_limit
@@ -62,18 +62,18 @@ class Stack extends Model
 		static::deleting(function (Stack $stack): void {
 			foreach ($stack->cards()->pluck('id') as $cardId) {
 				Storage::disk(Attachment::DISK)->deleteDirectory(
-					Attachment::directoryFor($stack->project_id, $cardId),
+					Attachment::directoryFor($stack->board_id, $cardId),
 				);
 			}
 		});
 	}
 
 	/**
-	 * @return BelongsTo<Project, $this>
+	 * @return BelongsTo<Board, $this>
 	 */
-	public function project(): BelongsTo
+	public function board(): BelongsTo
 	{
-		return $this->belongsTo(Project::class);
+		return $this->belongsTo(Board::class);
 	}
 
 	/**

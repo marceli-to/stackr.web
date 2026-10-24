@@ -47,11 +47,11 @@ const cards = defineModel<BoardCard[]>('cards', { required: true });
 // Filtered-out cards stay in the list, only hidden, so dropped cards still
 // land at the right index among all of the list's cards.
 const { shows } = useFilter();
-const { project } = useBoard();
+const { board } = useBoard();
 
 // Collapsing is a personal view, so it's remembered in the browser.
 const collapsedLists = useStorage<number[]>(
-	`stackr.collapsed.${project.value.id}`,
+	`stackr.collapsed.${board.value.id}`,
 	[],
 );
 const collapsed = computed(() => collapsedLists.value.includes(props.stack.id));

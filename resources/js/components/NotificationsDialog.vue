@@ -119,7 +119,7 @@ function readAll() {
 							<span
 								class="mt-1 block text-xs text-muted-foreground"
 							>
-								{{ notification.project_name }} ·
+								{{ notification.board_name }} ·
 								{{ timeAgo(notification.created_at) }}
 							</span>
 						</span>

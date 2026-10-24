@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Collection;
 
 /**
- * "@Amy Rossi" in a comment mentions the project member called Amy Rossi.
+ * "@Amy Rossi" in a comment mentions the board member called Amy Rossi.
  * Names are matched whole and case-insensitively; longer names win, so
  * "@Amy Rossi" isn't read as "@Amy" when both are members.
  */

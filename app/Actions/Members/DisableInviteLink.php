@@ -2,12 +2,12 @@
 
 namespace App\Actions\Members;
 
-use App\Models\Project;
+use App\Models\Board;
 
 class DisableInviteLink
 {
-	public function handle(Project $project): void
+	public function handle(Board $board): void
 	{
-		$project->forceFill(['invite_token' => null])->save();
+		$board->forceFill(['invite_token' => null])->save();
 	}
 }

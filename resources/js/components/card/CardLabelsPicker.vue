@@ -19,7 +19,7 @@ const props = defineProps<{
 	card: CardDetail;
 }>();
 
-const { project, labels } = useBoard();
+const { board, labels } = useBoard();
 
 // The picker lists labels; "editing" swaps the list for a form.
 const editing = ref<Label | 'new' | null>(null);
@@ -45,7 +45,7 @@ function save() {
 	const label = editing.value;
 
 	if (label === 'new') {
-		router.post(LabelController.store(project.value.key).url, data, {
+		router.post(LabelController.store(board.value.key).url, data, {
 			...keep,
 			onSuccess: () => (editing.value = null),
 		});
@@ -112,7 +112,7 @@ function remove() {
 					v-if="labels.length === 0"
 					class="text-sm text-muted-foreground"
 				>
-					This project has no labels yet.
+					This board has no labels yet.
 				</p>
 				<Button
 					variant="secondary"

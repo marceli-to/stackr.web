@@ -12,7 +12,7 @@ use App\Actions\Stacks\SetStackLimit;
 use App\Http\Requests\MoveRequest;
 use App\Http\Requests\StackLimitRequest;
 use App\Http\Requests\StackRequest;
-use App\Models\Project;
+use App\Models\Board;
 use App\Models\Stack;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
@@ -20,13 +20,13 @@ use Illuminate\Support\Facades\Gate;
 class StackController extends Controller
 {
 	/**
-	 * Add a list to the end of a project's board.
+	 * Add a list to the end of a board.
 	 */
-	public function store(StackRequest $request, Project $project, CreateStack $createStack): RedirectResponse
+	public function store(StackRequest $request, Board $board, CreateStack $createStack): RedirectResponse
 	{
-		Gate::authorize('update', $project);
+		Gate::authorize('update', $board);
 
-		$createStack->handle($project, $request->validated('name'));
+		$createStack->handle($board, $request->validated('name'));
 
 		return back();
 	}
@@ -36,7 +36,7 @@ class StackController extends Controller
 	 */
 	public function update(StackRequest $request, Stack $stack, RenameStack $renameStack): RedirectResponse
 	{
-		Gate::authorize('update', $stack->project);
+		Gate::authorize('update', $stack->board);
 
 		$renameStack->handle($stack, $request->validated('name'));
 
@@ -48,7 +48,7 @@ class StackController extends Controller
 	 */
 	public function limit(StackLimitRequest $request, Stack $stack, SetStackLimit $setStackLimit): RedirectResponse
 	{
-		Gate::authorize('update', $stack->project);
+		Gate::authorize('update', $stack->board);
 
 		$setStackLimit->handle($stack, $request->filled('wip_limit') ? $request->integer('wip_limit') : null);
 
@@ -60,7 +60,7 @@ class StackController extends Controller
 	 */
 	public function move(MoveRequest $request, Stack $stack, MoveStack $moveStack): RedirectResponse
 	{
-		Gate::authorize('update', $stack->project);
+		Gate::authorize('update', $stack->board);
 
 		$moveStack->handle($stack, $request->integer('index'));
 
@@ -72,7 +72,7 @@ class StackController extends Controller
 	 */
 	public function archive(Stack $stack, ArchiveStack $archiveStack): RedirectResponse
 	{
-		Gate::authorize('update', $stack->project);
+		Gate::authorize('update', $stack->board);
 
 		$archiveStack->handle($stack);
 
@@ -86,7 +86,7 @@ class StackController extends Controller
 	 */
 	public function restore(Stack $stack, RestoreStack $restoreStack): RedirectResponse
 	{
-		Gate::authorize('update', $stack->project);
+		Gate::authorize('update', $stack->board);
 
 		$restoreStack->handle($stack);
 
@@ -100,7 +100,7 @@ class StackController extends Controller
 	 */
 	public function destroy(Stack $stack, DeleteStack $deleteStack): RedirectResponse
 	{
-		Gate::authorize('update', $stack->project);
+		Gate::authorize('update', $stack->board);
 
 		$deleteStack->handle($stack);
 

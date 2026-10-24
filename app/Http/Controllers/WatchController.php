@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Cards\SetWatching;
+use App\Models\Board;
 use App\Models\Card;
-use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,7 +17,7 @@ class WatchController extends Controller
 	 */
 	public function card(Request $request, Card $card, SetWatching $setWatching): RedirectResponse
 	{
-		Gate::authorize('view', $card->stack->project);
+		Gate::authorize('view', $card->stack->board);
 
 		/** @var User $user */
 		$user = $request->user();
@@ -30,15 +30,15 @@ class WatchController extends Controller
 	/**
 	 * Watch a whole board, or stop (DELETE).
 	 */
-	public function project(Request $request, Project $project, SetWatching $setWatching): RedirectResponse
+	public function board(Request $request, Board $board, SetWatching $setWatching): RedirectResponse
 	{
-		Gate::authorize('view', $project);
+		Gate::authorize('view', $board);
 
 		/** @var User $user */
 		$user = $request->user();
 
 		$watching = $request->isMethod('post');
-		$setWatching->handle($project, $user, $watching);
+		$setWatching->handle($board, $user, $watching);
 
 		$this->toast($watching
 			? __('You’ll hear about changes on this board.')

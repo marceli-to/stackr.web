@@ -25,7 +25,7 @@ class CardController extends Controller
 	 */
 	public function store(CardRequest $request, Stack $stack, CreateCard $createCard): RedirectResponse
 	{
-		Gate::authorize('update', $stack->project);
+		Gate::authorize('update', $stack->board);
 
 		$createCard->handle($stack, $request->validated('title'));
 
@@ -38,9 +38,9 @@ class CardController extends Controller
 	 */
 	public function fromTemplate(Stack $stack, Card $card, CopyCard $copyCard): RedirectResponse
 	{
-		Gate::authorize('update', $stack->project);
+		Gate::authorize('update', $stack->board);
 
-		abort_unless($card->is_template && $card->stack->project_id === $stack->project_id, 404);
+		abort_unless($card->is_template && $card->stack->board_id === $stack->board_id, 404);
 
 		$copy = $copyCard->handle(
 			$card,
@@ -50,7 +50,7 @@ class CardController extends Controller
 			['checklists', 'labels', 'members', 'attachments'],
 		);
 
-		return to_route('projects.show', [$stack->project, 'card' => $copy->id]);
+		return to_route('boards.show', [$stack->board, 'card' => $copy->id]);
 	}
 
 	/**
@@ -59,22 +59,22 @@ class CardController extends Controller
 	 */
 	public function move(CardMoveRequest $request, Card $card, MoveCard $moveCard): RedirectResponse
 	{
-		$project = $card->stack->project;
+		$board = $card->stack->board;
 
-		Gate::authorize('update', $project);
+		Gate::authorize('update', $board);
 
 		$target = $request->has('stack_id')
 			? Stack::query()->findOrFail($request->integer('stack_id'))
 			: $card->stack;
 
-		Gate::authorize('update', $target->project);
+		Gate::authorize('update', $target->board);
 
 		$moveCard->handle($card, $target, $request->integer('index'));
 
-		if ($target->project_id !== $project->id) {
-			$this->toast(__('Card moved to :project.', ['project' => $target->project->name]));
+		if ($target->board_id !== $board->id) {
+			$this->toast(__('Card moved to :board.', ['board' => $target->board->name]));
 
-			return to_route('projects.show', $project);
+			return to_route('boards.show', $board);
 		}
 
 		return back();
@@ -85,20 +85,20 @@ class CardController extends Controller
 	 */
 	public function copy(CardCopyRequest $request, Card $card, CopyCard $copyCard): RedirectResponse
 	{
-		Gate::authorize('update', $card->stack->project);
+		Gate::authorize('update', $card->stack->board);
 
 		$target = Stack::query()->findOrFail($request->integer('stack_id'));
 
-		Gate::authorize('update', $target->project);
+		Gate::authorize('update', $target->board);
 
 		/** @var list<string> $keep */
 		$keep = $request->validated('keep', []);
 
 		$copyCard->handle($card, $target, $request->integer('index'), $request->validated('title'), $keep);
 
-		$this->toast($target->project_id === $card->stack->project_id
+		$this->toast($target->board_id === $card->stack->board_id
 			? __('Card copied.')
-			: __('Card copied to :project.', ['project' => $target->project->name]));
+			: __('Card copied to :board.', ['board' => $target->board->name]));
 
 		return back();
 	}
@@ -108,7 +108,7 @@ class CardController extends Controller
 	 */
 	public function update(CardUpdateRequest $request, Card $card, UpdateCard $updateCard): RedirectResponse
 	{
-		Gate::authorize('update', $card->stack->project);
+		Gate::authorize('update', $card->stack->board);
 
 		$updateCard->handle($card, $request->validated());
 
@@ -120,7 +120,7 @@ class CardController extends Controller
 	 */
 	public function archive(Card $card, ArchiveCard $archiveCard): RedirectResponse
 	{
-		Gate::authorize('update', $card->stack->project);
+		Gate::authorize('update', $card->stack->board);
 
 		$archiveCard->handle($card);
 
@@ -134,7 +134,7 @@ class CardController extends Controller
 	 */
 	public function restore(Card $card, RestoreCard $restoreCard): RedirectResponse
 	{
-		Gate::authorize('update', $card->stack->project);
+		Gate::authorize('update', $card->stack->board);
 
 		$restoreCard->handle($card);
 
@@ -148,14 +148,14 @@ class CardController extends Controller
 	 */
 	public function destroy(Card $card, DeleteCard $deleteCard): RedirectResponse
 	{
-		$project = $card->stack->project;
+		$board = $card->stack->board;
 
-		Gate::authorize('update', $project);
+		Gate::authorize('update', $board);
 
 		$deleteCard->handle($card);
 
 		$this->toast(__('Card deleted.'));
 
-		return to_route('projects.show', $project);
+		return to_route('boards.show', $board);
 	}
 }

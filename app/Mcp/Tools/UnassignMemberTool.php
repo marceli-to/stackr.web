@@ -3,7 +3,7 @@
 namespace App\Mcp\Tools;
 
 use App\Actions\Cards\UnassignMember;
-use App\Mcp\Boards;
+use App\Mcp\Lookup;
 use App\Mcp\Shapes;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
@@ -20,18 +20,18 @@ use Laravel\Mcp\Server\Tools\Annotations\IsIdempotent;
 #[IsIdempotent]
 class UnassignMemberTool extends Tool
 {
-	public function handle(Request $request, Boards $boards, UnassignMember $unassignMember): Response
+	public function handle(Request $request, Lookup $lookup, UnassignMember $unassignMember): Response
 	{
-		$user = $boards->user($request);
+		$user = $lookup->user($request);
 
 		$data = $request->validate([
 			'card_id' => ['required', 'integer'],
 			'member' => ['required'],
 		]);
 
-		$card = $boards->card($user, (int) $data['card_id']);
+		$card = $lookup->card($user, (int) $data['card_id']);
 
-		$unassignMember->handle($card, $boards->member($card->stack->project, $data['member']));
+		$unassignMember->handle($card, $lookup->member($card->stack->board, $data['member']));
 
 		return Response::json(Shapes::card($card));
 	}

@@ -20,7 +20,7 @@ class CommentController extends Controller
 	 */
 	public function store(CommentRequest $request, Card $card, CreateComment $createComment): RedirectResponse
 	{
-		Gate::authorize('update', $card->stack->project);
+		Gate::authorize('update', $card->stack->board);
 
 		/** @var User $user */
 		$user = $request->user();
@@ -35,7 +35,7 @@ class CommentController extends Controller
 	 */
 	public function update(CommentRequest $request, Comment $comment, UpdateComment $updateComment): RedirectResponse
 	{
-		Gate::authorize('update', $comment->card->stack->project);
+		Gate::authorize('update', $comment->card->stack->board);
 		abort_unless($comment->user_id === $request->user()?->id, 403);
 
 		$updateComment->handle($comment, $request->validated('body'));
@@ -48,7 +48,7 @@ class CommentController extends Controller
 	 */
 	public function destroy(Request $request, Comment $comment, DeleteComment $deleteComment): RedirectResponse
 	{
-		Gate::authorize('update', $comment->card->stack->project);
+		Gate::authorize('update', $comment->card->stack->board);
 		abort_unless($comment->user_id === $request->user()?->id, 403);
 
 		$deleteComment->handle($comment);

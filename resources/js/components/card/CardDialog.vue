@@ -61,7 +61,7 @@ const props = defineProps<{
 	card: CardDetail | null;
 }>();
 
-const { project, labels, members, checklists } = useBoard();
+const { board, labels, members, checklists } = useBoard();
 
 // The dialog closes at once and keeps showing the last card while it fades
 // out; the URL catches up in the background.
@@ -83,7 +83,7 @@ watch(
 function close(isOpen: boolean) {
 	if (!isOpen) {
 		open.value = false;
-		closeCard(project.value.key);
+		closeCard(board.value.key);
 	}
 }
 
@@ -309,7 +309,7 @@ const sideButton =
 
 			<div
 				v-if="cover"
-				:data-field="project.color"
+				:data-field="board.color"
 				class="relative flex h-48 shrink-0 justify-center field-fill"
 			>
 				<img

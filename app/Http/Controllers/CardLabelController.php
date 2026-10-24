@@ -12,14 +12,14 @@ use Illuminate\Support\Facades\Gate;
 class CardLabelController extends Controller
 {
 	/**
-	 * Put one of the project's labels on a card.
+	 * Put one of the board's labels on a card.
 	 */
 	public function store(Card $card, Label $label, AddLabel $addLabel): RedirectResponse
 	{
-		$project = $card->stack->project;
+		$board = $card->stack->board;
 
-		Gate::authorize('update', $project);
-		abort_unless($label->project_id === $project->id, 404);
+		Gate::authorize('update', $board);
+		abort_unless($label->board_id === $board->id, 404);
 
 		$addLabel->handle($card, $label);
 
@@ -31,7 +31,7 @@ class CardLabelController extends Controller
 	 */
 	public function destroy(Card $card, Label $label, RemoveLabel $removeLabel): RedirectResponse
 	{
-		Gate::authorize('update', $card->stack->project);
+		Gate::authorize('update', $card->stack->board);
 
 		$removeLabel->handle($card, $label);
 

@@ -5,7 +5,7 @@ namespace App\Mcp\Tools;
 use App\Actions\Cards\CreateCard;
 use App\Actions\Cards\UpdateCard;
 use App\Http\Requests\CardRequest;
-use App\Mcp\Boards;
+use App\Mcp\Lookup;
 use App\Mcp\Shapes;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
@@ -20,19 +20,19 @@ use Laravel\Mcp\Server\Tool;
 #[Description('Add a card to the bottom of a list, optionally with a description.')]
 class CreateCardTool extends Tool
 {
-	public function handle(Request $request, Boards $boards, CreateCard $createCard, UpdateCard $updateCard): Response
+	public function handle(Request $request, Lookup $lookup, CreateCard $createCard, UpdateCard $updateCard): Response
 	{
-		$user = $boards->user($request);
+		$user = $lookup->user($request);
 
 		$data = $request->validate([
-			'project' => ['required', 'string'],
+			'board' => ['required', 'string'],
 			'list' => ['required'],
 			...(new CardRequest)->rules(),
 			'description' => ['nullable', 'string', 'max:20000'],
 		]);
 
-		$project = $boards->project($user, $data['project']);
-		$stack = $boards->stack($user, $project, $data['list']);
+		$board = $lookup->board($user, $data['board']);
+		$stack = $lookup->stack($user, $board, $data['list']);
 
 		$card = $createCard->handle($stack, $data['title']);
 
@@ -49,7 +49,7 @@ class CreateCardTool extends Tool
 	public function schema(JsonSchema $schema): array
 	{
 		return [
-			'project' => $schema->string()->description('The project key, or the project\'s exact name.')->required(),
+			'board' => $schema->string()->description('The board key, or the board\'s exact name.')->required(),
 			'list' => $schema->string()->description('The list\'s name (any case) or id.')->required(),
 			'title' => $schema->string()->description('The card title.')->required(),
 			'description' => $schema->string()->description('Optional description, in Markdown.'),

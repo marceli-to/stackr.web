@@ -31,7 +31,7 @@ class CardResource extends JsonResource
 		$this->resource->loadMissing(['stack', 'labels', 'members']);
 
 		/** @var list<string> $names */
-		$names = $this->stack->project->members()->pluck('name')->all();
+		$names = $this->stack->board->members()->pluck('name')->all();
 
 		return [
 			'id' => $this->id,

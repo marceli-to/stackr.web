@@ -2,19 +2,19 @@
 
 namespace App\Actions\Members;
 
-use App\Enums\ProjectRole;
-use App\Models\Project;
+use App\Enums\BoardRole;
+use App\Models\Board;
 use App\Models\User;
 
 class JoinByLink
 {
 	/**
-	 * Adds the user to the project as a member, unless they're on it already.
+	 * Adds the user to the board as a member, unless they're on it already.
 	 */
-	public function handle(Project $project, User $user): void
+	public function handle(Board $board, User $user): void
 	{
-		if ($project->roleOf($user) === null) {
-			$project->members()->attach($user, ['role' => ProjectRole::Member->value]);
+		if ($board->roleOf($user) === null) {
+			$board->members()->attach($user, ['role' => BoardRole::Member->value]);
 		}
 	}
 }

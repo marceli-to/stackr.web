@@ -59,13 +59,13 @@ abstract class CardNotification extends Notification implements ShouldQueue
 	 */
 	public function toArray(User $notifiable): array
 	{
-		$project = $this->card->stack->project;
+		$board = $this->card->stack->board;
 
 		return [
 			'card_id' => $this->card->id,
 			'card_title' => $this->card->title,
-			'project_id' => $project->id,
-			'project_name' => $project->name,
+			'board_id' => $board->id,
+			'board_name' => $board->name,
 			'actor' => $this->actor?->only('id', 'name'),
 			'sentence' => $this->sentence(),
 			'excerpt' => $this->excerpt(),
@@ -74,18 +74,18 @@ abstract class CardNotification extends Notification implements ShouldQueue
 
 	public function toMail(User $notifiable): MailMessage
 	{
-		$project = $this->card->stack->project;
+		$board = $this->card->stack->board;
 		$mail = (new MailMessage)
 			->subject($this->subject())
 			->greeting($this->card->title)
-			->line(trim(($this->actor->name ?? '').' '.$this->sentence()).' “'.$this->card->title.'” on '.$project->name.'.');
+			->line(trim(($this->actor->name ?? '').' '.$this->sentence()).' “'.$this->card->title.'” on '.$board->name.'.');
 
 		if ($this->excerpt() !== null) {
 			$mail->line('> '.$this->excerpt());
 		}
 
 		return $mail
-			->action(__('Open the card'), route('projects.show', [$project, 'card' => $this->card->id]))
+			->action(__('Open the card'), route('boards.show', [$board, 'card' => $this->card->id]))
 			->salutation(__('You can turn these emails off in your profile settings.'));
 	}
 }

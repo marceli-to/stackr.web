@@ -1,7 +1,7 @@
 import { router } from '@inertiajs/vue3';
 import type { InjectionKey, Ref } from 'vue';
 import { inject } from 'vue';
-import { show } from '@/routes/projects';
+import { show } from '@/routes/boards';
 import type {
 	BoardChecklist,
 	CardActivity,
@@ -9,12 +9,12 @@ import type {
 	Label,
 	LabelColor,
 	Member,
-	Project,
+	Board,
 } from '@/types';
 
-/** What every card on a board can reach: the project, its labels and members. */
+/** What every card on a board can reach: the board, its labels and members. */
 export type BoardContext = {
-	project: Ref<Project>;
+	board: Ref<Board>;
 	labels: Ref<Label[]>;
 	members: Ref<Member[]>;
 	/** The user's boards, loaded when a card is moved or copied. */
@@ -28,13 +28,13 @@ export type BoardContext = {
 export const boardKey: InjectionKey<BoardContext> = Symbol('board');
 
 export function useBoard(): BoardContext {
-	const board = inject(boardKey);
+	const context = inject(boardKey);
 
-	if (!board) {
+	if (!context) {
 		throw new Error('useBoard() needs a board to provide its context.');
 	}
 
-	return board;
+	return context;
 }
 
 /** What a label without a name is called. */
@@ -50,17 +50,17 @@ export const colorNames: Record<LabelColor, string> = {
 };
 
 /** Opens a card by putting ?card=<id> in the URL; only the card reloads. */
-export function openCard(projectKey: string, cardId: number) {
+export function openCard(key: string, cardId: number) {
 	router.get(
-		show.url(projectKey, { query: { card: cardId } }),
+		show.url(key, { query: { card: cardId } }),
 		{},
 		{ preserveScroll: true, preserveState: true, only: ['card'] },
 	);
 }
 
-export function closeCard(projectKey: string) {
+export function closeCard(key: string) {
 	router.get(
-		show.url(projectKey),
+		show.url(key),
 		{},
 		{ preserveScroll: true, preserveState: true, only: ['card'] },
 	);

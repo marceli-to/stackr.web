@@ -27,7 +27,7 @@ class CreateComment
 		$comment->user()->associate($author);
 		$comment->save();
 
-		$mentioned = Mentions::in($body, $card->stack->project->members()->get())
+		$mentioned = Mentions::in($body, $card->stack->board->members()->get())
 			->reject(fn (User $member): bool => $member->is($author));
 
 		Notification::send($mentioned, new MentionedInComment($comment, $author));
