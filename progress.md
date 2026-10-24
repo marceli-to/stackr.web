@@ -35,7 +35,7 @@ _Last updated: 2026-10-24_
 | 25. Project keys in URLs, join links                   | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
-Production (https://stackr.kimiyu.ch) runs `635b56a` (deployed 2026-10-24, all migrations run).
+Production (https://stackr.kimiyu.ch) runs `19807cb` (deployed 2026-10-24, all migrations run).
 Still open there: a manual check, see "After the deploy" under "Next up".
 (`design/field` and `feature/card-details` are merged into `main` and can be deleted.)
 
@@ -336,7 +336,7 @@ Same method as the kimiyuch projects (gotaticket/usverchauft):
 
 Feature list (2026-10-24). 1–14 are done (one commit each on 2026-10-24); 15–19 are left.
 
-**After the deploy of 2026-10-24** (production is on `635b56a`):
+**After the deploy of 2026-10-24** (production is on `19807cb`):
 
 - Check by hand on production: drag & drop with a filter on, the archive panel, move to another
   board, the bell, an email for an assignment (the queue cron sends it), a background photo upload,
