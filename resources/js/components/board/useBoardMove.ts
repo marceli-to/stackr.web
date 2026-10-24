@@ -1,4 +1,5 @@
 import { router } from '@inertiajs/vue3';
+import { toast } from 'vue-sonner';
 import type { RouteDefinition } from '@/wayfinder';
 
 let pending = 0;
@@ -19,6 +20,21 @@ export function saveMove(
 		async: true,
 		preserveScroll: true,
 		preserveState: true,
+		// A rejected move gets a toast instead of Inertia's full-page error overlay.
+		onHttpException: (response) => {
+			rejected(
+				response.status === 403
+					? "You can't move that here."
+					: "Couldn't save the move.",
+			);
+
+			return false;
+		},
+		onNetworkError: () => {
+			rejected("Couldn't save the move. Check your connection.");
+
+			return false;
+		},
 		onFinish: () => {
 			pending--;
 
@@ -31,4 +47,9 @@ export function saveMove(
 
 export function hasPendingMoves() {
 	return pending > 0;
+}
+
+function rejected(message: string) {
+	// One toast, however many moves fail at once.
+	toast.error(message, { id: 'move-rejected' });
 }

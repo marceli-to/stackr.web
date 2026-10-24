@@ -45,7 +45,8 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
   siblings. Position columns use a byte-by-byte collation (`C` / `utf8mb4_bin`).
 - **The screen updates first.** The board moves the item straight away and saves in the background
   (`resources/js/components/board/useBoardMove.ts`, `async` Inertia visits). Once all moves have
-  finished it takes the server's order again, which also undoes a rejected move.
+  finished it takes the server's order again, which also undoes a rejected move. A rejected or
+  failed move shows one error toast instead of Inertia's full-page error overlay.
 - **Design "Field"** (chosen out of three directions explored with the Hallmark skill). Every project
   stands on its own dark colour (cobalt, rust, moss, oxblood, lagoon, plum: `ProjectColor` enum,
   `projects.color`); the board page, top bar included, is drenched in it, lists sit in a darker well
@@ -149,7 +150,7 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
 
 ## Next up
 
-Feature list (2026-10-24). Suggested order: 20 and 21 first, then 8 (search and filters) and 1 (archive),
+Feature list (2026-10-24). Suggested order: 21 first, then 8 (search and filters) and 1 (archive),
 then 13 with 4 (notifications with mentions; needs the scheduler decision first).
 
 **Cards**
@@ -186,9 +187,10 @@ then 13 with 4 (notifications with mentions; needs the scheduler decision first)
 
 **Technical**
 
-20. Show a toast instead of Inertia's full-page 403 overlay when a move is rejected.
 21. Playwright tests for drag & drop and the card dialog. Dragging hasn't been re-checked by hand
-    since cards became clickable (they open on click, drag still uses SortableJS).
+    since cards became clickable (they open on click, drag still uses SortableJS). SortableJS uses
+    native HTML5 drag, so mouse events don't move anything; puppeteer's `card.drag(target)` +
+    `target.drop(card)` does (Playwright: `dragTo`).
 22. Go-live: certificate from the host, and set `APP_URL` (https), `APP_NAME=Stackr`,
     `SESSION_LIFETIME=720` and the host's SMTP (`MAIL_MAILER=smtp`, host, port, user, password,
     `MAIL_FROM_ADDRESS`) in its `.env`. Make sure PHP's `upload_max_filesize` and `post_max_size`
