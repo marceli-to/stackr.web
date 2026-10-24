@@ -6,9 +6,11 @@
 set -euo pipefail
 SOURCE=pumutuxu@pumutuxu.myhostpoint.ch:/home/pumutuxu/www/stackr.kimiyu.ch/storage/app/private
 TARGET=${BACKUP_DIR:-$HOME/Backups/stackr}
-mkdir -p "$TARGET/attachments"
+mkdir -p "$TARGET"
 rsync -az --include 'database_*.sqlite.gz' --exclude '*' "$SOURCE/" "$TARGET/"
-rsync -az --delete "$SOURCE/attachments/" "$TARGET/attachments/"
+# Filtered from the parent folder, so a missing attachments folder isn't an error; excluded files
+# (the database backups) are never deleted by --delete.
+rsync -az --delete --include '/attachments/***' --exclude '*' "$SOURCE/" "$TARGET/"
 echo "Backups in $TARGET:"
 ls -1t "$TARGET" | grep database_ | head -5
-du -sh "$TARGET/attachments"
+[[ -d $TARGET/attachments ]] && du -sh "$TARGET/attachments" || echo "No attachments yet."
