@@ -17,6 +17,8 @@ export type Project = {
 	description: string | null;
 	url: string | null;
 	color: ProjectColor;
+	/** A photo behind the board, or null for the plain colour. */
+	background_url: string | null;
 };
 
 export type ProjectSummary = Project & {

@@ -44,17 +44,23 @@ const suggestedColor = computed<ProjectColor>(() => {
 });
 
 const formOpen = ref(false);
-const editing = ref<ProjectSummary | null>(null);
+// By id, so the dialog sees the project's latest props (e.g. a new background).
+const editingId = ref<number | null>(null);
+const editing = computed(
+	() =>
+		props.projects.find((project) => project.id === editingId.value) ??
+		null,
+);
 const deleteOpen = ref(false);
 const deleting = ref<ProjectSummary | null>(null);
 
 function create() {
-	editing.value = null;
+	editingId.value = null;
 	formOpen.value = true;
 }
 
 function edit(project: ProjectSummary) {
-	editing.value = project;
+	editingId.value = project.id;
 	formOpen.value = true;
 }
 
@@ -85,7 +91,14 @@ function plural(count: number, word: string) {
 				v-for="project in projects"
 				:key="project.id"
 				:data-field="project.color"
-				class="relative flex aspect-[16/10] flex-col rounded-[var(--radius-tile)] bg-field p-5 text-field-ink"
+				class="relative flex aspect-[16/10] flex-col rounded-[var(--radius-tile)] bg-field bg-cover bg-center p-5 text-field-ink"
+				:style="
+					project.background_url
+						? {
+								backgroundImage: `linear-gradient(color-mix(in oklab, var(--field) 55%, transparent), color-mix(in oklab, var(--field) 85%, transparent)), url('${project.background_url}')`,
+							}
+						: undefined
+				"
 			>
 				<div class="flex items-start justify-between gap-2">
 					<Link

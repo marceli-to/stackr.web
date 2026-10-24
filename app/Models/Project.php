@@ -22,10 +22,11 @@ use Illuminate\Support\Str;
  * @property string|null $description
  * @property string|null $url
  * @property ProjectColor $color
+ * @property string|null $background_path
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'description', 'url', 'color'])]
+#[Fillable(['name', 'description', 'url', 'color', 'background_path'])]
 class Project extends Model
 {
 	/** @use HasFactory<ProjectFactory> */
@@ -48,6 +49,7 @@ class Project extends Model
 	{
 		static::deleting(function (Project $project): void {
 			Storage::disk(Attachment::DISK)->deleteDirectory("attachments/{$project->id}");
+			Storage::disk(Attachment::DISK)->deleteDirectory("backgrounds/{$project->id}");
 		});
 	}
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { Form } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { Form, router } from '@inertiajs/vue3';
+import { computed, ref, useTemplateRef } from 'vue';
+import ProjectBackgroundController from '@/actions/App/Http/Controllers/ProjectBackgroundController';
 import ProjectController from '@/actions/App/Http/Controllers/ProjectController';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
@@ -35,6 +36,49 @@ const colorNames: Record<ProjectColor, string> = {
 
 const open = defineModel<boolean>('open', { required: true });
 
+// The background uploads on its own, straight away, while editing.
+const picker = useTemplateRef('picker');
+const uploading = ref(false);
+const backgroundError = ref<string | null>(null);
+
+function upload(event: Event) {
+	const input = event.target as HTMLInputElement;
+	const image = input.files?.[0];
+	input.value = '';
+
+	if (!image || !props.project) {
+		return;
+	}
+
+	router.post(
+		ProjectBackgroundController.store(props.project.id).url,
+		{ image },
+		{
+			preserveScroll: true,
+			preserveState: true,
+			forceFormData: true,
+			onStart: () => {
+				uploading.value = true;
+				backgroundError.value = null;
+			},
+			onError: (errors) => (backgroundError.value = errors.image ?? null),
+			onFinish: () => (uploading.value = false),
+		},
+	);
+}
+
+function removeBackground() {
+	if (props.project) {
+		router.delete(
+			ProjectBackgroundController.destroy(props.project.id).url,
+			{
+				preserveScroll: true,
+				preserveState: true,
+			},
+		);
+	}
+}
+
 const form = computed(() =>
 	props.project
 		? ProjectController.update.form(props.project.id)
@@ -61,7 +105,7 @@ const form = computed(() =>
 					<DialogDescription>
 						{{
 							project
-								? 'Change the name, description, link or colour.'
+								? 'Change the name, description, link, background or colour.'
 								: 'Each project gets its own board.'
 						}}
 					</DialogDescription>
@@ -117,6 +161,58 @@ const form = computed(() =>
 						placeholder="https://"
 					/>
 					<InputError :message="errors.url" />
+				</div>
+
+				<div v-if="project" class="grid gap-2">
+					<p class="text-sm font-medium">Background photo</p>
+					<div class="flex items-center gap-3">
+						<div
+							:data-field="project.color"
+							class="h-14 w-24 shrink-0 rounded-[var(--radius-sheet)] bg-field bg-cover bg-center"
+							:style="
+								project.background_url
+									? {
+											backgroundImage: `url('${project.background_url}')`,
+										}
+									: undefined
+							"
+							aria-hidden="true"
+						/>
+						<Button
+							type="button"
+							variant="secondary"
+							size="sm"
+							:disabled="uploading"
+							@click="picker?.click()"
+						>
+							{{
+								uploading
+									? 'Uploading…'
+									: project.background_url
+										? 'Replace'
+										: 'Upload a photo'
+							}}
+						</Button>
+						<Button
+							v-if="project.background_url"
+							type="button"
+							variant="ghost"
+							size="sm"
+							@click="removeBackground"
+						>
+							Remove
+						</Button>
+						<input
+							ref="picker"
+							type="file"
+							accept="image/jpeg,image/png,image/webp"
+							class="sr-only"
+							tabindex="-1"
+							aria-label="Background photo"
+							@change="upload"
+						/>
+					</div>
+					<InputError :message="backgroundError ?? undefined" />
 				</div>
 
 				<fieldset class="grid gap-2">

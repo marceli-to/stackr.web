@@ -12,9 +12,16 @@ defineProps<{
 
 const page = usePage();
 
-// A project's page stands on the project's colour, top bar included.
-const field = computed(
-	() => (page.props.project as Project | undefined)?.color,
+// A project's page stands on the project's colour, top bar included, or
+// on its photo under a slight veil that keeps the white text readable.
+const project = computed(() => page.props.project as Project | undefined);
+const field = computed(() => project.value?.color);
+const background = computed(() =>
+	project.value?.background_url
+		? {
+				backgroundImage: `linear-gradient(rgb(0 0 0 / 0.28), rgb(0 0 0 / 0.28)), url("${project.value.background_url}")`,
+			}
+		: undefined,
 );
 </script>
 
@@ -22,7 +29,11 @@ const field = computed(
 	<div
 		class="flex min-h-svh flex-col"
 		:data-field="field"
-		:class="field ? 'bg-field text-field-ink' : 'bg-background'"
+		:class="[
+			field ? 'bg-field text-field-ink' : 'bg-background',
+			background ? 'bg-cover bg-fixed bg-center' : '',
+		]"
+		:style="background"
 	>
 		<AppTopBar />
 		<main class="flex min-h-0 flex-1 flex-col">

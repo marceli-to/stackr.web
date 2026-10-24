@@ -22,6 +22,10 @@ class ProjectResource extends JsonResource
 			'description' => $this->description,
 			'url' => $this->url,
 			'color' => $this->color,
+			// The file name changes with every upload, so the URL can be cached for good.
+			'background_url' => $this->background_path !== null
+				? route('projects.background', ['project' => $this->resource, 'v' => pathinfo($this->background_path, PATHINFO_FILENAME)])
+				: null,
 		];
 	}
 }

@@ -28,6 +28,7 @@ _Last updated: 2026-10-24_
 | 18. Calendar view                                      | ✅ done |
 | 19. Keyboard shortcuts                                 | ✅ done |
 | 20. Card limits and collapsing lists                   | ✅ done |
+| 21. Board background photos                            | ✅ done |
 
 Everything is on `main`, pushed to GitHub (https://github.com/marceli-to/stackr.web) and deployed
 to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
@@ -190,6 +191,12 @@ to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
   1–999); the header then shows "3 / 5", red when over, and nothing is blocked. "Collapse list" is
   personal (localStorage `stackr.collapsed.<project>`): the list shrinks to a narrow column with
   its name on its side and the card count; click it to expand. Collapsed lists can still be dragged.
+- **Background photos:** "Background photo" in the project's edit dialog uploads at once
+  (`ProjectBackgroundController`, `SetBackground`): JPEG/PNG/WebP up to 20 MB, shrunk to 2400px
+  WebP when wider, stored privately under `backgrounds/{project}/` and served to members only
+  (`projects.background`, `?v=<file name>` so it caches for good). The board page stands on it
+  under a 28% black veil; overview tiles show it under their colour. Lists and cards keep their
+  opaque wells, so they stay readable.
 - **Projects** have a name, an optional description, an optional link (`url`, http/https) shown
   on the board, and a colour. Editing and deleting happens from the ⋮ menu on the overview tiles.
 - **Landing page** (`pages/site/Welcome.vue`) for guests at `/`; signed-in users still go straight to
@@ -286,7 +293,7 @@ Same method as the kimiyuch projects (gotaticket/usverchauft):
 
 ## Next up
 
-Feature list (2026-10-24), being worked through in order (1–11 and 13 are done),
+Feature list (2026-10-24), being worked through in order (1–13 are done),
 then 13 with 4 (notifications with mentions; needs the scheduler decision first).
 
 **Cards**
@@ -305,7 +312,7 @@ then 13 with 4 (notifications with mentions; needs the scheduler decision first)
 9. ~~Calendar view of cards with a due date.~~ Done.
 10. ~~Keyboard shortcuts: `n` new card, `Esc` close, arrow keys between cards, `/` search.~~ Done.
 11. ~~WIP limits or collapsing a list.~~ Done.
-12. Board backgrounds: an image as well as the project colour (optional).
+12. ~~Board backgrounds: an image as well as the project colour.~~ Done.
 
 **People and notifications**
 

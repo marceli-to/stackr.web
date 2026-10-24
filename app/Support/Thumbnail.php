@@ -6,7 +6,7 @@ use GdImage;
 use Throwable;
 
 /**
- * Shrinks a large image to a WebP thumbnail with GD. Anything it can't or
+ * Shrinks a large image to a WebP copy with GD (thumbnails, board backgrounds). Anything it can't or
  * needn't shrink (small images, GIFs, huge or broken files) gets null, and
  * the original is shown instead.
  */
@@ -20,7 +20,7 @@ class Thumbnail
 	/**
 	 * The thumbnail's WebP bytes, or null.
 	 */
-	public static function make(string $file, string $mimeType): ?string
+	public static function make(string $file, string $mimeType, int $width = self::WIDTH): ?string
 	{
 		if (! function_exists('imagewebp')) {
 			return null;
@@ -41,12 +41,12 @@ class Thumbnail
 
 			$image = self::upright($image, $file, $mimeType);
 
-			if (imagesx($image) <= self::WIDTH) {
+			if (imagesx($image) <= $width) {
 				return null;
 			}
 
-			$height = (int) round(imagesy($image) * self::WIDTH / imagesx($image));
-			$thumb = imagescale($image, self::WIDTH, max(1, $height), IMG_BICUBIC);
+			$height = (int) round(imagesy($image) * $width / imagesx($image));
+			$thumb = imagescale($image, $width, max(1, $height), IMG_BICUBIC);
 
 			if ($thumb === false) {
 				return null;

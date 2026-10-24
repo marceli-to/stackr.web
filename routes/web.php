@@ -9,6 +9,7 @@ use App\Http\Controllers\ChecklistItemController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ProjectBackgroundController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectInvitationController;
 use App\Http\Controllers\ProjectMemberController;
@@ -31,6 +32,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 	Route::post('notifications/read', [NotificationController::class, 'readAll'])->name('notifications.read-all');
 	Route::post('notifications/{notification}/open', [NotificationController::class, 'open'])->name('notifications.open');
+
+	Route::get('projects/{project}/background', [ProjectBackgroundController::class, 'show'])->name('projects.background');
+	Route::post('projects/{project}/background', [ProjectBackgroundController::class, 'store'])->name('projects.background.store');
+	Route::delete('projects/{project}/background', [ProjectBackgroundController::class, 'destroy'])->name('projects.background.destroy');
 
 	Route::post('projects/{project}/members', [ProjectMemberController::class, 'store'])->name('projects.members.store');
 	Route::delete('projects/{project}/members/{user}', [ProjectMemberController::class, 'destroy'])->name('projects.members.destroy');
