@@ -15,8 +15,10 @@ _Last updated: 2026-10-24_
 | 5. Design: "Field" (see below)                         | ✅ done |
 | 6. Card details (title, description, dates, labels, …) | ✅ done |
 | 7. Inviting members                                    | ✅ done |
+| 8. Production on stackr.kimiyu.ch (see "Production")   | ✅ done |
 
-Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stackr.web
+Everything is on `main`, pushed to GitHub (https://github.com/marceli-to/stackr.web) and deployed
+to https://stackr.kimiyu.ch (last deploy `aa410d4`, 2026-10-24).
 (`design/field` and `feature/card-details` are merged into `main` and can be deleted.)
 
 ## Stack
@@ -69,7 +71,10 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
       Text fields don't get the outline: the `focus-field` utility (`app.css`) swaps it for a soft
       halo, `--field-focus` in `tokens.css`. Every enabled button has `cursor: pointer` (`base.css`).
     - Card dialog: no colour strip unless there's a cover; on open it focuses the sheet, not the
-      close button, so no ring shows after a click.
+      close button, so no ring shows after a click. Faint `--surface-edge` hairlines give it
+      structure: a full-width line under the header, `divide-y` between the main column's sections,
+      a vertical line beside the sidebar (a horizontal one above it on narrow screens) and one
+      between "Add to card" and "Actions".
 - **Shapes:** text buttons, inputs and labels use the 4px `--radius-sheet`; tiles, dialogs, menus
   and the auth card the 6px `--radius-tile`. Icon-only buttons are round (`size="icon…"` is
   `rounded-full`), like avatars. A "+" at the end of a row takes the row's shape ("+ labels"
@@ -143,6 +148,7 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
 
 Live at https://stackr.kimiyu.ch (Hostpoint, `pumutuxu@pumutuxu.myhostpoint.ch:~/www/stackr.kimiyu.ch`,
 the subdomain's document root is `public/`; certificate set up by the user in the Hostpoint panel).
+First deployed 2026-10-24; the user registered there and confirmed that mail (verification) arrives.
 Same method as the kimiyuch projects (gotaticket/usverchauft):
 
 - **Deploy:** `./deploy.sh` from the Mac (own SSH key). It refuses uncommitted changes and a missing
