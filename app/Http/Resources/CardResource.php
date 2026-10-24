@@ -36,6 +36,10 @@ class CardResource extends JsonResource
 			'archived' => $this->archived_at !== null || $this->stack->archived_at !== null,
 			'created_at' => $this->created_at,
 			'stack' => $this->stack->only('id', 'name'),
+			// Its place among the list's cards on the board; null when archived.
+			'index' => $this->archived_at === null
+				? $this->stack->cards()->active()->where('position', '<', $this->position)->count()
+				: null,
 			'labels' => $this->labels->pluck('id'),
 			'members' => $this->members->pluck('id'),
 			'cover_attachment_id' => $this->cover_attachment_id,

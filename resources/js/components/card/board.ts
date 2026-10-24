@@ -2,13 +2,15 @@ import { router } from '@inertiajs/vue3';
 import type { InjectionKey, Ref } from 'vue';
 import { inject } from 'vue';
 import { show } from '@/routes/projects';
-import type { Label, LabelColor, Member, Project } from '@/types';
+import type { Destination, Label, LabelColor, Member, Project } from '@/types';
 
 /** What every card on a board can reach: the project, its labels and members. */
 export type BoardContext = {
 	project: Ref<Project>;
 	labels: Ref<Label[]>;
 	members: Ref<Member[]>;
+	/** The user's boards, loaded when a card is moved or copied. */
+	destinations: Ref<Destination[] | undefined>;
 };
 
 export const boardKey: InjectionKey<BoardContext> = Symbol('board');

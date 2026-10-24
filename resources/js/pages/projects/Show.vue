@@ -12,6 +12,7 @@ import type {
 	BoardArchive,
 	BoardStack,
 	CardDetail,
+	Destination,
 	Label,
 	Member,
 	Project,
@@ -24,12 +25,14 @@ const props = defineProps<{
 	members: Member[];
 	card: CardDetail | null;
 	archive?: BoardArchive;
+	destinations?: Destination[];
 }>();
 
 provide(boardKey, {
 	project: toRef(props, 'project'),
 	labels: toRef(props, 'labels'),
 	members: toRef(props, 'members'),
+	destinations: toRef(props, 'destinations'),
 });
 
 provide(filterKey, createFilter(toRef(props, 'labels')));

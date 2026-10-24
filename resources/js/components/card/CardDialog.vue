@@ -3,8 +3,10 @@ import { router } from '@inertiajs/vue3';
 import {
 	PhArchive,
 	PhArrowCounterClockwise,
+	PhArrowRight,
 	PhCalendarBlank,
 	PhCheckSquare,
+	PhCopy,
 	PhPaperclip,
 	PhPlus,
 	PhTag,
@@ -31,6 +33,7 @@ import CardDatesPicker from '@/components/card/CardDatesPicker.vue';
 import CardDescription from '@/components/card/CardDescription.vue';
 import CardLabelsPicker from '@/components/card/CardLabelsPicker.vue';
 import CardMembersPicker from '@/components/card/CardMembersPicker.vue';
+import CardMoveCopy from '@/components/card/CardMoveCopy.vue';
 import { Button } from '@/components/ui/button';
 import {
 	Dialog,
@@ -550,6 +553,18 @@ const sideButton =
 							>
 								Actions
 							</p>
+							<CardMoveCopy :card="card" mode="move">
+								<Button variant="secondary" :class="sideButton">
+									<PhArrowRight />
+									Move
+								</Button>
+							</CardMoveCopy>
+							<CardMoveCopy :card="card" mode="copy">
+								<Button variant="secondary" :class="sideButton">
+									<PhCopy />
+									Copy
+								</Button>
+							</CardMoveCopy>
 							<Button
 								v-if="!card.archived"
 								variant="secondary"

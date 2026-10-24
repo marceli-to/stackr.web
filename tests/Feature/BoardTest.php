@@ -190,10 +190,10 @@ class BoardTest extends TestCase
 		$this->assertSame($empty->id, $card->fresh()->stack_id);
 	}
 
-	public function test_cards_cannot_be_moved_into_another_projects_list()
+	public function test_cards_cannot_be_moved_onto_a_board_the_user_isnt_on()
 	{
 		$card = Card::factory()->for(Stack::factory()->for($this->project))->create();
-		$foreign = Stack::factory()->for(Project::factory()->ownedBy($this->user))->create();
+		$foreign = Stack::factory()->for(Project::factory())->create();
 
 		$this->actingAs($this->user)
 			->patch(route('cards.move', $card), ['stack_id' => $foreign->id, 'index' => 0])

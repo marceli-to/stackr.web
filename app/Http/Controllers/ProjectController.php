@@ -9,6 +9,7 @@ use App\Http\Requests\ProjectRequest;
 use App\Http\Resources\ArchivedCardResource;
 use App\Http\Resources\ArchivedStackResource;
 use App\Http\Resources\CardResource;
+use App\Http\Resources\DestinationResource;
 use App\Http\Resources\InvitationResource;
 use App\Http\Resources\LabelResource;
 use App\Http\Resources\MemberResource;
@@ -97,6 +98,9 @@ class ProjectController extends Controller
 			'canManageMembers' => $manages,
 			'stacks' => StackResource::collection($project->stacks),
 			'card' => $card !== null ? new CardResource($card) : null,
+			'destinations' => Inertia::optional(fn () => DestinationResource::collection(
+				$request->user()?->projects()->with(['stacks' => fn ($query) => $query->active()->withCount(['cards' => fn ($query) => $query->active()])])->orderBy('name')->get() ?? [],
+			)),
 			'archive' => Inertia::optional(fn () => [
 				'cards' => ArchivedCardResource::collection(
 					$project->cards()->whereNotNull('cards.archived_at')->with('stack:id,name')->latest('cards.archived_at')->get(),

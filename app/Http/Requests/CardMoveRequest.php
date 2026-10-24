@@ -2,12 +2,13 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Card;
+use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Exists;
 
 /**
- * A card can be dropped into any list on its own project's board.
+ * A card can go into any list on a board the user is a member of.
  */
 class CardMoveRequest extends MoveRequest
 {
@@ -16,13 +17,23 @@ class CardMoveRequest extends MoveRequest
 	 */
 	public function rules(): array
 	{
-		/** @var Card $card */
-		$card = $this->route('card');
-
 		return [
 			...parent::rules(),
-			'stack_id' => ['sometimes', 'integer', Rule::exists('stacks', 'id')->where('project_id', $card->stack->project_id)->whereNull('archived_at')],
+			'stack_id' => ['sometimes', 'integer', $this->boardStack()],
 		];
+	}
+
+	/**
+	 * An active list on one of the user's boards.
+	 */
+	protected function boardStack(): Exists
+	{
+		/** @var User $user */
+		$user = $this->user();
+
+		return Rule::exists('stacks', 'id')
+			->whereIn('project_id', $user->memberships()->pluck('project_id'))
+			->whereNull('archived_at');
 	}
 
 	/**
@@ -31,7 +42,7 @@ class CardMoveRequest extends MoveRequest
 	public function messages(): array
 	{
 		return [
-			'stack_id.exists' => __('The list does not belong to this project.'),
+			'stack_id.exists' => __('The list is not on one of your boards.'),
 		];
 	}
 }

@@ -128,12 +128,21 @@ export type CardDetail = {
 	archived: boolean;
 	created_at: string;
 	stack: { id: number; name: string };
+	/** Its place among the list's cards on the board; null when archived. */
+	index: number | null;
 	labels: number[];
 	members: number[];
 	cover_attachment_id: number | null;
 	checklists: Checklist[];
 	attachments: CardAttachment[];
 	comments: CardComment[];
+};
+
+/** A board a card can be moved or copied to. */
+export type Destination = {
+	id: number;
+	name: string;
+	stacks: { id: number; name: string; cards_count: number }[];
 };
 
 /** What the board's archive lists. */

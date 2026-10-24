@@ -42,6 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::post('stacks/{stack}/cards', [CardController::class, 'store'])->name('cards.store');
 	Route::patch('cards/{card}/move', [CardController::class, 'move'])->name('cards.move');
 	Route::patch('cards/{card}', [CardController::class, 'update'])->name('cards.update');
+	Route::post('cards/{card}/copy', [CardController::class, 'copy'])->name('cards.copy');
 	Route::patch('cards/{card}/archive', [CardController::class, 'archive'])->name('cards.archive');
 	Route::patch('cards/{card}/restore', [CardController::class, 'restore'])->name('cards.restore');
 	Route::delete('cards/{card}', [CardController::class, 'destroy'])->name('cards.destroy');
