@@ -5,6 +5,7 @@ import type { DraggableEvent } from 'vue-draggable-plus';
 import StackController from '@/actions/App/Http/Controllers/StackController';
 import AddStackForm from '@/components/board/AddStackForm.vue';
 import StackColumn from '@/components/board/StackColumn.vue';
+import { useBoardKeys } from '@/components/board/useBoardKeys';
 import { hasPendingMoves, saveMove } from '@/components/board/useBoardMove';
 import type { BoardStack, Project } from '@/types';
 
@@ -36,6 +37,8 @@ watch(
 		}
 	},
 );
+
+useBoardKeys();
 
 function onStackMoved(event: DraggableEvent<BoardStack>) {
 	if (event.newIndex === undefined || event.newIndex === event.oldIndex) {

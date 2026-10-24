@@ -76,6 +76,7 @@ function open() {
 	<article
 		role="button"
 		tabindex="0"
+		:data-card-id="card.id"
 		:aria-label="`Open card ${card.title}`"
 		class="cursor-pointer overflow-hidden rounded-[var(--radius-sheet)] bg-sheet text-[0.9375rem] leading-snug text-foreground select-none hover:outline-2 hover:outline-current/20 hover:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid active:cursor-grabbing active:bg-(--color-paper-2)"
 		@click="open"

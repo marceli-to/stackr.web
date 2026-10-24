@@ -88,6 +88,7 @@ function submitOnEnter(event: KeyboardEvent) {
 			<Button
 				variant="ghost"
 				size="sm"
+				data-add-card
 				class="h-auto min-w-0 flex-1 justify-start bg-current/10 px-3 py-2.5 text-[0.9375rem] leading-snug text-inherit opacity-85 hover:bg-current/15 hover:text-inherit hover:opacity-100 has-[>svg]:px-3"
 				@click="open = true"
 			>

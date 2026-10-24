@@ -9,6 +9,7 @@ import {
 import { onKeyStroke } from '@vueuse/core';
 import { computed, useTemplateRef } from 'vue';
 import { dueFilters, useFilter } from '@/components/board/filter';
+import { busy } from '@/components/board/useBoardKeys';
 import { colorNames, useBoard } from '@/components/card/board';
 import { Button } from '@/components/ui/button';
 import {
@@ -40,13 +41,7 @@ const search = useTemplateRef('search');
 
 // "/" jumps to the search, unless you're already typing somewhere.
 onKeyStroke('/', (event) => {
-	const target = event.target as HTMLElement;
-
-	if (
-		target.isContentEditable ||
-		['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) ||
-		document.querySelector('[role="dialog"]')
-	) {
+	if (busy(event)) {
 		return;
 	}
 

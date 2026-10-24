@@ -7,6 +7,7 @@ import Board from '@/components/board/Board.vue';
 import BoardArchivePanel from '@/components/board/BoardArchivePanel.vue';
 import BoardCalendar from '@/components/board/BoardCalendar.vue';
 import BoardFilterBar from '@/components/board/BoardFilterBar.vue';
+import BoardShortcuts from '@/components/board/BoardShortcuts.vue';
 import { createFilter, filterKey } from '@/components/board/filter';
 import { boardKey } from '@/components/card/board';
 import CardDialog from '@/components/card/CardDialog.vue';
@@ -120,6 +121,7 @@ const urlLabel = computed(() =>
 						</button>
 					</div>
 					<BoardArchivePanel :archive="archive" />
+					<BoardShortcuts />
 				</div>
 			</div>
 			<BoardCalendar v-if="view === 'calendar'" :stacks="stacks" />
