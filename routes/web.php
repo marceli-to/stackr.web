@@ -35,11 +35,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::post('projects/{project}/stacks', [StackController::class, 'store'])->name('stacks.store');
 	Route::patch('stacks/{stack}', [StackController::class, 'update'])->name('stacks.update');
 	Route::patch('stacks/{stack}/move', [StackController::class, 'move'])->name('stacks.move');
+	Route::patch('stacks/{stack}/archive', [StackController::class, 'archive'])->name('stacks.archive');
+	Route::patch('stacks/{stack}/restore', [StackController::class, 'restore'])->name('stacks.restore');
 	Route::delete('stacks/{stack}', [StackController::class, 'destroy'])->name('stacks.destroy');
 
 	Route::post('stacks/{stack}/cards', [CardController::class, 'store'])->name('cards.store');
 	Route::patch('cards/{card}/move', [CardController::class, 'move'])->name('cards.move');
 	Route::patch('cards/{card}', [CardController::class, 'update'])->name('cards.update');
+	Route::patch('cards/{card}/archive', [CardController::class, 'archive'])->name('cards.archive');
+	Route::patch('cards/{card}/restore', [CardController::class, 'restore'])->name('cards.restore');
 	Route::delete('cards/{card}', [CardController::class, 'destroy'])->name('cards.destroy');
 
 	Route::post('projects/{project}/labels', [LabelController::class, 'store'])->name('labels.store');

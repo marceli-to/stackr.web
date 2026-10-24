@@ -124,6 +124,8 @@ export type CardDetail = {
 	start_at: string | null;
 	due_at: string | null;
 	completed_at: string | null;
+	/** Archived itself, or in an archived list. */
+	archived: boolean;
 	created_at: string;
 	stack: { id: number; name: string };
 	labels: number[];
@@ -132,6 +134,17 @@ export type CardDetail = {
 	checklists: Checklist[];
 	attachments: CardAttachment[];
 	comments: CardComment[];
+};
+
+/** What the board's archive lists. */
+export type BoardArchive = {
+	cards: { id: number; title: string; stack: string; archived_at: string }[];
+	stacks: {
+		id: number;
+		name: string;
+		cards_count: number;
+		archived_at: string;
+	}[];
 };
 
 export type BoardStack = {

@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 /**
- * A card can be dropped into any list of its own project.
+ * A card can be dropped into any list on its own project's board.
  */
 class CardMoveRequest extends MoveRequest
 {
@@ -21,7 +21,7 @@ class CardMoveRequest extends MoveRequest
 
 		return [
 			...parent::rules(),
-			'stack_id' => ['sometimes', 'integer', Rule::exists('stacks', 'id')->where('project_id', $card->stack->project_id)],
+			'stack_id' => ['sometimes', 'integer', Rule::exists('stacks', 'id')->where('project_id', $card->stack->project_id)->whereNull('archived_at')],
 		];
 	}
 

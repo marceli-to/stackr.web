@@ -18,6 +18,7 @@ _Last updated: 2026-10-24_
 | 8. Production on stackr.kimiyu.ch (see "Production")   | ✅ done |
 | 9. Landing page and legal notice                       | ✅ done |
 | 10. Search and filters on the board                    | ✅ done |
+| 11. Archive for cards and lists                        | ✅ done |
 
 Everything is on `main`, pushed to GitHub (https://github.com/marceli-to/stackr.web) and deployed
 to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
@@ -118,6 +119,15 @@ to https://stackr.kimiyu.ch (last deploy `59a7b69`, 2026-10-24).
   next week, none, complete). Any choice within a group matches; every group has to. Filtered-out
   cards are hidden with `v-show`, not removed, so SortableJS still counts them and a drop saves
   the right index. The filter survives opening a card (`preserveState`) but not a reload.
+- **Archive:** cards and lists have `archived_at` (`active()` scope, column qualified because
+  both tables have it). Archiving keeps the position, so a restore puts things back where they
+  were; moves only count active siblings (`MoveCard`, `MoveStack`), and cards can't be dropped into
+  an archived list. The card dialog offers "Archive"; an archived card (or one in an archived
+  list) shows a banner and "Restore" / "Delete" instead, so deleting a card takes two steps.
+  The list menu has "Archive list"; deleting a list happens from the archive panel
+  (`components/board/BoardArchivePanel.vue`, "Archive" in the board toolbar), which loads the
+  `archive` prop on open (`Inertia::optional`). Restoring a card also restores its archived list.
+  Project tiles count active lists and cards only.
 - **Projects** have a name, an optional description, an optional link (`url`, http/https) shown
   on the board, and a colour. Editing and deleting happens from the ⋮ menu on the overview tiles.
 - **Landing page** (`pages/site/Welcome.vue`) for guests at `/`; signed-in users still go straight to
@@ -213,12 +223,12 @@ Same method as the kimiyuch projects (gotaticket/usverchauft):
 
 ## Next up
 
-Feature list (2026-10-24). Suggested order: 1 (archive) next (8, search and filters, is done),
+Feature list (2026-10-24), being worked through in order (1 and 8 are done),
 then 13 with 4 (notifications with mentions; needs the scheduler decision first).
 
 **Cards**
 
-1. Archive instead of delete: archive cards and lists, an archive view, restore. Today deleting is permanent.
+1. ~~Archive instead of delete: archive cards and lists, an archive view, restore.~~ Done.
 2. Move or copy a card from the dialog: to another list or another project, at a chosen position.
 3. Activity log per card ("Amy moved this from To do to Doing"), shown together with the comments.
 4. @mentions in comments, with a notification to the person mentioned.

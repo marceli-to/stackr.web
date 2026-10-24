@@ -6,6 +6,8 @@ use App\Actions\Projects\CreateProject;
 use App\Actions\Projects\DeleteProject;
 use App\Actions\Projects\UpdateProject;
 use App\Http\Requests\ProjectRequest;
+use App\Http\Resources\ArchivedCardResource;
+use App\Http\Resources\ArchivedStackResource;
 use App\Http\Resources\CardResource;
 use App\Http\Resources\InvitationResource;
 use App\Http\Resources\LabelResource;
@@ -33,7 +35,10 @@ class ProjectController extends Controller
 		$user = $request->user();
 
 		$memberships = $user->memberships()
-			->with(['project' => fn ($query) => $query->withCount(['stacks', 'cards'])])
+			->with(['project' => fn ($query) => $query->withCount([
+				'stacks' => fn ($query) => $query->active(),
+				'cards' => fn ($query) => $query->active()->whereNull('stacks.archived_at'),
+			])])
 			->get()
 			->sortBy('project.name', SORT_NATURAL | SORT_FLAG_CASE)
 			->values();
@@ -59,7 +64,8 @@ class ProjectController extends Controller
 	}
 
 	/**
-	 * Show a project's board. ?card=<id> opens a card; it has to be on this board.
+	 * Show a project's board. ?card=<id> opens a card; it has to be on this
+	 * board or in its archive. The archive itself loads only when asked for.
 	 */
 	public function show(Request $request, Project $project): Response
 	{
@@ -67,7 +73,8 @@ class ProjectController extends Controller
 
 		$project->load([
 			'labels',
-			'stacks.cards' => fn ($query) => $query->withCount(['attachments', 'comments']),
+			'stacks' => fn ($query) => $query->active(),
+			'stacks.cards' => fn ($query) => $query->active()->withCount(['attachments', 'comments']),
 			'stacks.cards.labels:id',
 			'stacks.cards.members:id',
 			'stacks.cards.cover',
@@ -77,6 +84,7 @@ class ProjectController extends Controller
 		$open = $request->integer('card') ?: null;
 		$card = $open !== null
 			? $project->stacks->flatMap(fn (Stack $stack) => $stack->cards)->firstWhere('id', $open)
+				?? $project->cards()->find($open)
 			: null;
 
 		$manages = $request->user()?->can('manageMembers', $project) ?? false;
@@ -89,6 +97,14 @@ class ProjectController extends Controller
 			'canManageMembers' => $manages,
 			'stacks' => StackResource::collection($project->stacks),
 			'card' => $card !== null ? new CardResource($card) : null,
+			'archive' => Inertia::optional(fn () => [
+				'cards' => ArchivedCardResource::collection(
+					$project->cards()->whereNotNull('cards.archived_at')->with('stack:id,name')->latest('cards.archived_at')->get(),
+				),
+				'stacks' => ArchivedStackResource::collection(
+					$project->stacks()->whereNotNull('archived_at')->withCount('cards')->reorder()->latest('archived_at')->get(),
+				),
+			]),
 		]);
 	}
 

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3';
 import {
+	PhArchive,
+	PhArrowCounterClockwise,
 	PhCalendarBlank,
 	PhCheckSquare,
 	PhPaperclip,
@@ -217,8 +219,17 @@ function paste(event: ClipboardEvent) {
 	}
 }
 
-// Delete asks once, in place.
+// Archiving takes the card off the board and keeps it open; deleting is
+// only offered once it's archived, and asks once, in place.
 const confirmingDelete = ref(false);
+
+function archive() {
+	router.patch(CardController.archive(card.value.id).url, {}, keep);
+}
+
+function restore() {
+	router.patch(CardController.restore(card.value.id).url, {}, keep);
+}
 
 function deleteCard() {
 	router.delete(CardController.destroy(card.value.id).url, {
@@ -274,6 +285,14 @@ const sideButton =
 			</DialogClose>
 
 			<div class="p-6 sm:p-8">
+				<div
+					v-if="card.archived"
+					class="-mx-6 -mt-6 mb-6 flex items-center gap-2.5 bg-(--color-paper-2) px-6 py-3 pr-16 text-sm sm:-mx-8 sm:-mt-8 sm:px-8 sm:pr-18"
+				>
+					<PhArchive class="size-4 shrink-0" />
+					<p class="font-semibold">This card is archived.</p>
+				</div>
+
 				<header
 					class="-mx-6 mb-6 border-b border-(--surface-edge) px-6 pr-16 pb-6 sm:-mx-8 sm:mb-8 sm:px-8 sm:pr-18"
 				>
@@ -531,7 +550,16 @@ const sideButton =
 							>
 								Actions
 							</p>
-							<template v-if="confirmingDelete">
+							<Button
+								v-if="!card.archived"
+								variant="secondary"
+								:class="sideButton"
+								@click="archive"
+							>
+								<PhArchive />
+								Archive
+							</Button>
+							<template v-else-if="confirmingDelete">
 								<p class="text-sm">
 									Delete this card and everything on it? This
 									cannot be undone.
@@ -553,15 +581,24 @@ const sideButton =
 									</Button>
 								</div>
 							</template>
-							<Button
-								v-else
-								variant="secondary"
-								:class="sideButton"
-								@click="confirmingDelete = true"
-							>
-								<PhTrash />
-								Delete
-							</Button>
+							<template v-else>
+								<Button
+									variant="secondary"
+									:class="sideButton"
+									@click="restore"
+								>
+									<PhArrowCounterClockwise />
+									Restore
+								</Button>
+								<Button
+									variant="secondary"
+									:class="sideButton"
+									@click="confirmingDelete = true"
+								>
+									<PhTrash />
+									Delete
+								</Button>
+							</template>
 						</div>
 					</aside>
 				</div>

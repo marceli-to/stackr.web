@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Cards\ArchiveCard;
 use App\Actions\Cards\CreateCard;
 use App\Actions\Cards\DeleteCard;
 use App\Actions\Cards\MoveCard;
+use App\Actions\Cards\RestoreCard;
 use App\Actions\Cards\UpdateCard;
 use App\Http\Requests\CardMoveRequest;
 use App\Http\Requests\CardRequest;
@@ -54,6 +56,34 @@ class CardController extends Controller
 		Gate::authorize('update', $card->stack->project);
 
 		$updateCard->handle($card, $request->validated());
+
+		return back();
+	}
+
+	/**
+	 * Take a card off the board. It stays open, marked as archived.
+	 */
+	public function archive(Card $card, ArchiveCard $archiveCard): RedirectResponse
+	{
+		Gate::authorize('update', $card->stack->project);
+
+		$archiveCard->handle($card);
+
+		$this->toast(__('Card archived.'));
+
+		return back();
+	}
+
+	/**
+	 * Put an archived card back on the board, at its old place.
+	 */
+	public function restore(Card $card, RestoreCard $restoreCard): RedirectResponse
+	{
+		Gate::authorize('update', $card->stack->project);
+
+		$restoreCard->handle($card);
+
+		$this->toast(__('Card restored.'));
 
 		return back();
 	}

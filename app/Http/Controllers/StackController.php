@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Stacks\ArchiveStack;
 use App\Actions\Stacks\CreateStack;
 use App\Actions\Stacks\DeleteStack;
 use App\Actions\Stacks\MoveStack;
 use App\Actions\Stacks\RenameStack;
+use App\Actions\Stacks\RestoreStack;
 use App\Http\Requests\MoveRequest;
 use App\Http\Requests\StackRequest;
 use App\Models\Project;
@@ -47,6 +49,34 @@ class StackController extends Controller
 		Gate::authorize('update', $stack->project);
 
 		$moveStack->handle($stack, $request->integer('index'));
+
+		return back();
+	}
+
+	/**
+	 * Take a list and its cards off the board.
+	 */
+	public function archive(Stack $stack, ArchiveStack $archiveStack): RedirectResponse
+	{
+		Gate::authorize('update', $stack->project);
+
+		$archiveStack->handle($stack);
+
+		$this->toast(__('List archived.'));
+
+		return back();
+	}
+
+	/**
+	 * Put an archived list back on the board.
+	 */
+	public function restore(Stack $stack, RestoreStack $restoreStack): RedirectResponse
+	{
+		Gate::authorize('update', $stack->project);
+
+		$restoreStack->handle($stack);
+
+		$this->toast(__('List restored.'));
 
 		return back();
 	}

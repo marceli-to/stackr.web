@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Form } from '@inertiajs/vue3';
-import { PhDotsThree, PhPencilSimple, PhTrash } from '@phosphor-icons/vue';
+import { Form, router } from '@inertiajs/vue3';
+import { PhArchive, PhDotsThree, PhPencilSimple } from '@phosphor-icons/vue';
 import { nextTick, ref, useTemplateRef } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 import type { DraggableEvent } from 'vue-draggable-plus';
@@ -11,15 +11,6 @@ import BoardCardItem from '@/components/board/BoardCardItem.vue';
 import { useFilter } from '@/components/board/filter';
 import { saveMove } from '@/components/board/useBoardMove';
 import { Button } from '@/components/ui/button';
-import {
-	Dialog,
-	DialogClose,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from '@/components/ui/dialog';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -40,13 +31,21 @@ const cards = defineModel<BoardCard[]>('cards', { required: true });
 const { shows } = useFilter();
 
 const renaming = ref(false);
-const deleteOpen = ref(false);
 const nameInput = useTemplateRef('nameInput');
 
 async function startRename() {
 	renaming.value = true;
 	await nextTick();
 	nameInput.value?.select();
+}
+
+// The list and its cards leave the board; the archive can bring them back.
+function archive() {
+	router.patch(
+		StackController.archive(props.stack.id).url,
+		{},
+		{ preserveScroll: true, preserveState: true },
+	);
 }
 
 // Leaving the field saves, unless Escape already cancelled or nothing changed.
@@ -139,12 +138,9 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 						<PhPencilSimple />
 						Rename
 					</DropdownMenuItem>
-					<DropdownMenuItem
-						variant="destructive"
-						@select="deleteOpen = true"
-					>
-						<PhTrash />
-						Delete list
+					<DropdownMenuItem @select="archive">
+						<PhArchive />
+						Archive list
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
@@ -170,42 +166,4 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 
 		<AddCardForm :stack="stack" />
 	</section>
-
-	<Dialog v-model:open="deleteOpen">
-		<DialogContent>
-			<Form
-				v-bind="StackController.destroy.form(stack.id)"
-				:options="{ preserveScroll: true, preserveState: true }"
-				class="space-y-6"
-				@success="deleteOpen = false"
-				v-slot="{ processing }"
-			>
-				<DialogHeader class="space-y-3">
-					<DialogTitle>Delete “{{ stack.name }}”?</DialogTitle>
-					<DialogDescription>
-						{{
-							cards.length === 0
-								? 'The list is empty.'
-								: `Its ${cards.length} ${cards.length === 1 ? 'card' : 'cards'} will be deleted too.`
-						}}
-						This cannot be undone.
-					</DialogDescription>
-				</DialogHeader>
-				<DialogFooter class="gap-2">
-					<DialogClose as-child>
-						<Button type="button" variant="secondary">
-							Cancel
-						</Button>
-					</DialogClose>
-					<Button
-						type="submit"
-						variant="destructive"
-						:disabled="processing"
-					>
-						Delete list
-					</Button>
-				</DialogFooter>
-			</Form>
-		</DialogContent>
-	</Dialog>
 </template>

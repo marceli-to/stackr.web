@@ -5,6 +5,8 @@ namespace App\Models;
 use Carbon\CarbonImmutable;
 use Database\Factories\CardFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,11 +24,12 @@ use Illuminate\Support\Facades\Storage;
  * @property CarbonImmutable|null $start_at
  * @property CarbonImmutable|null $due_at
  * @property CarbonImmutable|null $completed_at
+ * @property CarbonImmutable|null $archived_at
  * @property int|null $cover_attachment_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['title', 'description', 'position', 'start_at', 'due_at', 'completed_at', 'cover_attachment_id'])]
+#[Fillable(['title', 'description', 'position', 'start_at', 'due_at', 'completed_at', 'archived_at', 'cover_attachment_id'])]
 class Card extends Model
 {
 	/** @use HasFactory<CardFactory> */
@@ -43,7 +46,19 @@ class Card extends Model
 			'start_at' => 'datetime',
 			'due_at' => 'datetime',
 			'completed_at' => 'datetime',
+			'archived_at' => 'datetime',
 		];
+	}
+
+	/**
+	 * Only the cards that aren't archived.
+	 *
+	 * @param  Builder<Card>  $query
+	 */
+	#[Scope]
+	protected function active(Builder $query): void
+	{
+		$query->whereNull($query->qualifyColumn('archived_at'));
 	}
 
 	/**

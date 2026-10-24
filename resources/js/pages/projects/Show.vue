@@ -3,11 +3,19 @@ import { Head } from '@inertiajs/vue3';
 import { PhLink } from '@phosphor-icons/vue';
 import { computed, provide, toRef } from 'vue';
 import Board from '@/components/board/Board.vue';
+import BoardArchivePanel from '@/components/board/BoardArchivePanel.vue';
 import BoardFilterBar from '@/components/board/BoardFilterBar.vue';
 import { createFilter, filterKey } from '@/components/board/filter';
 import { boardKey } from '@/components/card/board';
 import CardDialog from '@/components/card/CardDialog.vue';
-import type { BoardStack, CardDetail, Label, Member, Project } from '@/types';
+import type {
+	BoardArchive,
+	BoardStack,
+	CardDetail,
+	Label,
+	Member,
+	Project,
+} from '@/types';
 
 const props = defineProps<{
 	project: Project;
@@ -15,6 +23,7 @@ const props = defineProps<{
 	labels: Label[];
 	members: Member[];
 	card: CardDetail | null;
+	archive?: BoardArchive;
 }>();
 
 provide(boardKey, {
@@ -54,7 +63,12 @@ const urlLabel = computed(() =>
 		</header>
 
 		<div class="flex min-h-0 flex-1 flex-col gap-4">
-			<BoardFilterBar :stacks="stacks" />
+			<div class="flex flex-wrap items-center gap-2">
+				<BoardFilterBar :stacks="stacks" />
+				<div class="ml-auto">
+					<BoardArchivePanel :archive="archive" />
+				</div>
+			</div>
 			<Board :project="project" :stacks="stacks" />
 		</div>
 	</div>
