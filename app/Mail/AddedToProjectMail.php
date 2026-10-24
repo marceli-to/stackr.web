@@ -5,6 +5,7 @@ namespace App\Mail;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -13,7 +14,7 @@ use Illuminate\Queue\SerializesModels;
 /**
  * Tells someone who already has an account that they were added to a project.
  */
-class AddedToProjectMail extends Mailable
+class AddedToProjectMail extends Mailable implements ShouldQueue
 {
 	use Queueable, SerializesModels;
 

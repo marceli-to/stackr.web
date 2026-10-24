@@ -86,7 +86,7 @@ class ProjectMembersTest extends TestCase
 
 		$this->assertSame(ProjectRole::Member, $this->project->roleOf($user));
 		$this->assertDatabaseCount('project_invitations', 0);
-		Mail::assertSent(AddedToProjectMail::class, fn ($mail) => $mail->hasTo('sam@example.com'));
+		Mail::assertQueued(AddedToProjectMail::class, fn ($mail) => $mail->hasTo('sam@example.com'));
 	}
 
 	public function test_inviting_an_unknown_email_sends_an_invitation_link()
@@ -98,7 +98,7 @@ class ProjectMembersTest extends TestCase
 		$invitation = $this->project->invitations()->sole();
 
 		$this->assertSame('new@example.com', $invitation->email);
-		Mail::assertSent(ProjectInvitationMail::class, fn ($mail) => $mail->hasTo('new@example.com')
+		Mail::assertQueued(ProjectInvitationMail::class, fn ($mail) => $mail->hasTo('new@example.com')
 			&& $mail->invitation->is($invitation));
 	}
 
@@ -110,7 +110,7 @@ class ProjectMembersTest extends TestCase
 			->post(route('projects.members.store', $this->project), ['email' => 'new@example.com']);
 
 		$this->assertNotSame($old, $this->project->invitations()->sole()->token);
-		Mail::assertSentCount(1);
+		Mail::assertQueuedCount(1);
 	}
 
 	public function test_members_already_on_the_project_cannot_be_invited_again()
@@ -121,7 +121,7 @@ class ProjectMembersTest extends TestCase
 			->post(route('projects.members.store', $this->project), ['email' => $member->email])
 			->assertSessionHasErrors('email');
 
-		Mail::assertNothingSent();
+		Mail::assertNothingOutgoing();
 	}
 
 	public function test_only_the_owner_can_invite()

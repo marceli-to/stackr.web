@@ -85,7 +85,10 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
   Guests opening the link go to register (or login) with the email filled in and come back via
   `url.intended`; accepting also marks the email verified when it matches. Removing a member also
   takes them off the project's cards.
-- **Mail:** sent right away, not queued (shared hosting, no worker). Templates are Laravel's published
+- **Mail:** the project mails (`AddedToProjectMail`, `ProjectInvitationMail`) are queued
+  (`ShouldQueue`, database queue); in production a cron job works through the queue every minute.
+  Laravel's verification and password-reset mails are still sent right away. Locally, run
+  `php artisan queue:work` (or `queue:listen`) to actually send queued mail. Templates are Laravel's published
   markdown mail (`resources/views/vendor/mail`, warm paper/ink colours, the logo as
   `public/mail-logo.png` because mail clients don't show SVG) plus `resources/views/mail/`.
   Locally `.env` points at Mailhog (SMTP 1025, inbox at http://127.0.0.1:8025).
@@ -136,6 +139,39 @@ Everything is on `main` and pushed to GitHub: https://github.com/marceli-to/stac
   `resources/js/layouts/{AppLayout,settings/Layout,auth/AuthCardLayout}.vue`
 - Tests: `tests/Feature/{ProjectTest,ProjectMembersTest,BoardTest,CardDetailsTest,DashboardTest,HomeTest}.php`, `tests/Unit/FractionalIndexTest.php`
 
+## Production
+
+Live at https://stackr.kimiyu.ch (Hostpoint, `pumutuxu@pumutuxu.myhostpoint.ch:~/www/stackr.kimiyu.ch`,
+the subdomain's document root is `public/`; certificate set up by the user in the Hostpoint panel).
+Same method as the kimiyuch projects (gotaticket/usverchauft):
+
+- **Deploy:** `./deploy.sh` from the Mac (own SSH key). It refuses uncommitted changes and a missing
+  `public/build`, runs the tests, exports `HEAD` with `git archive`, runs `composer install --no-dev`
+  in a temp folder, rsyncs it up, then runs `migrate --force`, `optimize` and `queue:restart`.
+  **`public/build` is committed**: run `npm run build` before committing frontend changes.
+- **Never touched by deploys:** `.env`, `storage/` (attachments, backups), `database/database.sqlite`.
+- **PHP 8.5:** web via `Use php-fpm php85` in the versioned `public/.htaccess` (also HTTPS-only,
+  hidden files 403, security headers, caching, compression); CLI and cron always
+  `/usr/local/php85/bin/php` (plain `php` on the server is 8.3). `public/.user.ini` raises the upload
+  limits (20 MB per file, 420 MB per request; the server default is 64 MB for both).
+- **Server `.env`:** production, debug off, own `APP_KEY`, `SESSION_LIFETIME=720`,
+  `SESSION_SECURE_COOKIE=true`, mail via Hostpoint SMTP as `bot@kimiyu.ch` (credentials copied from
+  wallaby's `.env`).
+- **Crontab** (append-only, the account hosts many other sites):
+  `* * * * * cd ~/www/stackr.kimiyu.ch && php85 artisan queue:work --stop-when-empty` and
+  `0 3 * * * … php85 artisan app:backup-database`. No `schedule:run` yet; add one when the first
+  scheduled task exists (e.g. due-date reminders).
+- **Backups:** `app:backup-database` writes a consistent snapshot (`VACUUM INTO`), gzipped, to
+  `storage/app/private/database_*.sqlite.gz` and deletes ones older than 30 days. Attachments live
+  next to it in `storage/app/private/attachments` and aren't in the database backup.
+  `./scripts/pull-backups.sh` copies the database backups and mirrors the attachments to
+  `~/Backups/stackr` on the Mac (by hand). Restore: take a fresh backup, then on the server
+  `gunzip -c storage/app/private/<file>.sqlite.gz > database/database.sqlite`.
+- **SQLite** in production is fine for a small team: writes are short and serialised, and the
+  sessions, cache and queue live in the same file.
+- **Server access rules:** only write inside `~/www/stackr.kimiyu.ch`, crontab append-only, never
+  print other sites' secrets, ask before anything destructive.
+
 ## Running it
 
 - Herd serves it at https://stackr.web.test (the Webroot folder is parked in Herd; secured with
@@ -184,13 +220,6 @@ then 13 with 4 (notifications with mentions; needs the scheduler decision first)
 17. "My cards" page: everything assigned to me across all projects, sorted by due date.
 18. Starring or pinning projects, and archiving projects.
 19. Export a project (JSON or CSV) as a backup.
-
-**Technical**
-
-22. Go-live: certificate from the host, and set `APP_URL` (https), `APP_NAME=Stackr`,
-    `SESSION_LIFETIME=720` and the host's SMTP (`MAIL_MAILER=smtp`, host, port, user, password,
-    `MAIL_FROM_ADDRESS`) in its `.env`. Make sure PHP's `upload_max_filesize` and `post_max_size`
-    allow 20 MB uploads.
 
 Not planned: realtime updates (no long-running processes on shared hosting), and browser tests
 (Playwright): the user tests the UI by hand. After UI changes, list what to check by hand, especially

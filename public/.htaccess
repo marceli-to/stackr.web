@@ -1,25 +1,77 @@
+Use php-fpm php85
+
+# Stackr on Hostpoint (Apache). This file is versioned and deployed with every release (deploy.sh),
+# so the PHP version above and the rules below can't get lost. Change them here, not in the Hostpoint panel.
+# Locally Herd (nginx) ignores this file.
+
+<IfModule mod_negotiation.c>
+	Options -MultiViews -Indexes
+</IfModule>
+
 <IfModule mod_rewrite.c>
-    <IfModule mod_negotiation.c>
-        Options -MultiViews -Indexes
-    </IfModule>
+	RewriteEngine On
 
-    RewriteEngine On
+	# Certificate checks (Let's Encrypt) must reach /.well-known/acme-challenge over plain HTTP.
+	RewriteRule ^\.well-known/acme-challenge/ - [L]
 
-    # Handle Authorization Header
-    RewriteCond %{HTTP:Authorization} .
-    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+	# HTTPS only (Hostpoint's proxy sets X-Forwarded-Proto).
+	RewriteCond %{HTTPS} !=on
+	RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+	RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301,NE]
 
-    # Handle X-XSRF-Token Header
-    RewriteCond %{HTTP:x-xsrf-token} .
-    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
+	# Hidden files (.env, .git, …) are never served; /.well-known stays open for certificates.
+	RewriteRule (^|/)\.(?!well-known/) - [F]
 
-    # Redirect Trailing Slashes If Not A Folder...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_URI} (.+)/$
-    RewriteRule ^ %1 [L,R=301]
+	# Handle Authorization Header
+	RewriteCond %{HTTP:Authorization} .
+	RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Send Requests To Front Controller...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ index.php [L]
+	# Handle X-XSRF-Token Header
+	RewriteCond %{HTTP:x-xsrf-token} .
+	RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
+
+	# Redirect Trailing Slashes If Not A Folder...
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_URI} (.+)/$
+	RewriteRule ^ %1 [L,R=301]
+
+	# Send Requests To Front Controller...
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule ^ index.php [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+	# Security headers for every response. No Content-Security-Policy yet.
+	Header always set Strict-Transport-Security "max-age=31536000" "expr=%{HTTPS} == 'on'"
+	Header always set X-Content-Type-Options "nosniff"
+	Header always set X-Frame-Options "SAMEORIGIN"
+	Header always set Referrer-Policy "strict-origin-when-cross-origin"
+	Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+	Header always set Cross-Origin-Opener-Policy "same-origin"
+	Header always unset X-Powered-By
+	Header unset X-Powered-By
+
+	# Vite assets have a content hash in their name: cache them for a year.
+	<If "%{REQUEST_URI} =~ m#^/build/assets/#">
+		Header set Cache-Control "public, max-age=31536000, immutable"
+	</If>
+
+	# Icons and images without a hash: one week (favicons are linked with ?v=… to bust it).
+	<FilesMatch "\.(png|svg|ico|webp|jpg|jpeg|woff2)$">
+		Header set Cache-Control "public, max-age=604800"
+	</FilesMatch>
+</IfModule>
+
+<IfModule mod_mime.c>
+	AddType font/woff2 .woff2
+	AddType image/svg+xml .svg
+</IfModule>
+
+# Compress text responses (HTML, CSS, JS, JSON, SVG, XML).
+<IfModule mod_brotli.c>
+	AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/css text/xml application/javascript application/json application/xml image/svg+xml
+</IfModule>
+<IfModule mod_deflate.c>
+	AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/javascript application/json application/xml image/svg+xml
 </IfModule>

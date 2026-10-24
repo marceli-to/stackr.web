@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\Models\ProjectInvitation;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -12,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 /**
  * Invites someone to a project by email. The link works for new and existing accounts.
  */
-class ProjectInvitationMail extends Mailable
+class ProjectInvitationMail extends Mailable implements ShouldQueue
 {
 	use Queueable, SerializesModels;
 
