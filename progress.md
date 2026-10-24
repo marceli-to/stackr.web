@@ -35,8 +35,8 @@ _Last updated: 2026-10-24_
 | 25. Project keys in URLs, join links                   | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
-**Production is behind:** https://stackr.kimiyu.ch still runs `59a7b69` (2026-10-24, before steps
-10–23). The next deploy brings 12 new migrations; see "Before the next deploy" under "Next up".
+Production (https://stackr.kimiyu.ch) runs `635b56a` (deployed 2026-10-24, all migrations run).
+Still open there: the `schedule:run` cron line and a manual check, see "After the deploy" under "Next up".
 (`design/field` and `feature/card-details` are merged into `main` and can be deleted.)
 
 ## Stack
@@ -336,9 +336,8 @@ Same method as the kimiyuch projects (gotaticket/usverchauft):
 
 Feature list (2026-10-24). 1–14 are done (one commit each on 2026-10-24); 15–19 are left.
 
-**Before the next deploy** (production is on `59a7b69`):
+**After the deploy of 2026-10-24** (production is on `635b56a`):
 
-- Run `./deploy.sh` (migrations and `app:make-thumbnails` run by themselves).
 - Append to the server crontab (agreed 2026-10-24, ask before touching the server):
   `* * * * * cd ~/www/stackr.kimiyu.ch && /usr/local/php85/bin/php artisan schedule:run`
   (due-date reminders every 15 minutes). Without it, everything else still works.
