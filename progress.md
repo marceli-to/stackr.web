@@ -364,7 +364,7 @@ Same method as the kimiyuch boards (gotaticket/usverchauft):
 
 ## Next up
 
-Feature list (2026-10-24). 1–14 are done (one commit each on 2026-10-24); 15–19 are left.
+Feature list (2026-10-24). 1–14, 20 and the ZIP export (part of 19) are done; 15–18, 21 and 22–41 are left.
 
 **After the deploy of 2026-10-24** (production is on `19807cb`):
 
@@ -425,6 +425,46 @@ Feature list (2026-10-24). 1–14 are done (one commit each on 2026-10-24); 15�
       a log, a CSV), with a low size limit, since base64 of a real file is far too long for a model.
     - `get_card` lists attachments with short-lived download links, so agents can read them.
     - Not planned: Stackr fetching from a URL, as that needs SSRF guarding and doesn't reach local files.
+
+Gaps compared with Trello (added 2026-10-25, not prioritised yet):
+
+**Boards (gaps)**
+
+22. Copy a board, and board templates.
+23. Import a board, starting with the ZIP from our own export.
+24. Reorder boards on the overview.
+25. Activity feed for the whole board (activity is only shown per card today).
+26. Undo deleting a board (soft delete with a grace period).
+
+**Lists (gaps)**
+
+27. Copy a list.
+28. Move a list to another board.
+29. Move or archive every card in a list at once.
+30. Sort a list by due date or creation date.
+
+**Cards (gaps)**
+
+31. Checklist items with a due date and an assigned member; reorder checklist items.
+32. Turn a checklist item into a card.
+33. Recurring cards or due dates.
+34. Custom fields, votes, card aging.
+35. Bulk select: move, label or archive several cards at once.
+36. Undo after archiving or moving (a toast with "Undo").
+
+**People and notifications (gaps)**
+
+37. Read-only (observer) members, and more than one admin per board.
+38. A digest email instead of one email per event.
+39. Notification settings per board (today there's only the global "Email me too").
+
+**Agents (gaps)**
+
+40. MCP tools to create, rename and reorder lists and to manage labels (still no deleting).
+
+**Account (gaps)**
+
+41. Language and timezone settings (due-date reminders follow the server's timezone).
 
 Not planned: realtime updates (no long-running processes on shared hosting), and browser tests
 (Playwright): the user tests the UI by hand. After UI changes, list what to check by hand, especially
