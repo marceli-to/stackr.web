@@ -37,7 +37,7 @@ _Last updated: 2026-10-25_
 | 27. Export a board (ZIP: board.json + files, ⋯ menu)   | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
-Production (https://stackr.kimiyu.ch) runs `8a23a12` (deployed 2026-10-25, all migrations run).
+Production (https://stackr.kimiyu.ch) runs `1c60c48` (deployed 2026-10-25, all migrations run).
 Still open there: a manual check, see "After the deploy" under "Next up".
 (`design/field` and `feature/card-details` are merged into `main` and can be deleted.)
 
