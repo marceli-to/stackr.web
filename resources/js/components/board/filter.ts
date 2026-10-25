@@ -1,7 +1,8 @@
+import { useStorage } from '@vueuse/core';
 import type { InjectionKey, Ref } from 'vue';
-import { computed, inject, ref } from 'vue';
+import { computed, inject, ref, watch } from 'vue';
 import { colorNames } from '@/components/card/board';
-import type { BoardCard, Label } from '@/types';
+import type { BoardCard, Label, Member } from '@/types';
 
 export type DueFilter = 'overdue' | 'day' | 'week' | 'none' | 'complete';
 
@@ -99,13 +100,48 @@ function matches(
 
 export type BoardFilter = ReturnType<typeof createFilter>;
 
-export function createFilter(labels: Ref<Label[]>) {
-	const filter = ref<CardFilter>({
-		text: '',
-		members: [],
-		labels: [],
-		due: [],
-	});
+type Choices = Omit<CardFilter, 'text'>;
+
+/**
+ * The popover's choices are remembered per board, so they survive a reload;
+ * the search text is not.
+ */
+export function createFilter(
+	boardId: number,
+	labels: Ref<Label[]>,
+	members: Ref<Member[]>,
+) {
+	const stored = useStorage<Choices>(
+		`stackr.filter.${boardId}`,
+		{ members: [], labels: [], due: [] },
+		localStorage,
+		{ mergeDefaults: true },
+	);
+
+	const filter = ref<CardFilter>({ text: '', ...stored.value });
+
+	watch(
+		() => filter.value,
+		({ members, labels, due }) => {
+			stored.value = { members, labels, due };
+		},
+		{ deep: true },
+	);
+
+	// A remembered label or member may be gone since; drop it.
+	watch(
+		[labels, members],
+		() => {
+			const keep = (ids: number[], known: { id: number }[]) =>
+				ids.filter(
+					(id) => id === 0 || known.some((item) => item.id === id),
+				);
+
+			filter.value.labels = keep(filter.value.labels, labels.value);
+			filter.value.members = keep(filter.value.members, members.value);
+		},
+		{ immediate: true },
+	);
 
 	/** How many choices are made in the popover (the text field counts apart). */
 	const count = computed(

@@ -11,23 +11,18 @@ import { computed, useTemplateRef } from 'vue';
 import { dueFilters, useFilter } from '@/components/board/filter';
 import { busy } from '@/components/board/useBoardKeys';
 import { colorNames, useBoard } from '@/components/card/board';
-import { Button } from '@/components/ui/button';
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui/popover';
-import { getInitials } from '@/composables/useInitials';
 import type { BoardStack } from '@/types';
 
-// The filter popover is switched off for now; search, the count and the
-// filter state itself keep working.
 const props = defineProps<{
 	stacks: BoardStack[];
-	withFilters?: boolean;
 }>();
 
-const { labels, members } = useBoard();
+const { board, labels, members } = useBoard();
 const { filter, count, active, shows, toggle, clear } = useFilter();
 
 const page = usePage();
@@ -62,7 +57,7 @@ const row =
 </script>
 
 <template>
-	<div class="flex items-center">
+	<div class="flex items-center gap-2">
 		<div class="relative w-40 sm:w-72">
 			<label>
 				<span class="sr-only">Search cards</span>
@@ -83,7 +78,9 @@ const row =
 				v-if="active"
 				type="button"
 				class="absolute top-1/2 right-1.5 flex size-6 -translate-y-1/2 items-center justify-center rounded-full opacity-70 transition duration-(--dur-micro) hover:bg-current/15 hover:opacity-100 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-solid"
-				aria-label="Clear search"
+				:aria-label="
+					count > 0 ? 'Clear search and filters' : 'Clear search'
+				"
 				@click="clear"
 			>
 				<PhX class="size-4" />
@@ -100,28 +97,34 @@ const row =
 			</p>
 		</div>
 
-		<Popover v-if="withFilters">
+		<!-- Like the ⋯ button: a tinted circle; a dot while filters are on. -->
+		<Popover>
 			<PopoverTrigger as-child>
-				<Button
-					variant="ghost"
-					class="h-9 text-inherit hover:bg-current/10 hover:text-inherit data-[state=open]:bg-current/10"
-					:class="{ 'bg-current/10': count > 0 }"
+				<button
+					type="button"
+					class="relative flex size-9 shrink-0 items-center justify-center rounded-full backdrop-blur-md transition-colors duration-(--dur-micro) hover:bg-current/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid data-[state=open]:bg-current/25"
+					:class="count > 0 ? 'bg-current/25' : 'bg-current/15'"
+					:aria-label="count > 0 ? `Filter, ${count} on` : 'Filter'"
 				>
-					<PhFunnelSimple />
-					Filter
+					<PhFunnelSimple class="size-[1.125rem]" />
 					<span
 						v-if="count > 0"
-						class="num -mr-1 flex size-5 items-center justify-center rounded-full bg-current/20 text-xs"
-					>
-						{{ count }}
-						<span class="sr-only">active</span>
-					</span>
-				</Button>
+						class="absolute top-0 right-0 size-2.5 rounded-full bg-current ring-2 ring-background in-data-field:ring-field"
+						aria-hidden="true"
+					/>
+					<span
+						class="absolute top-1/2 left-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden"
+						aria-hidden="true"
+					/>
+				</button>
 			</PopoverTrigger>
 			<PopoverContent
+				align="end"
+				:data-field="board.color"
 				class="max-h-(--reka-popover-content-available-height) w-80 overflow-y-auto p-2"
+				:class="{ 'menu-glass': board.color }"
 			>
-				<p class="px-2 pt-1 pb-1.5 font-medium">Members</p>
+				<p class="px-2 pt-1 pb-1 text-xs font-semibold">Members</p>
 				<ul>
 					<li>
 						<button
@@ -130,12 +133,6 @@ const row =
 							:aria-pressed="filter.members.includes(me)"
 							@click="toggle(filter.members, me)"
 						>
-							<span
-								class="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-medium"
-								aria-hidden="true"
-							>
-								{{ getInitials(user.name) }}
-							</span>
 							Cards assigned to me
 							<PhCheck
 								v-if="filter.members.includes(me)"
@@ -150,12 +147,6 @@ const row =
 							:aria-pressed="filter.members.includes(member.id)"
 							@click="toggle(filter.members, member.id)"
 						>
-							<span
-								class="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-medium"
-								aria-hidden="true"
-							>
-								{{ getInitials(member.name) }}
-							</span>
 							<span class="truncate">{{ member.name }}</span>
 							<PhCheck
 								v-if="filter.members.includes(member.id)"
@@ -170,7 +161,6 @@ const row =
 							:aria-pressed="filter.members.includes(0)"
 							@click="toggle(filter.members, 0)"
 						>
-							<span class="w-7 shrink-0" aria-hidden="true" />
 							No members
 							<PhCheck
 								v-if="filter.members.includes(0)"
@@ -180,7 +170,7 @@ const row =
 					</li>
 				</ul>
 
-				<p class="px-2 pt-4 pb-1.5 font-medium">Labels</p>
+				<p class="px-2 pt-4 pb-1 text-xs font-semibold">Labels</p>
 				<ul>
 					<li v-for="label in labels" :key="label.id">
 						<button
@@ -217,7 +207,7 @@ const row =
 					</li>
 				</ul>
 
-				<p class="px-2 pt-4 pb-1.5 font-medium">Due date</p>
+				<p class="px-2 pt-4 pb-1 text-xs font-semibold">Due date</p>
 				<ul>
 					<li v-for="due in dueFilters" :key="due.value">
 						<button

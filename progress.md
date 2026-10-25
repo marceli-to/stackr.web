@@ -162,13 +162,15 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   Moves and copies take thumbnails along. `app:make-thumbnails` backfills; `deploy.sh` runs it.
 - **Search and filters** (`components/board/{BoardFilterBar.vue,filter.ts}`) work in the browser:
   the board already has every card. A search field (`/` focuses it, Esc clears it) matches the
-  title and label names, every word has to match; an × inside the field clears it. The "Filter"
-  popover is **hidden for now** (`BoardFilterBar` renders it only with `with-filters`; the logic
-  is intact). It picks members ("Cards
+  title and label names, every word has to match; an × inside the field clears search and
+  filters. Beside it a round funnel button (tinted like the ⋯, glass popover on boards, a dot
+  while filters are on) opens the filters: members ("Cards
   assigned to me", others, "No members"), labels ("No labels") and due dates (overdue, next day,
   next week, none, complete). Any choice within a group matches; every group has to. Filtered-out
   cards are hidden with `v-show`, not removed, so SortableJS still counts them and a drop saves
-  the right index. The filter survives opening a card (`preserveState`) but not a reload.
+  the right index. The filter choices are kept per board in localStorage
+  (`stackr.filter.<board id>`), so they survive a reload; labels or members gone since are
+  dropped. The search text is not kept.
 - **Archive:** cards and lists have `archived_at` (`active()` scope, column qualified because
   both tables have it). Archiving keeps the position, so a restore puts things back where they
   were; moves only count active siblings (`MoveCard`, `MoveStack`), and cards can't be dropped into

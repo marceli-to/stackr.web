@@ -72,7 +72,14 @@ provide(boardKey, {
 	),
 });
 
-provide(filterKey, createFilter(toRef(props, 'labels')));
+provide(
+	filterKey,
+	createFilter(
+		props.board.id,
+		toRef(props, 'labels'),
+		toRef(props, 'members'),
+	),
+);
 
 // Watching the board brings every card's updates to the bell.
 function toggleWatching() {
