@@ -39,10 +39,9 @@ const inviteLink = computed(() => page.props.inviteLink);
 
 const { copy, copied } = useClipboard({ legacy: true });
 
-// Your own initials are the account menu next door, so the stack shows the others.
-const others = computed(() => members.value.filter((m) => m.id !== me.value));
-const shown = computed(() => others.value.slice(0, 4));
-const more = computed(() => others.value.length - shown.value.length);
+// The stack shows everyone on the board, you included.
+const shown = computed(() => members.value.slice(0, 4));
+const more = computed(() => members.value.length - shown.value.length);
 
 // The member whose "Remove" or "Leave" waits for a second click.
 const confirming = ref<number | null>(null);
@@ -53,7 +52,7 @@ const actionClass =
 
 <template>
 	<button
-		v-if="others.length > 0"
+		v-if="members.length > 0"
 		type="button"
 		class="flex -space-x-2 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid max-sm:hidden"
 		:aria-label="`Members of ${board.name}`"

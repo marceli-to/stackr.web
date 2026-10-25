@@ -116,8 +116,8 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   stays square). The members dialog opens from a round invite button next to the avatars.
 - **Logo:** three offset bars (a stack of cards) in `AppLogoIcon.vue`; favicons in `public/` are the
   same mark on an ink tile.
-- **Members & invitations:** the board's top bar shows the other members as an avatar stack (your own
-  initials are the account menu); "Invite people…" ("Members…" for non-owners) in the ⋯ menu. Both
+- **Members & invitations:** the board's top bar shows all members, you included, as an avatar stack;
+  "Invite people…" ("Members…" for non-owners) in the ⋯ menu. Both
   open the members dialog (`membersOpen` in `components/board/members.ts` is shared between them) (`components/board/BoardMembers.vue`). Only the owner invites (by email) and
   removes members; anyone else can leave; the owner can't leave. An address with an account is added
   right away and gets `AddedToBoardMail`; any other address gets a `board_invitations` row and
