@@ -137,11 +137,13 @@ const due = computed(() =>
 		? dueState(card.value.due_at, card.value.completed_at)
 		: null,
 );
-const dueBadge = {
-	complete: 'bg-(--color-success) text-white',
-	overdue: 'bg-destructive text-white',
-	soon: 'bg-(--color-label-yellow) text-(--color-label-ink)',
-	later: 'bg-(--color-paper-2)',
+// The date button takes the due state's colour, like the date on the
+// board; the word is there for screen readers.
+const dueClasses = {
+	complete: 'bg-(--color-success) text-white hover:bg-(--color-success)/90',
+	overdue: 'bg-destructive text-white hover:bg-destructive/90',
+	soon: 'bg-(--color-label-yellow) text-(--color-label-ink) hover:bg-(--color-label-yellow)/85',
+	later: 'bg-(--color-paper-2) hover:bg-(--color-paper-3)',
 };
 const dueWord = {
 	complete: 'Complete',
@@ -372,11 +374,12 @@ const sideButton =
 							($event.target as HTMLElement).blur();
 						"
 					/>
-					<p class="mt-1 text-sm text-muted-foreground">
-						in list
-						<span class="font-medium text-foreground">{{
-							card.stack.name
-						}}</span>
+					<p class="mt-1.5 flex items-center">
+						<span class="sr-only">in list</span>
+						<span
+							class="rounded-[3px] bg-(--color-paper-2) px-1.5 py-0.5 text-xs font-medium text-foreground"
+							>{{ card.stack.name }}</span
+						>
 					</p>
 				</header>
 
@@ -474,8 +477,14 @@ const sideButton =
 									<CardDatesPicker :card="card">
 										<button
 											type="button"
-											class="num flex h-8 items-center gap-2 rounded-[var(--radius-sheet)] bg-(--color-paper-2) px-2.5 text-sm hover:bg-(--color-paper-3) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
+											class="num flex h-8 items-center gap-2 rounded-[var(--radius-sheet)] px-2.5 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
+											:class="dueClasses[due ?? 'later']"
 										>
+											<span
+												v-if="due && due !== 'later'"
+												class="sr-only"
+												>{{ dueWord[due] }}:</span
+											>
 											<span v-if="card.start_at">{{
 												formatDate(card.start_at)
 											}}</span>
@@ -488,12 +497,6 @@ const sideButton =
 											<span v-if="card.due_at">{{
 												formatDate(card.due_at, true)
 											}}</span>
-											<span
-												v-if="due && due !== 'later'"
-												class="rounded-[3px] px-1.5 py-0.5 text-xs font-medium"
-												:class="dueBadge[due]"
-												>{{ dueWord[due] }}</span
-											>
 										</button>
 									</CardDatesPicker>
 								</div>

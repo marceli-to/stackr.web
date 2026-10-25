@@ -160,7 +160,7 @@ const lists: { name: string; cards: MockCard[] }[] = [
 										{{ label.name }}
 									</li>
 								</ul>
-								<p class="font-bold">{{ card.title }}</p>
+								<p class="font-medium">{{ card.title }}</p>
 								<div
 									v-if="
 										card.due ||

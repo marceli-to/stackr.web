@@ -121,7 +121,7 @@ function open() {
 				</li>
 			</ul>
 
-			<p class="font-bold break-words">{{ card.title }}</p>
+			<p class="font-medium break-words">{{ card.title }}</p>
 
 			<div
 				v-if="hasBadges"
