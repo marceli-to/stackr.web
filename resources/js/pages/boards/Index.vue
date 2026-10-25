@@ -152,7 +152,7 @@ function plural(count: number, word: string) {
 					>
 					<span
 						v-if="board.role === 'member'"
-						class="ml-auto font-semibold"
+						class="ml-auto font-medium"
 					>
 						Shared with you
 					</span>

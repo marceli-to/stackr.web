@@ -31,8 +31,8 @@
 	--color-field-lagoon: oklch(47% 0.085 205);
 	--color-field-plum: oklch(40% 0.11 340);
 
-	--font-display: 'Antonio', ui-sans-serif, system-ui, sans-serif;
-	--font-body: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+	--font-display: 'Figtree', ui-sans-serif, system-ui, sans-serif;
+	--font-body: 'Figtree', ui-sans-serif, system-ui, sans-serif;
 	--font-figure: var(--font-body);
 
 	/* Edges for controls and floating sheets: ink at low alpha, so they
@@ -70,7 +70,7 @@
 
 	--radius-tile: 6px;
 	--radius-sheet: 4px;
-	--tracking-display: -0.005em;
+	--tracking-display: -0.02em;
 }
 
 .dark {

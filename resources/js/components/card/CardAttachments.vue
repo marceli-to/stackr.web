@@ -39,7 +39,7 @@ function extension(name: string): string {
 	<section aria-labelledby="card-attachments">
 		<div class="mb-3 flex items-center gap-2.5">
 			<PhPaperclip class="size-5" />
-			<h3 id="card-attachments" class="text-base font-semibold">
+			<h3 id="card-attachments" class="text-base font-medium">
 				Attachments
 			</h3>
 			<Button
@@ -70,7 +70,7 @@ function extension(name: string): string {
 					:href="attachment.url"
 					target="_blank"
 					rel="noopener"
-					class="flex h-12 w-18 shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-sheet)] bg-(--color-paper-3) text-xs font-semibold text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
+					class="flex h-12 w-18 shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-sheet)] bg-(--color-paper-3) text-xs font-medium text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
 					:aria-label="`Open ${attachment.name}`"
 				>
 					<img
@@ -87,7 +87,7 @@ function extension(name: string): string {
 						:href="attachment.url"
 						target="_blank"
 						rel="noopener"
-						class="block truncate text-sm font-semibold hover:underline"
+						class="block truncate text-sm font-medium hover:underline"
 						>{{ attachment.name }}</a
 					>
 					<p

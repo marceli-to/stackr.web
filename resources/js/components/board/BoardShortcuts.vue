@@ -50,7 +50,7 @@ const shortcuts = [
 						<kbd
 							v-for="key in shortcut.keys"
 							:key="key"
-							class="num min-w-7 rounded-[3px] bg-(--color-paper-2) px-1.5 py-0.5 text-center text-sm font-semibold"
+							class="num min-w-7 rounded-[3px] bg-(--color-paper-2) px-1.5 py-0.5 text-center text-sm font-medium"
 							>{{ key }}</kbd
 						>
 					</dd>

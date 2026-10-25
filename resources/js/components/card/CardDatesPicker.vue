@@ -83,9 +83,9 @@ function save(data: { start_at: string | null; due_at: string | null }) {
 					})
 				"
 			>
-				<p class="font-semibold">Dates</p>
+				<p class="font-medium">Dates</p>
 				<div class="grid gap-2">
-					<label for="card-start" class="text-sm font-semibold"
+					<label for="card-start" class="text-sm font-medium"
 						>Start date</label
 					>
 					<Input
@@ -97,7 +97,7 @@ function save(data: { start_at: string | null; due_at: string | null }) {
 					<InputError :message="errors.start_at" />
 				</div>
 				<div class="grid gap-2">
-					<label for="card-due" class="text-sm font-semibold"
+					<label for="card-due" class="text-sm font-medium"
 						>Due date</label
 					>
 					<Input

@@ -121,7 +121,7 @@ const row =
 			<PopoverContent
 				class="max-h-(--reka-popover-content-available-height) w-80 overflow-y-auto p-2"
 			>
-				<p class="px-2 pt-1 pb-1.5 font-semibold">Members</p>
+				<p class="px-2 pt-1 pb-1.5 font-medium">Members</p>
 				<ul>
 					<li>
 						<button
@@ -131,7 +131,7 @@ const row =
 							@click="toggle(filter.members, me)"
 						>
 							<span
-								class="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-semibold"
+								class="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-medium"
 								aria-hidden="true"
 							>
 								{{ getInitials(user.name) }}
@@ -151,7 +151,7 @@ const row =
 							@click="toggle(filter.members, member.id)"
 						>
 							<span
-								class="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-semibold"
+								class="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-medium"
 								aria-hidden="true"
 							>
 								{{ getInitials(member.name) }}
@@ -180,7 +180,7 @@ const row =
 					</li>
 				</ul>
 
-				<p class="px-2 pt-4 pb-1.5 font-semibold">Labels</p>
+				<p class="px-2 pt-4 pb-1.5 font-medium">Labels</p>
 				<ul>
 					<li v-for="label in labels" :key="label.id">
 						<button
@@ -191,7 +191,7 @@ const row =
 						>
 							<span
 								:data-label="label.color"
-								class="min-w-0 truncate rounded-[3px] bg-label px-1.5 py-1 text-xs leading-none font-semibold text-label-ink"
+								class="min-w-0 truncate rounded-[3px] bg-label px-1.5 py-1 text-xs leading-none font-medium text-label-ink"
 							>
 								{{ label.name || colorNames[label.color] }}
 							</span>
@@ -217,7 +217,7 @@ const row =
 					</li>
 				</ul>
 
-				<p class="px-2 pt-4 pb-1.5 font-semibold">Due date</p>
+				<p class="px-2 pt-4 pb-1.5 font-medium">Due date</p>
 				<ul>
 					<li v-for="due in dueFilters" :key="due.value">
 						<button

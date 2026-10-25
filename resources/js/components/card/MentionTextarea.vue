@@ -145,7 +145,7 @@ onMounted(() => {
 				@mouseenter="active = index"
 			>
 				<span
-					class="flex size-6 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-[0.6875rem] font-semibold"
+					class="flex size-6 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-[0.6875rem] font-medium"
 					aria-hidden="true"
 					>{{ getInitials(member.name) }}</span
 				>

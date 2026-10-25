@@ -103,7 +103,7 @@ function open() {
 		<div class="px-3 py-2.5">
 			<p
 				v-if="card.is_template"
-				class="mb-2 inline-flex items-center gap-1 rounded-[3px] bg-(--color-paper-2) px-1.5 py-0.5 text-xs font-semibold text-muted-foreground"
+				class="mb-2 inline-flex items-center gap-1 rounded-[3px] bg-(--color-paper-2) px-1.5 py-0.5 text-xs font-medium text-muted-foreground"
 			>
 				<PhCopySimple class="size-3.5" />
 				Template
@@ -113,7 +113,7 @@ function open() {
 					v-for="label in cardLabels"
 					:key="label.id"
 					:data-label="label.color"
-					class="rounded-[3px] bg-label text-xs leading-none font-semibold text-label-ink"
+					class="rounded-[3px] bg-label text-xs leading-none font-medium text-label-ink"
 					:class="label.name ? 'px-1.5 py-1' : 'h-2 w-10'"
 					:title="label.name ?? undefined"
 				>
@@ -194,7 +194,7 @@ function open() {
 					<li
 						v-for="member in cardMembers"
 						:key="member.id"
-						class="flex size-6 items-center justify-center rounded-full bg-(--color-paper-3) text-[0.6875rem] font-semibold text-foreground ring-2 ring-sheet"
+						class="flex size-6 items-center justify-center rounded-full bg-(--color-paper-3) text-[0.6875rem] font-medium text-foreground ring-2 ring-sheet"
 						:title="member.name"
 					>
 						{{ getInitials(member.name) }}

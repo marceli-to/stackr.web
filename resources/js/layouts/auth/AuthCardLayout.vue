@@ -30,7 +30,7 @@ const name = usePage().props.name;
 			</Link>
 
 			<header class="mt-8 mb-8 space-y-2 text-center">
-				<h1 class="text-xl font-semibold tracking-tight">
+				<h1 class="text-xl font-medium tracking-tight">
 					{{ title }}
 				</h1>
 				<p

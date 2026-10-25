@@ -109,7 +109,7 @@ function revoke(id: number) {
 			class="space-y-4 rounded-[var(--radius-tile)] bg-(--color-paper-2) p-5"
 		>
 			<div class="space-y-1">
-				<p class="font-semibold">“{{ created.name }}” is ready</p>
+				<p class="font-medium">“{{ created.name }}” is ready</p>
 				<p class="text-sm text-muted-foreground">
 					Copy the token now: it won't be shown again. The setup below
 					already includes it.
@@ -157,7 +157,7 @@ function revoke(id: number) {
 						<PhRobot class="size-4.5 text-muted-foreground" />
 					</div>
 					<div class="min-w-0">
-						<p class="truncate font-medium">{{ item.name }}</p>
+						<p class="truncate font-normal">{{ item.name }}</p>
 						<p class="text-sm text-muted-foreground">
 							Created {{ item.created_at_diff }}
 							<span class="mx-1 text-muted-foreground/50">/</span>

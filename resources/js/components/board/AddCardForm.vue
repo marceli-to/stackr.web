@@ -107,7 +107,7 @@ function submitOnEnter(event: KeyboardEvent) {
 					</Button>
 				</PopoverTrigger>
 				<PopoverContent align="end" class="p-2">
-					<p class="px-2 pt-1 pb-2 font-semibold">
+					<p class="px-2 pt-1 pb-2 font-medium">
 						Start from a template
 					</p>
 					<ul>

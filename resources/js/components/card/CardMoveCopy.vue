@@ -143,13 +143,13 @@ const field =
 		</PopoverTrigger>
 		<PopoverContent class="w-80">
 			<form class="space-y-4" @submit.prevent="submit">
-				<p class="font-semibold">
+				<p class="font-medium">
 					{{ mode === 'move' ? 'Move card' : 'Copy card' }}
 				</p>
 
 				<template v-if="mode === 'copy'">
 					<div class="grid gap-2">
-						<label for="copy-title" class="text-sm font-semibold"
+						<label for="copy-title" class="text-sm font-medium"
 							>Title</label
 						>
 						<textarea
@@ -161,7 +161,7 @@ const field =
 						/>
 					</div>
 					<fieldset v-if="extras.length" class="grid gap-1.5">
-						<legend class="mb-2 text-sm font-semibold">Keep</legend>
+						<legend class="mb-2 text-sm font-medium">Keep</legend>
 						<label
 							v-for="extra in extras"
 							:key="extra.value"
@@ -183,7 +183,7 @@ const field =
 				</div>
 				<template v-else>
 					<div class="grid gap-2">
-						<label for="move-board" class="text-sm font-semibold"
+						<label for="move-board" class="text-sm font-medium"
 							>Board</label
 						>
 						<select
@@ -208,7 +208,7 @@ const field =
 					</div>
 					<div class="grid grid-cols-[minmax(0,1fr)_5.5rem] gap-2">
 						<div class="grid gap-2">
-							<label for="move-list" class="text-sm font-semibold"
+							<label for="move-list" class="text-sm font-medium"
 								>List</label
 							>
 							<select
@@ -230,7 +230,7 @@ const field =
 						<div class="grid gap-2">
 							<label
 								for="move-position"
-								class="text-sm font-semibold"
+								class="text-sm font-medium"
 								>Position</label
 							>
 							<select

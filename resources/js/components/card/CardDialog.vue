@@ -339,7 +339,7 @@ const sideButton =
 				>
 					<PhCopySimple class="size-4 shrink-0" />
 					<p>
-						<span class="font-semibold">This is a template.</span>
+						<span class="font-medium">This is a template.</span>
 						Start new cards from it with the template button next to
 						“Add a card”.
 					</p>
@@ -349,7 +349,7 @@ const sideButton =
 					class="-mx-6 -mt-6 mb-6 flex items-center gap-2.5 bg-(--color-paper-2) px-6 py-3 pr-16 text-sm sm:-mx-8 sm:-mt-8 sm:px-8 sm:pr-18"
 				>
 					<PhArchive class="size-4 shrink-0" />
-					<p class="font-semibold">This card is archived.</p>
+					<p class="font-medium">This card is archived.</p>
 				</div>
 
 				<header
@@ -374,7 +374,7 @@ const sideButton =
 					/>
 					<p class="mt-1 text-sm text-muted-foreground">
 						in list
-						<span class="font-semibold text-foreground">{{
+						<span class="font-medium text-foreground">{{
 							card.stack.name
 						}}</span>
 					</p>
@@ -397,7 +397,7 @@ const sideButton =
 						>
 							<div v-if="cardMembers.length">
 								<p
-									class="mb-1.5 text-sm font-semibold text-muted-foreground"
+									class="mb-1.5 text-sm font-medium text-muted-foreground"
 								>
 									Members
 								</p>
@@ -405,7 +405,7 @@ const sideButton =
 									<span
 										v-for="member in cardMembers"
 										:key="member.id"
-										class="flex size-8 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-semibold"
+										class="flex size-8 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-medium"
 										:title="member.name"
 										>{{ getInitials(member.name) }}</span
 									>
@@ -424,7 +424,7 @@ const sideButton =
 
 							<div v-if="cardLabels.length">
 								<p
-									class="mb-1.5 text-sm font-semibold text-muted-foreground"
+									class="mb-1.5 text-sm font-medium text-muted-foreground"
 								>
 									Labels
 								</p>
@@ -433,7 +433,7 @@ const sideButton =
 										v-for="label in cardLabels"
 										:key="label.id"
 										:data-label="label.color"
-										class="flex h-8 min-w-12 items-center rounded-[var(--radius-sheet)] bg-label px-2.5 text-sm font-semibold text-label-ink"
+										class="flex h-8 min-w-12 items-center rounded-[var(--radius-sheet)] bg-label px-2.5 text-sm font-medium text-label-ink"
 										>{{ label.name }}</span
 									>
 									<CardLabelsPicker :card="card">
@@ -451,7 +451,7 @@ const sideButton =
 
 							<div v-if="card.due_at || card.start_at">
 								<p
-									class="mb-1.5 text-sm font-semibold text-muted-foreground"
+									class="mb-1.5 text-sm font-medium text-muted-foreground"
 								>
 									{{
 										card.due_at ? 'Due date' : 'Start date'
@@ -490,7 +490,7 @@ const sideButton =
 											}}</span>
 											<span
 												v-if="due && due !== 'later'"
-												class="rounded-[3px] px-1.5 py-0.5 text-xs font-semibold"
+												class="rounded-[3px] px-1.5 py-0.5 text-xs font-medium"
 												:class="dueBadge[due]"
 												>{{ dueWord[due] }}</span
 											>
@@ -523,7 +523,7 @@ const sideButton =
 					>
 						<div class="space-y-1.5">
 							<p
-								class="text-sm font-semibold text-muted-foreground"
+								class="text-sm font-medium text-muted-foreground"
 							>
 								Add to card
 							</p>
@@ -560,13 +560,13 @@ const sideButton =
 										class="space-y-4"
 										@submit.prevent="addChecklist"
 									>
-										<p class="font-semibold">
+										<p class="font-medium">
 											Add a checklist
 										</p>
 										<div class="grid gap-2">
 											<label
 												for="checklist-title"
-												class="text-sm font-semibold"
+												class="text-sm font-medium"
 												>Title</label
 											>
 											<Input
@@ -583,7 +583,7 @@ const sideButton =
 										>
 											<label
 												for="checklist-copy"
-												class="text-sm font-semibold"
+												class="text-sm font-medium"
 												>Copy items from</label
 											>
 											<select
@@ -640,7 +640,7 @@ const sideButton =
 							class="space-y-1.5 border-t border-(--surface-edge) pt-6"
 						>
 							<p
-								class="text-sm font-semibold text-muted-foreground"
+								class="text-sm font-medium text-muted-foreground"
 							>
 								Actions
 							</p>
@@ -754,7 +754,7 @@ const sideButton =
 
 			<div
 				v-if="dragDepth > 0"
-				class="pointer-events-none fixed inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-[var(--radius-tile)] bg-sheet/90 text-lg font-semibold"
+				class="pointer-events-none fixed inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-[var(--radius-tile)] bg-sheet/90 text-lg font-medium"
 			>
 				<PhUploadSimple class="size-8" />
 				Drop files to attach them

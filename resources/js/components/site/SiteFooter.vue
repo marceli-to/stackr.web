@@ -14,7 +14,7 @@ const repository = 'https://github.com/marceli-to/stackr.web';
 				Stackr, made with <span aria-label="love">❤️</span> by
 				<a
 					href="https://kimiyu.ch"
-					class="font-semibold text-(--color-ink) hover:underline"
+					class="font-medium text-(--color-ink) hover:underline"
 					>kimiyu.ch</a
 				>
 			</p>

@@ -50,7 +50,7 @@ const { isCurrentOrParentUrl } = useCurrentUrl();
 					:aria-current="
 						isCurrentOrParentUrl(item.href) ? 'page' : undefined
 					"
-					class="shrink-0 border-b-2 border-transparent px-3 py-2.5 text-muted-foreground hover:text-foreground aria-[current=page]:border-foreground aria-[current=page]:font-semibold aria-[current=page]:text-foreground lg:-ml-0.5 lg:border-b-0 lg:border-l-2 lg:px-4"
+					class="shrink-0 border-b-2 border-transparent px-3 py-2.5 text-muted-foreground hover:text-foreground aria-[current=page]:border-foreground aria-[current=page]:font-medium aria-[current=page]:text-foreground lg:-ml-0.5 lg:border-b-0 lg:border-l-2 lg:px-4"
 				>
 					{{ item.title }}
 				</Link>

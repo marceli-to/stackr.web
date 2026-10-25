@@ -19,22 +19,22 @@ import { home, login } from '@/routes';
 		<nav class="flex items-center gap-x-8">
 			<a
 				href="/#how"
-				class="text-sm/6 font-semibold text-(--color-ink-2) hover:text-(--color-ink) max-sm:hidden"
+				class="text-sm/6 font-medium text-(--color-ink-2) hover:text-(--color-ink) max-sm:hidden"
 				>How it works</a
 			>
 			<a
 				href="/#features"
-				class="text-sm/6 font-semibold text-(--color-ink-2) hover:text-(--color-ink) max-sm:hidden"
+				class="text-sm/6 font-medium text-(--color-ink-2) hover:text-(--color-ink) max-sm:hidden"
 				>Features</a
 			>
 			<a
 				href="/#agents"
-				class="text-sm/6 font-semibold text-(--color-ink-2) hover:text-(--color-ink) max-sm:hidden"
+				class="text-sm/6 font-medium text-(--color-ink-2) hover:text-(--color-ink) max-sm:hidden"
 				>Agents</a
 			>
 			<Link
 				:href="login()"
-				class="rounded-full px-3.5 py-1.5 text-sm/6 font-semibold text-(--color-ink) ring-1 ring-(--control-edge) hover:bg-(--color-paper-2)"
+				class="rounded-full px-3.5 py-1.5 text-sm/6 font-medium text-(--color-ink) ring-1 ring-(--control-edge) hover:bg-(--color-paper-2)"
 				>Log in</Link
 			>
 		</nav>

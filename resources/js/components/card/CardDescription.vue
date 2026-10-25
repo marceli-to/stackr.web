@@ -49,7 +49,7 @@ function clickBody(event: MouseEvent) {
 	<section aria-labelledby="card-description">
 		<div class="mb-3 flex items-center gap-2.5">
 			<PhTextAlignLeft class="size-5" />
-			<h3 id="card-description" class="text-base font-semibold">
+			<h3 id="card-description" class="text-base font-medium">
 				Description
 			</h3>
 			<Button

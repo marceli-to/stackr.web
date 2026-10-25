@@ -82,9 +82,10 @@ Still open there: a manual check, see "After the deploy" under "Next up".
     - Tokens in `resources/css/tokens.css`, mapped onto shadcn's variables in `app.css`. Fields are
       `[data-field="<colour>"]`, which set `--field`, `--field-well`, `--field-ink` (always white) and
       the focus ring.
-    - Type: Antonio 700 (poster heads: `--text-poster`, list names, dialog titles, the wordmark and
-      the board name in the top bar) and Hanken Grotesk 400/600 for everything else, loaded via Bunny in
-      `vite.config.ts`.
+    - Type: Figtree only, loaded via Bunny in `vite.config.ts`, in three weights: 700 (`font-bold`)
+      for the display heads (`font-display`: list names, dialog titles, the wordmark, the board name
+      in the top bar), 500 (`font-medium`) for headings, buttons, labels and names, 400 for the rest.
+      No semibold. Figures (`.num`) use Figtree with tabular numbers.
     - Shell: a slim top bar in three columns: logo (→ boards) and, on a board, the board's name
       left; the board's search centred; member avatars and the ⋯ app menu right
       (`components/AppMenu.vue`, a tinted circle like the avatar, with a yellow dot while anything is

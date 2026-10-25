@@ -39,9 +39,9 @@ function remove() {
 			<slot />
 		</PopoverTrigger>
 		<PopoverContent class="w-72">
-			<p class="mb-3 font-semibold">Cover</p>
+			<p class="mb-3 font-medium">Cover</p>
 
-			<p class="mb-1.5 text-sm font-semibold text-muted-foreground">
+			<p class="mb-1.5 text-sm font-medium text-muted-foreground">
 				Colours
 			</p>
 			<div class="grid grid-cols-4 gap-1.5">
@@ -61,7 +61,7 @@ function remove() {
 
 			<template v-if="images.length">
 				<p
-					class="mt-4 mb-1.5 text-sm font-semibold text-muted-foreground"
+					class="mt-4 mb-1.5 text-sm font-medium text-muted-foreground"
 				>
 					Images
 				</p>

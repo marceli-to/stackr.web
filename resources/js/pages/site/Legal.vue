@@ -5,7 +5,7 @@ import SiteHeader from '@/components/site/SiteHeader.vue';
 
 const repository = 'https://github.com/marceli-to/stackr.web';
 const link =
-	'font-semibold text-(--color-ink) underline decoration-(--control-edge) underline-offset-2 hover:decoration-current';
+	'font-medium text-(--color-ink) underline decoration-(--control-edge) underline-offset-2 hover:decoration-current';
 </script>
 
 <template>
@@ -23,7 +23,7 @@ const link =
 				class="mx-auto max-w-6xl px-6 pt-10 pb-24 sm:pt-16 sm:pb-32 lg:px-8"
 			>
 				<p
-					class="text-base/7 font-semibold text-(--color-field-cobalt) dark:text-(--color-label-blue)"
+					class="text-base/7 font-medium text-(--color-field-cobalt) dark:text-(--color-label-blue)"
 				>
 					Legal notice
 				</p>

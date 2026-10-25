@@ -65,7 +65,7 @@ const actionClass =
 			:title="member.name"
 		>
 			<span
-				class="flex size-full items-center justify-center rounded-full bg-current/15 text-sm font-semibold"
+				class="flex size-full items-center justify-center rounded-full bg-current/15 text-sm font-medium"
 			>
 				{{ getInitials(member.name) }}
 			</span>
@@ -75,7 +75,7 @@ const actionClass =
 			class="size-9 rounded-full bg-field ring-2 ring-field"
 		>
 			<span
-				class="num flex size-full items-center justify-center rounded-full bg-current/15 text-sm font-semibold"
+				class="num flex size-full items-center justify-center rounded-full bg-current/15 text-sm font-medium"
 			>
 				+{{ more }}
 			</span>
@@ -99,7 +99,7 @@ const actionClass =
 				class="grid gap-2"
 				v-slot="{ errors, processing }"
 			>
-				<label for="invite-email" class="text-sm font-semibold">
+				<label for="invite-email" class="text-sm font-medium">
 					Invite by email
 				</label>
 				<div class="flex gap-2">
@@ -123,7 +123,7 @@ const actionClass =
 			</Form>
 
 			<div v-if="canManage" class="grid gap-2">
-				<label for="invite-link" class="text-sm font-semibold">
+				<label for="invite-link" class="text-sm font-medium">
 					Invite with a link
 				</label>
 				<template v-if="inviteLink">
@@ -200,12 +200,12 @@ const actionClass =
 					class="flex items-center gap-3 py-2.5"
 				>
 					<span
-						class="flex size-8 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-semibold"
+						class="flex size-8 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-medium"
 					>
 						{{ getInitials(member.name) }}
 					</span>
 					<span class="min-w-0 flex-1">
-						<span class="block truncate font-semibold">
+						<span class="block truncate font-medium">
 							{{ member.name }}
 							<span
 								v-if="member.id === me"

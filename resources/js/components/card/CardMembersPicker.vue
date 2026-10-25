@@ -32,7 +32,7 @@ function toggle(member: Member) {
 			<slot />
 		</PopoverTrigger>
 		<PopoverContent class="p-2">
-			<p class="px-2 pt-1 pb-2 font-semibold">Members</p>
+			<p class="px-2 pt-1 pb-2 font-medium">Members</p>
 			<ul>
 				<li v-for="member in members" :key="member.id">
 					<button
@@ -42,7 +42,7 @@ function toggle(member: Member) {
 						@click="toggle(member)"
 					>
 						<span
-							class="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-semibold"
+							class="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-medium"
 							aria-hidden="true"
 						>
 							{{ getInitials(member.name) }}

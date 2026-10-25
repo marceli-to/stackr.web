@@ -159,7 +159,7 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 				>{{ stack.name }}</span
 			>
 			<span
-				class="num rounded-full px-1.5 py-0.5 text-xs font-semibold"
+				class="num rounded-full px-1.5 py-0.5 text-xs font-medium"
 				:class="over ? 'bg-destructive text-white' : 'bg-current/10'"
 				>{{ cards.length }}</span
 			>
@@ -191,7 +191,7 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 					required
 					maxlength="255"
 					aria-label="List name"
-					class="w-full rounded-[var(--radius-sheet)] bg-sheet px-2 py-1 text-[0.9375rem] font-semibold text-foreground outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
+					class="w-full rounded-[var(--radius-sheet)] bg-sheet px-2 py-1 text-[0.9375rem] font-medium text-foreground outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
 					@blur="finishRename($event.target as HTMLInputElement)"
 					@keydown.esc="renaming = false"
 				/>
@@ -209,7 +209,7 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 			<button
 				v-if="stack.wip_limit !== null && !renaming"
 				type="button"
-				class="num shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
+				class="num shrink-0 rounded-full px-2 py-0.5 text-xs font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
 				:class="over ? 'bg-destructive text-white' : 'bg-current/10'"
 				:title="over ? 'More cards than the limit' : 'Card limit'"
 				:aria-label="`${cards.length} of at most ${stack.wip_limit} cards`"
@@ -282,7 +282,7 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 					</DialogDescription>
 				</DialogHeader>
 				<div class="grid gap-2">
-					<label for="wip-limit" class="text-sm font-semibold"
+					<label for="wip-limit" class="text-sm font-medium"
 						>Limit</label
 					>
 					<Input

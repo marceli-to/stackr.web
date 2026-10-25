@@ -94,7 +94,7 @@ function remove(comment: CardComment) {
 	<section aria-labelledby="card-comments">
 		<div class="mb-3 flex items-center gap-2.5">
 			<PhChatCircle class="size-5" />
-			<h3 id="card-comments" class="text-base font-semibold">
+			<h3 id="card-comments" class="text-base font-medium">
 				Comments and activity
 			</h3>
 			<Button
@@ -111,7 +111,7 @@ function remove(comment: CardComment) {
 
 		<form class="flex gap-2.5" @submit.prevent="post">
 			<span
-				class="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-semibold"
+				class="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-medium"
 				aria-hidden="true"
 				>{{ getInitials(me.name) }}</span
 			>
@@ -154,14 +154,14 @@ function remove(comment: CardComment) {
 					class="flex gap-2.5 text-sm"
 				>
 					<span
-						class="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-paper-2) text-xs font-semibold text-muted-foreground"
+						class="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-paper-2) text-xs font-medium text-muted-foreground"
 						aria-hidden="true"
 						>{{
 							getInitials(entry.activity.user?.name ?? '?')
 						}}</span
 					>
 					<p class="min-w-0 flex-1 pt-1">
-						<span class="font-semibold">{{
+						<span class="font-medium">{{
 							entry.activity.user?.name ?? 'Former member'
 						}}</span>
 						{{ describeActivity(entry.activity) }}
@@ -180,7 +180,7 @@ function remove(comment: CardComment) {
 				</li>
 				<li v-else class="flex gap-2.5">
 					<span
-						class="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-semibold"
+						class="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-medium"
 						aria-hidden="true"
 						>{{
 							getInitials(entry.comment.user?.name ?? '?')
@@ -190,7 +190,7 @@ function remove(comment: CardComment) {
 						<p
 							class="flex flex-wrap items-baseline gap-x-2 text-sm"
 						>
-							<span class="font-semibold">{{
+							<span class="font-medium">{{
 								entry.comment.user?.name ?? 'Former member'
 							}}</span>
 							<time

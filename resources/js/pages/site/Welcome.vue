@@ -191,13 +191,13 @@ const facts = [
 						>
 							<Link
 								:href="register()"
-								class="rounded-[var(--radius-sheet)] bg-primary px-4 py-2.5 text-base font-semibold text-primary-foreground hover:bg-primary/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) focus-visible:outline-solid"
+								class="rounded-[var(--radius-sheet)] bg-primary px-4 py-2.5 text-base font-medium text-primary-foreground hover:bg-primary/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) focus-visible:outline-solid"
 							>
 								Create an account
 							</Link>
 							<Link
 								:href="login()"
-								class="inline-flex items-center gap-1.5 text-base font-semibold hover:underline"
+								class="inline-flex items-center gap-1.5 text-base font-medium hover:underline"
 							>
 								Log in
 								<PhArrowRight class="size-4" />
@@ -219,7 +219,7 @@ const facts = [
 				>
 					<div class="mx-auto max-w-6xl px-6 lg:px-8">
 						<p
-							class="text-base/6 font-semibold text-(--color-label-sky)"
+							class="text-base/6 font-medium text-(--color-label-sky)"
 						>
 							How it works
 						</p>
@@ -244,16 +244,16 @@ const facts = [
 								class="flex flex-col rounded-[var(--radius-tile)] bg-white/5 p-8 ring-1 ring-white/10"
 							>
 								<div class="flex items-center gap-x-3">
-									<span class="text-base/6 font-semibold"
+									<span class="text-base/6 font-medium"
 										>Boards</span
 									>
 									<span
-										class="rounded-full px-2 text-sm/5.5 font-medium text-(--color-label-sky) ring-1 ring-(--color-label-sky)/50"
+										class="rounded-full px-2 text-sm/5.5 font-normal text-(--color-label-sky) ring-1 ring-(--color-label-sky)/50"
 										>{{ boardColors.length }} colours</span
 									>
 								</div>
 								<p
-									class="mt-4 text-sm/5.5 font-semibold text-white/90"
+									class="mt-4 text-sm/5.5 font-medium text-white/90"
 								>
 									One board per project
 								</p>
@@ -272,7 +272,7 @@ const facts = [
 										v-for="color in solidBoardColors"
 										:key="color"
 										:data-field="color"
-										class="flex aspect-[16/10] items-end rounded-[var(--radius-sheet)] field-fill p-2 text-xs font-semibold capitalize"
+										class="flex aspect-[16/10] items-end rounded-[var(--radius-sheet)] field-fill p-2 text-xs font-medium capitalize"
 									>
 										{{ color }}
 									</li>
@@ -284,16 +284,16 @@ const facts = [
 								class="flex flex-col rounded-[var(--radius-tile)] bg-white/5 p-8 ring-1 ring-white/10"
 							>
 								<div class="flex items-center gap-x-3">
-									<span class="text-base/6 font-semibold"
+									<span class="text-base/6 font-medium"
 										>Lists</span
 									>
 									<span
-										class="rounded-full px-2 text-sm/5.5 font-medium text-(--color-label-sky) ring-1 ring-(--color-label-sky)/50"
+										class="rounded-full px-2 text-sm/5.5 font-normal text-(--color-label-sky) ring-1 ring-(--color-label-sky)/50"
 										>Drag &amp; drop</span
 									>
 								</div>
 								<p
-									class="mt-4 text-sm/5.5 font-semibold text-white/90"
+									class="mt-4 text-sm/5.5 font-medium text-white/90"
 								>
 									One list per step
 								</p>
@@ -336,16 +336,16 @@ const facts = [
 								class="flex flex-col rounded-[var(--radius-tile)] bg-white/5 p-8 ring-1 ring-white/10"
 							>
 								<div class="flex items-center gap-x-3">
-									<span class="text-base/6 font-semibold"
+									<span class="text-base/6 font-medium"
 										>Cards</span
 									>
 									<span
-										class="rounded-full px-2 text-sm/5.5 font-medium text-(--color-label-sky) ring-1 ring-(--color-label-sky)/50"
+										class="rounded-full px-2 text-sm/5.5 font-normal text-(--color-label-sky) ring-1 ring-(--color-label-sky)/50"
 										>Click to open</span
 									>
 								</div>
 								<p
-									class="mt-4 text-sm/5.5 font-semibold text-white/90"
+									class="mt-4 text-sm/5.5 font-medium text-white/90"
 								>
 									Everything about one task
 								</p>
@@ -362,7 +362,7 @@ const facts = [
 									>
 										<span
 											data-label="orange"
-											class="mb-2 inline-block rounded-[3px] bg-label px-1.5 py-1 text-xs leading-none font-semibold text-label-ink"
+											class="mb-2 inline-block rounded-[3px] bg-label px-1.5 py-1 text-xs leading-none font-medium text-label-ink"
 											>Urgent</span
 										>
 										<p>Send the invoices for October</p>
@@ -388,7 +388,7 @@ const facts = [
 												2
 											</span>
 											<span
-												class="ml-auto flex size-6 items-center justify-center rounded-full bg-(--color-paper-3) text-[0.6875rem] font-semibold text-(--color-ink)"
+												class="ml-auto flex size-6 items-center justify-center rounded-full bg-(--color-paper-3) text-[0.6875rem] font-medium text-(--color-ink)"
 												>MS</span
 											>
 										</div>
@@ -411,7 +411,7 @@ const facts = [
 				<section id="features" class="scroll-mt-8 py-24 sm:py-32">
 					<div class="mx-auto max-w-6xl px-6 lg:px-8">
 						<p
-							class="text-base/6 font-semibold text-(--color-field-cobalt) dark:text-(--color-label-blue)"
+							class="text-base/6 font-medium text-(--color-field-cobalt) dark:text-(--color-label-blue)"
 						>
 							Features
 						</p>
@@ -436,7 +436,7 @@ const facts = [
 								:key="feature.title"
 							>
 								<dt
-									class="flex items-start gap-x-3 text-base/6 font-semibold"
+									class="flex items-start gap-x-3 text-base/6 font-medium"
 								>
 									<component
 										:is="feature.icon"
@@ -464,7 +464,7 @@ const facts = [
 					>
 						<div>
 							<p
-								class="text-base/6 font-semibold text-(--color-label-sky)"
+								class="text-base/6 font-medium text-(--color-label-sky)"
 							>
 								Agents
 							</p>
@@ -496,7 +496,7 @@ const facts = [
 							>
 								<div>
 									<p
-										class="text-sm/5.5 font-semibold text-white/90"
+										class="text-sm/5.5 font-medium text-white/90"
 									>
 										It can
 									</p>
@@ -515,7 +515,7 @@ const facts = [
 								</div>
 								<div>
 									<p
-										class="text-sm/5.5 font-semibold text-white/90"
+										class="text-sm/5.5 font-medium text-white/90"
 									>
 										It can’t
 									</p>
@@ -552,10 +552,10 @@ const facts = [
 							>
 								<span
 									data-label="sky"
-									class="inline-block rounded-[3px] bg-label px-1.5 py-1 text-xs leading-none font-semibold text-label-ink"
+									class="inline-block rounded-[3px] bg-label px-1.5 py-1 text-xs leading-none font-medium text-label-ink"
 									>Copy</span
 								>
-								<p class="mt-2 font-semibold">
+								<p class="mt-2 font-medium">
 									Write the About page
 								</p>
 								<ol class="mt-4 space-y-3">
@@ -565,11 +565,11 @@ const facts = [
 										class="flex gap-2.5 text-sm"
 									>
 										<span
-											class="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-paper-2) text-xs font-semibold text-(--color-ink-3)"
+											class="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-paper-2) text-xs font-medium text-(--color-ink-3)"
 											>MS</span
 										>
 										<p class="pt-1">
-											<span class="font-semibold"
+											<span class="font-medium"
 												>Marcel</span
 											>
 											{{ line }}
@@ -596,7 +596,7 @@ const facts = [
 					>
 						<div>
 							<p
-								class="text-base/6 font-semibold text-(--color-field-cobalt) dark:text-(--color-label-blue)"
+								class="text-base/6 font-medium text-(--color-field-cobalt) dark:text-(--color-label-blue)"
 							>
 								Under the hood
 							</p>

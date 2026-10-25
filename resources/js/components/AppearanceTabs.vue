@@ -22,7 +22,7 @@ const tabs = [
 			:class="[
 				'flex items-center rounded-[var(--radius-sheet)] px-3.5 py-1.5 transition-colors',
 				appearance === value
-					? 'bg-sheet font-semibold shadow-xs'
+					? 'bg-sheet font-medium shadow-xs'
 					: 'text-muted-foreground hover:bg-sheet/60 hover:text-foreground',
 			]"
 		>

@@ -13,7 +13,7 @@ withDefaults(defineProps<Props>(), {
 
 <template>
 	<div class="grid flex-1 text-left text-sm leading-tight">
-		<span class="truncate font-semibold">{{ user.name }}</span>
+		<span class="truncate font-medium">{{ user.name }}</span>
 		<span v-if="showEmail" class="truncate text-sm opacity-70">{{
 			user.email
 		}}</span>

@@ -95,7 +95,7 @@ function setEmails(event: Event) {
 
 				<div
 					v-if="page.props.status === 'verification-link-sent'"
-					class="mt-2 text-sm font-medium text-(--color-success)"
+					class="mt-2 text-sm font-normal text-(--color-success)"
 				>
 					A new verification link has been sent to your email address.
 				</div>
@@ -123,7 +123,7 @@ function setEmails(event: Event) {
 				@change="setEmails"
 			/>
 			<span>
-				<span class="block font-semibold">Email me too</span>
+				<span class="block font-medium">Email me too</span>
 				<span class="block text-sm text-muted-foreground">
 					When someone adds you to a card or mentions you, and when a
 					card you're on is due within a day.

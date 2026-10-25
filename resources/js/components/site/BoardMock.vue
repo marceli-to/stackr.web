@@ -110,7 +110,7 @@ const lists: { name: string; cards: MockCard[] }[] = [
 					<span
 						v-for="initials in ['AK', 'LB']"
 						:key="initials"
-						class="flex size-7 items-center justify-center rounded-full bg-white/15 text-[0.6875rem] font-semibold ring-2 ring-(--field)"
+						class="flex size-7 items-center justify-center rounded-full bg-white/15 text-[0.6875rem] font-medium ring-2 ring-(--field)"
 						>{{ initials }}</span
 					>
 				</div>
@@ -150,7 +150,7 @@ const lists: { name: string; cards: MockCard[] }[] = [
 										v-for="label in card.labels"
 										:key="label.color"
 										:data-label="label.color"
-										class="rounded-[3px] bg-label text-xs leading-none font-semibold text-label-ink"
+										class="rounded-[3px] bg-label text-xs leading-none font-medium text-label-ink"
 										:class="
 											label.name
 												? 'px-1.5 py-1'
@@ -238,7 +238,7 @@ const lists: { name: string; cards: MockCard[] }[] = [
 										<span
 											v-for="initials in card.members"
 											:key="initials"
-											class="flex size-6 items-center justify-center rounded-full bg-(--color-paper-3) text-[0.6875rem] font-semibold text-(--color-ink) ring-2 ring-sheet"
+											class="flex size-6 items-center justify-center rounded-full bg-(--color-paper-3) text-[0.6875rem] font-medium text-(--color-ink) ring-2 ring-sheet"
 											>{{ initials }}</span
 										>
 									</span>

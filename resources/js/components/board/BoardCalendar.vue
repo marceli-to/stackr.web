@@ -182,7 +182,7 @@ function drop(date: Date) {
 				<div
 					v-for="weekday in weekdays"
 					:key="weekday"
-					class="px-2 pb-1 text-sm font-semibold opacity-75"
+					class="px-2 pb-1 text-sm font-medium opacity-75"
 					role="columnheader"
 				>
 					{{ weekday }}
@@ -209,7 +209,7 @@ function drop(date: Date) {
 						class="num flex size-6 items-center justify-center self-start rounded-full text-sm"
 						:class="[
 							dayKey(date) === today
-								? 'bg-field-ink font-semibold text-field'
+								? 'bg-field-ink font-medium text-field'
 								: '',
 							date.getMonth() === month.getMonth()
 								? ''

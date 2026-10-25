@@ -76,7 +76,7 @@ function remove() {
 		</PopoverTrigger>
 		<PopoverContent class="w-80">
 			<template v-if="editing === null">
-				<p class="mb-3 font-semibold">Labels</p>
+				<p class="mb-3 font-medium">Labels</p>
 				<ul class="space-y-1.5">
 					<li
 						v-for="label in labels"
@@ -86,7 +86,7 @@ function remove() {
 						<button
 							type="button"
 							:data-label="label.color"
-							class="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-[var(--radius-sheet)] bg-label px-2.5 text-left text-sm font-semibold text-label-ink hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
+							class="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-[var(--radius-sheet)] bg-label px-2.5 text-left text-sm font-medium text-label-ink hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
 							:aria-pressed="card.labels.includes(label.id)"
 							@click="toggle(label)"
 						>
@@ -134,7 +134,7 @@ function remove() {
 					>
 						<PhCaretLeft />
 					</Button>
-					<p class="font-semibold">
+					<p class="font-medium">
 						{{
 							editing === 'new' ? 'Create a label' : 'Edit label'
 						}}
@@ -143,13 +143,13 @@ function remove() {
 
 				<div
 					:data-label="color"
-					class="flex h-9 items-center rounded-[var(--radius-sheet)] bg-label px-3 text-sm font-semibold text-label-ink"
+					class="flex h-9 items-center rounded-[var(--radius-sheet)] bg-label px-3 text-sm font-medium text-label-ink"
 				>
 					{{ name || colorNames[color] }}
 				</div>
 
 				<div class="grid gap-2">
-					<label for="label-name" class="text-sm font-semibold"
+					<label for="label-name" class="text-sm font-medium"
 						>Name</label
 					>
 					<Input
@@ -163,7 +163,7 @@ function remove() {
 				</div>
 
 				<fieldset>
-					<legend class="mb-2 text-sm font-semibold">Colour</legend>
+					<legend class="mb-2 text-sm font-medium">Colour</legend>
 					<div class="grid grid-cols-4 gap-1.5">
 						<label
 							v-for="option in labelColors"

@@ -91,7 +91,7 @@ function readAll() {
 						@click="show(notification)"
 					>
 						<span
-							class="flex size-8 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-semibold"
+							class="flex size-8 shrink-0 items-center justify-center rounded-full bg-(--color-paper-3) text-xs font-medium"
 							aria-hidden="true"
 						>
 							<template v-if="notification.actor">{{
@@ -103,11 +103,11 @@ function readAll() {
 							<span class="block">
 								<span
 									v-if="notification.actor"
-									class="font-semibold"
+									class="font-medium"
 									>{{ notification.actor.name }}</span
 								>
 								{{ notification.sentence }}
-								<span class="font-semibold">{{
+								<span class="font-medium">{{
 									notification.card_title
 								}}</span>
 							</span>

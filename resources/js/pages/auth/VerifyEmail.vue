@@ -24,7 +24,7 @@ defineProps<{
 
 	<div
 		v-if="status === 'verification-link-sent'"
-		class="mb-4 text-sm font-medium text-(--color-success)"
+		class="mb-4 text-sm font-normal text-(--color-success)"
 	>
 		A new verification link has been sent to the email address you provided
 		during registration.

@@ -61,7 +61,7 @@ const notificationsOpen = ref(false);
 				Notifications
 				<span
 					v-if="unread > 0"
-					class="num ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-yellow-300 px-1.5 text-xs font-semibold text-black"
+					class="num ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-yellow-300 px-1.5 text-xs font-medium text-black"
 				>
 					{{ unread > 9 ? '9+' : unread }}
 				</span>

@@ -166,7 +166,7 @@ const form = computed(() =>
 				</div>
 
 				<div v-if="board" class="grid gap-2">
-					<p class="text-sm font-medium">Background photo</p>
+					<p class="text-sm font-normal">Background photo</p>
 					<div class="flex items-center gap-3">
 						<div
 							:data-field="board.color"
@@ -218,7 +218,7 @@ const form = computed(() =>
 				</div>
 
 				<fieldset class="grid gap-2">
-					<legend class="mb-2 text-sm font-medium">Colour</legend>
+					<legend class="mb-2 text-sm font-normal">Colour</legend>
 					<div
 						v-for="row in [solidBoardColors, gradientBoardColors]"
 						:key="row[0]"

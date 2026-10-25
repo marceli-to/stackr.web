@@ -112,7 +112,7 @@ function removeItem(item: ChecklistItem) {
 			</form>
 			<h3
 				v-else
-				class="min-w-0 flex-1 cursor-text truncate text-base font-semibold"
+				class="min-w-0 flex-1 cursor-text truncate text-base font-medium"
 				@click="
 					title = checklist.title;
 					renaming = true;

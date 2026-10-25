@@ -91,7 +91,7 @@ const tabClass = (active: boolean) =>
 				<button
 					type="button"
 					role="tab"
-					class="num flex-1 rounded-[3px] px-3 py-1.5 text-sm font-semibold"
+					class="num flex-1 rounded-[3px] px-3 py-1.5 text-sm font-medium"
 					:class="tabClass(tab === 'cards')"
 					:aria-selected="tab === 'cards'"
 					@click="tab = 'cards'"
@@ -104,7 +104,7 @@ const tabClass = (active: boolean) =>
 				<button
 					type="button"
 					role="tab"
-					class="num flex-1 rounded-[3px] px-3 py-1.5 text-sm font-semibold"
+					class="num flex-1 rounded-[3px] px-3 py-1.5 text-sm font-medium"
 					:class="tabClass(tab === 'stacks')"
 					:aria-selected="tab === 'stacks'"
 					@click="tab = 'stacks'"

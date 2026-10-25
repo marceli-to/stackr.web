@@ -28,7 +28,7 @@ defineProps<{
 <template>
 	<Head title="Log in" />
 
-	<div v-if="status" class="mb-4 text-sm font-medium text-(--color-success)">
+	<div v-if="status" class="mb-4 text-sm font-normal text-(--color-success)">
 		{{ status }}
 	</div>
 

@@ -15,7 +15,7 @@ withDefaults(defineProps<Props>(), {
 		<h2
 			:class="
 				variant === 'small'
-					? 'text-xl font-semibold tracking-tight'
+					? 'text-xl font-medium tracking-tight'
 					: 'font-display text-4xl leading-[1.05] font-bold tracking-(--tracking-display) md:text-[2.75rem]'
 			"
 		>

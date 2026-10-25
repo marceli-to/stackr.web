@@ -41,10 +41,10 @@ const handleDelete = () => {
 			</div>
 			<div class="space-y-1">
 				<div class="flex items-center gap-2.5">
-					<p class="font-medium tracking-tight">{{ passkey.name }}</p>
+					<p class="font-normal tracking-tight">{{ passkey.name }}</p>
 					<span
 						v-if="passkey.authenticator"
-						class="inline-flex items-center gap-1 rounded-[var(--radius-sheet)] bg-(--color-paper-3) px-2 py-0.5 text-[11px] font-medium tracking-wide text-muted-foreground uppercase"
+						class="inline-flex items-center gap-1 rounded-[var(--radius-sheet)] bg-(--color-paper-3) px-2 py-0.5 text-[11px] font-normal tracking-wide text-muted-foreground uppercase"
 					>
 						{{ passkey.authenticator }}
 					</span>
