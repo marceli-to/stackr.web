@@ -113,8 +113,8 @@
       "_wayfinder-BlCNDZ12.js"
     ]
   },
-  "_SiteHeader-CAWb9xU1.js": {
-    "file": "assets/SiteHeader-CAWb9xU1.js",
+  "_SiteHeader-_NbHkF6u.js": {
+    "file": "assets/SiteHeader-_NbHkF6u.js",
     "name": "SiteHeader",
     "imports": [
       "_wayfinder-BlCNDZ12.js",
@@ -241,7 +241,7 @@
     "name": "wayfinder"
   },
   "resources/css/app.css": {
-    "file": "assets/app-BmnKbRFn.css",
+    "file": "assets/app-Dn4VQ5pJ.css",
     "name": "app",
     "names": [
       "app.css"
@@ -250,7 +250,7 @@
     "isEntry": true
   },
   "resources/js/app.ts": {
-    "file": "assets/app-DdGtncuo.js",
+    "file": "assets/app-Dir-czlJ.js",
     "name": "app",
     "src": "resources/js/app.ts",
     "isEntry": true,
@@ -303,7 +303,7 @@
     ]
   },
   "resources/js/pages/auth/ForgotPassword.vue": {
-    "file": "assets/ForgotPassword-DDhDa4QW.js",
+    "file": "assets/ForgotPassword-1aOLAYQl.js",
     "name": "ForgotPassword",
     "src": "resources/js/pages/auth/ForgotPassword.vue",
     "isDynamicEntry": true,
@@ -319,7 +319,7 @@
     ]
   },
   "resources/js/pages/auth/Login.vue": {
-    "file": "assets/Login-_ZQ2iSPZ.js",
+    "file": "assets/Login-W-pAuxLQ.js",
     "name": "Login",
     "src": "resources/js/pages/auth/Login.vue",
     "isDynamicEntry": true,
@@ -336,7 +336,7 @@
     ]
   },
   "resources/js/pages/auth/Register.vue": {
-    "file": "assets/Register-DNBcxZxc.js",
+    "file": "assets/Register-DNPcttWN.js",
     "name": "Register",
     "src": "resources/js/pages/auth/Register.vue",
     "isDynamicEntry": true,
@@ -379,7 +379,7 @@
     ]
   },
   "resources/js/pages/auth/VerifyEmail.vue": {
-    "file": "assets/VerifyEmail-bwwdsElu.js",
+    "file": "assets/VerifyEmail-D0j73p2_.js",
     "name": "VerifyEmail",
     "src": "resources/js/pages/auth/VerifyEmail.vue",
     "isDynamicEntry": true,
@@ -393,7 +393,7 @@
     ]
   },
   "resources/js/pages/boards/Index.vue": {
-    "file": "assets/Index-BGcsE8e2.js",
+    "file": "assets/Index-AbNLVgyN.js",
     "name": "Index",
     "src": "resources/js/pages/boards/Index.vue",
     "isDynamicEntry": true,
@@ -412,7 +412,7 @@
     ]
   },
   "resources/js/pages/boards/Show.vue": {
-    "file": "assets/Show-DOfQ9T5L.js",
+    "file": "assets/Show-o1BzJ6Bs.js",
     "name": "Show",
     "src": "resources/js/pages/boards/Show.vue",
     "isDynamicEntry": true,
@@ -438,7 +438,7 @@
     ]
   },
   "resources/js/pages/settings/Agents.vue": {
-    "file": "assets/Agents-B2FHHkcv.js",
+    "file": "assets/Agents-CLuGRQZA.js",
     "name": "Agents",
     "src": "resources/js/pages/settings/Agents.vue",
     "isDynamicEntry": true,
@@ -456,7 +456,7 @@
     ]
   },
   "resources/js/pages/settings/Appearance.vue": {
-    "file": "assets/Appearance-DSTYQ_jg.js",
+    "file": "assets/Appearance-C7XWsPB0.js",
     "name": "Appearance",
     "src": "resources/js/pages/settings/Appearance.vue",
     "isDynamicEntry": true,
@@ -466,7 +466,7 @@
     ]
   },
   "resources/js/pages/settings/Profile.vue": {
-    "file": "assets/Profile-BQQ_68ge.js",
+    "file": "assets/Profile-DDiCOry2.js",
     "name": "Profile",
     "src": "resources/js/pages/settings/Profile.vue",
     "isDynamicEntry": true,
@@ -484,7 +484,7 @@
     ]
   },
   "resources/js/pages/settings/Security.vue": {
-    "file": "assets/Security-BhEiWRdX.js",
+    "file": "assets/Security-ndqml9mk.js",
     "name": "Security",
     "src": "resources/js/pages/settings/Security.vue",
     "isDynamicEntry": true,
@@ -507,17 +507,17 @@
     ]
   },
   "resources/js/pages/site/Legal.vue": {
-    "file": "assets/Legal-L3Z7AQf-.js",
+    "file": "assets/Legal-BdPduP85.js",
     "name": "Legal",
     "src": "resources/js/pages/site/Legal.vue",
     "isDynamicEntry": true,
     "imports": [
       "_wayfinder-BlCNDZ12.js",
-      "_SiteHeader-CAWb9xU1.js"
+      "_SiteHeader-_NbHkF6u.js"
     ]
   },
   "resources/js/pages/site/Welcome.vue": {
-    "file": "assets/Welcome-CkHPxQxJ.js",
+    "file": "assets/Welcome-DXqUIQCY.js",
     "name": "Welcome",
     "src": "resources/js/pages/site/Welcome.vue",
     "isDynamicEntry": true,
@@ -529,7 +529,7 @@
       "_types-D_OrqAwH.js",
       "_PhX.vue-mAb4FCS-.js",
       "resources/js/app.ts",
-      "_SiteHeader-CAWb9xU1.js"
+      "_SiteHeader-_NbHkF6u.js"
     ]
   }
 }

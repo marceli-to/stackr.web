@@ -365,7 +365,9 @@ const facts = [
 											class="mb-2 inline-block rounded-[3px] bg-label px-1.5 py-1 text-xs leading-none font-medium text-label-ink"
 											>Urgent</span
 										>
-										<p>Send the invoices for October</p>
+										<p class="font-bold">
+											Send the invoices for October
+										</p>
 										<div
 											class="mt-2 flex items-center gap-3 text-sm text-(--color-ink-3)"
 										>
