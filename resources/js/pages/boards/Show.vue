@@ -4,6 +4,7 @@ import {
 	PhArchive,
 	PhCalendarBlank,
 	PhCheck,
+	PhDownloadSimple,
 	PhEye,
 	PhInfo,
 	PhKanban,
@@ -21,7 +22,11 @@ import BoardShortcuts from '@/components/board/BoardShortcuts.vue';
 import { createFilter, filterKey } from '@/components/board/filter';
 import { boardKey } from '@/components/card/board';
 import AppMenu from '@/components/AppMenu.vue';
-import { unwatch as unwatchBoard, watch as watchBoard } from '@/routes/boards';
+import {
+	exportMethod as exportBoard,
+	unwatch as unwatchBoard,
+	watch as watchBoard,
+} from '@/routes/boards';
 import CardDialog from '@/components/card/CardDialog.vue';
 import { membersOpen } from '@/components/board/members';
 import {
@@ -144,6 +149,17 @@ const view = useStorage<'board' | 'calendar'>(
 			<DropdownMenuItem @select="archiveOpen = true">
 				<PhArchive />
 				Archive…
+			</DropdownMenuItem>
+			<DropdownMenuItem :as-child="true">
+				<a
+					class="block w-full cursor-pointer"
+					:href="exportBoard.url(board.key)"
+					title="A ZIP with the board, its active cards and their files"
+					download
+				>
+					<PhDownloadSimple />
+					Export board
+				</a>
 			</DropdownMenuItem>
 			<DropdownMenuSeparator />
 			<DropdownMenuItem

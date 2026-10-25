@@ -3,6 +3,7 @@
 use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\BoardBackgroundController;
 use App\Http\Controllers\BoardController;
+use App\Http\Controllers\BoardExportController;
 use App\Http\Controllers\BoardInvitationController;
 use App\Http\Controllers\BoardMemberController;
 use App\Http\Controllers\CardController;
@@ -39,6 +40,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::get('boards/{board}/background', [BoardBackgroundController::class, 'show'])->name('boards.background');
 	Route::post('boards/{board}/background', [BoardBackgroundController::class, 'store'])->name('boards.background.store');
 	Route::delete('boards/{board}/background', [BoardBackgroundController::class, 'destroy'])->name('boards.background.destroy');
+
+	Route::get('boards/{board}/export', [BoardExportController::class, 'show'])->name('boards.export');
 
 	Route::post('boards/{board}/watch', [WatchController::class, 'board'])->name('boards.watch');
 	Route::delete('boards/{board}/watch', [WatchController::class, 'board'])->name('boards.unwatch');

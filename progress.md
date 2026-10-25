@@ -2,7 +2,7 @@
 
 A Trello clone: boards of lists and cards.
 
-_Last updated: 2026-10-24_
+_Last updated: 2026-10-25_
 
 ## Where we are
 
@@ -34,6 +34,7 @@ _Last updated: 2026-10-24_
 | 24. Gradient board colours                             | ✅ done |
 | 25. Board keys in URLs, join links                     | ✅ done |
 | 26. MCP server for agents (Settings → Agents)          | ✅ done |
+| 27. Export a board (ZIP: board.json + files, ⋯ menu)   | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 Production (https://stackr.kimiyu.ch) runs `2c3278d` (deployed 2026-10-24, all migrations run).
