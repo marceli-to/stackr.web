@@ -26,6 +26,7 @@ class CardResource extends JsonResource
 			'checklists.items',
 			'attachments.user',
 			'comments.user',
+			'comments.reactions.user',
 			'activities' => fn ($query) => $query->with('user')->limit(100),
 		]);
 		$this->resource->loadMissing(['stack', 'labels', 'members']);

@@ -15,6 +15,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\InviteLinkController;
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ReactionController;
 use App\Http\Controllers\StackController;
 use App\Http\Controllers\WatchController;
 use Illuminate\Support\Facades\Route;
@@ -95,6 +96,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::post('cards/{card}/comments', [CommentController::class, 'store'])->name('comments.store');
 	Route::patch('comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
 	Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+	Route::post('comments/{comment}/reactions', [ReactionController::class, 'toggle'])->name('reactions.toggle');
 });
 
 require __DIR__.'/settings.php';

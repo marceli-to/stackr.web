@@ -257,6 +257,41 @@ class CardDetailsTest extends TestCase
 		$this->assertModelMissing($comment);
 	}
 
+	public function test_members_can_react_to_comments()
+	{
+		$this->actingAs($this->user)->post(route('comments.store', $this->card), ['body' => 'Looks good']);
+		$comment = Comment::firstOrFail();
+
+		$other = User::factory()->create(['name' => 'Ada']);
+		$this->board->members()->attach($other, ['role' => 'member']);
+
+		$this->actingAs($other)->post(route('reactions.toggle', $comment), ['emoji' => '🎉']);
+		$this->actingAs($this->user)->post(route('reactions.toggle', $comment), ['emoji' => '🎉']);
+		$this->actingAs($this->user)->post(route('reactions.toggle', $comment), ['emoji' => '👍']);
+
+		$this->actingAs($this->user)
+			->get(route('boards.show', ['board' => $this->board, 'card' => $this->card->id]))
+			->assertInertia(fn (Assert $page) => $page
+				->has('card.comments.0.reactions', 2)
+				->where('card.comments.0.reactions.0.emoji', '🎉')
+				->where('card.comments.0.reactions.0.count', 2)
+				->where('card.comments.0.reactions.0.mine', true)
+				->where('card.comments.0.reactions.0.names', ['Ada', $this->user->name])
+				->where('card.comments.0.reactions.1.emoji', '👍')
+			);
+
+		// The same emoji again takes it back.
+		$this->actingAs($this->user)->post(route('reactions.toggle', $comment), ['emoji' => '👍']);
+		$this->assertSame(['🎉', '🎉'], $comment->reactions()->pluck('emoji')->all());
+
+		$this->actingAs($this->user)
+			->post(route('reactions.toggle', $comment), ['emoji' => '💩'])
+			->assertSessionHasErrors('emoji');
+
+		$stranger = User::factory()->create();
+		$this->actingAs($stranger)->post(route('reactions.toggle', $comment), ['emoji' => '👍'])->assertForbidden();
+	}
+
 	public function test_non_members_cannot_touch_a_card()
 	{
 		$stranger = User::factory()->create();

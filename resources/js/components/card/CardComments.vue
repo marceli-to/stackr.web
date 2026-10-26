@@ -1,12 +1,23 @@
 <script setup lang="ts">
 import { router, usePage } from '@inertiajs/vue3';
-import { PhChatCircle } from '@phosphor-icons/vue';
+import { PhChatCircle, PhSmiley } from '@phosphor-icons/vue';
 import { useStorage } from '@vueuse/core';
 import { computed, ref } from 'vue';
 import CommentController from '@/actions/App/Http/Controllers/CommentController';
-import { describeActivity, keep, timeAgo } from '@/components/card/board';
+import ReactionController from '@/actions/App/Http/Controllers/ReactionController';
+import {
+	describeActivity,
+	keep,
+	reactionEmojis,
+	timeAgo,
+} from '@/components/card/board';
 import { Button } from '@/components/ui/button';
 import MentionTextarea from '@/components/card/MentionTextarea.vue';
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from '@/components/ui/popover';
 import { getInitials } from '@/composables/useInitials';
 import type { CardActivity, CardComment, CardDetail } from '@/types';
 
@@ -87,6 +98,17 @@ function save(comment: CardComment) {
 
 function remove(comment: CardComment) {
 	router.delete(CommentController.destroy(comment.id).url, keep);
+}
+
+// Reacting with an emoji you already used takes the reaction back.
+function react(comment: CardComment, emoji: string) {
+	router.post(ReactionController.toggle(comment.id).url, { emoji }, keep);
+}
+
+function reactedWith(comment: CardComment, emoji: string): boolean {
+	return comment.reactions.some(
+		(reaction) => reaction.emoji === emoji && reaction.mine,
+	);
 }
 </script>
 
@@ -246,23 +268,92 @@ function remove(comment: CardComment) {
 								v-html="entry.comment.body_html"
 							/>
 							<div
-								v-if="entry.comment.mine"
-								class="mt-1 flex gap-3 text-sm text-muted-foreground"
+								class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground"
 							>
-								<button
-									type="button"
-									class="underline decoration-(--color-rule) underline-offset-4 hover:text-foreground"
-									@click="edit(entry.comment)"
+								<div
+									v-if="entry.comment.reactions.length"
+									class="flex flex-wrap gap-1"
 								>
-									Edit
-								</button>
-								<button
-									type="button"
-									class="underline decoration-(--color-rule) underline-offset-4 hover:text-destructive"
-									@click="remove(entry.comment)"
-								>
-									Delete
-								</button>
+									<button
+										v-for="reaction in entry.comment
+											.reactions"
+										:key="reaction.emoji"
+										type="button"
+										class="inline-flex h-6 items-center gap-1 rounded-full px-2 text-xs tabular-nums transition-colors focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring focus-visible:outline-solid"
+										:class="
+											reaction.mine
+												? 'bg-(--color-paper-3) font-medium text-foreground ring-1 ring-(--control-edge) ring-inset'
+												: 'bg-(--color-paper-2) hover:bg-(--color-paper-3)'
+										"
+										:title="reaction.names.join(', ')"
+										:aria-label="`${reaction.emoji} ${reaction.count}: ${reaction.names.join(', ')}`"
+										:aria-pressed="reaction.mine"
+										@click="
+											react(entry.comment, reaction.emoji)
+										"
+									>
+										<span class="text-sm leading-none">{{
+											reaction.emoji
+										}}</span>
+										{{ reaction.count }}
+									</button>
+								</div>
+								<Popover>
+									<PopoverTrigger as-child>
+										<button
+											type="button"
+											class="-mx-1 inline-flex size-6 items-center justify-center rounded-full text-muted-foreground/70 hover:bg-(--color-paper-2) hover:text-foreground"
+											aria-label="Add a reaction"
+										>
+											<PhSmiley class="size-4" />
+										</button>
+									</PopoverTrigger>
+									<PopoverContent
+										class="flex w-auto gap-0.5 p-1"
+										align="start"
+									>
+										<button
+											v-for="emoji in reactionEmojis"
+											:key="emoji"
+											type="button"
+											class="flex size-8 items-center justify-center rounded-[var(--radius-sheet)] text-lg transition-transform hover:scale-110 hover:bg-(--color-paper-2) focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-solid"
+											:class="
+												reactedWith(
+													entry.comment,
+													emoji,
+												)
+													? 'bg-primary/10'
+													: ''
+											"
+											:aria-label="`React with ${emoji}`"
+											:aria-pressed="
+												reactedWith(
+													entry.comment,
+													emoji,
+												)
+											"
+											@click="react(entry.comment, emoji)"
+										>
+											{{ emoji }}
+										</button>
+									</PopoverContent>
+								</Popover>
+								<template v-if="entry.comment.mine">
+									<button
+										type="button"
+										class="underline decoration-(--color-rule) underline-offset-4 hover:text-foreground"
+										@click="edit(entry.comment)"
+									>
+										Edit
+									</button>
+									<button
+										type="button"
+										class="underline decoration-(--color-rule) underline-offset-4 hover:text-destructive"
+										@click="remove(entry.comment)"
+									>
+										Delete
+									</button>
+								</template>
 							</div>
 						</template>
 					</div>

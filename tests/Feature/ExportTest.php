@@ -42,7 +42,8 @@ class ExportTest extends TestCase
 		$label = $this->board->labels()->create(['name' => 'Urgent', 'color' => LabelColor::cases()[0]]);
 		$card->labels()->attach($label);
 		$card->checklists()->create(['title' => 'Steps'])->items()->create(['title' => 'Draft']);
-		$card->comments()->forceCreate(['user_id' => $this->user->id, 'body' => 'First pass done']);
+		$comment = $card->comments()->forceCreate(['user_id' => $this->user->id, 'body' => 'First pass done']);
+		$comment->reactions()->forceCreate(['user_id' => $this->user->id, 'emoji' => '👍']);
 
 		$path = Attachment::directoryFor($this->board->id, $card->id).'/a.txt';
 		Storage::disk(Attachment::DISK)->put($path, 'hello');
@@ -64,6 +65,7 @@ class ExportTest extends TestCase
 		$this->assertSame('Urgent', $exported['labels'][0]['name']);
 		$this->assertSame('Draft', $exported['checklists'][0]['items'][0]['title']);
 		$this->assertSame('Ada', $exported['comments'][0]['author']);
+		$this->assertSame([['emoji' => '👍', 'by' => 'Ada']], $exported['comments'][0]['reactions']);
 
 		$file = $exported['attachments'][0]['file'];
 		$this->assertStringStartsWith("attachments/{$card->id}/", $file);

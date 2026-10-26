@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Comment;
+use App\Models\Reaction;
 use App\Support\Markdown;
 use App\Support\Mentions;
 use Illuminate\Http\Request;
@@ -44,6 +45,16 @@ class CommentResource extends JsonResource
 			'via_agent' => $this->via_agent,
 			'created_at' => $this->created_at,
 			'edited' => $this->updated_at?->gt($this->created_at->addSecond()) ?? false,
+			// One entry per emoji, in the order they were first used.
+			'reactions' => $this->reactions
+				->groupBy('emoji')
+				->map(fn ($reactions, string $emoji): array => [
+					'emoji' => $emoji,
+					'count' => $reactions->count(),
+					'mine' => $reactions->contains('user_id', $request->user()?->id),
+					'names' => $reactions->map(fn (Reaction $reaction): ?string => $reaction->user?->name)->filter()->values(),
+				])
+				->values(),
 		];
 	}
 }

@@ -139,6 +139,15 @@ export type CardComment = {
 	via_agent: boolean;
 	created_at: string;
 	edited: boolean;
+	reactions: CommentReaction[];
+};
+
+/** Everyone who reacted to a comment with one emoji. */
+export type CommentReaction = {
+	emoji: string;
+	count: number;
+	mine: boolean;
+	names: string[];
 };
 
 /** An entry in a card's activity log; `data` depends on the type. */

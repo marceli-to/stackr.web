@@ -2,7 +2,7 @@
 
 A Trello clone: boards of lists and cards.
 
-_Last updated: 2026-10-25_
+_Last updated: 2026-10-26_
 
 ## Where we are
 
@@ -35,6 +35,7 @@ _Last updated: 2026-10-25_
 | 25. Board keys in URLs, join links                     | ✅ done |
 | 26. MCP server for agents (Settings → Agents)          | ✅ done |
 | 27. Export a board (ZIP: board.json + files, ⋯ menu)   | ✅ done |
+| 28. Emoji reactions on comments                        | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 Production (https://stackr.kimiyu.ch) runs `93a2f49` (deployed 2026-10-25, all migrations run).
@@ -276,6 +277,11 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   name asks for the id. Archived cards and lists and templates are invisible to agents.
   `activities.via_agent` and `comments.via_agent` are set when the request came in on a token
   (`App\Support\Agent::acting()`), and the card's timeline shows a faint "· via agent".
+- **Reactions:** a fixed set of six emojis (`Reaction::EMOJIS`, mirrored as `reactionEmojis` in
+  `components/card/board.ts`), stored in `comment_reactions` (one of each emoji per person).
+  Any board member can react; `POST comments/{comment}/reactions` toggles. Under a comment: one
+  pill per emoji with its count (yours gets a faint ring, hover shows who), plus a faint ☺ that
+  opens the picker. No notifications and no MCP tool for reactions; the ZIP export includes them.
 
 - **Code layout:** controllers stay thin: authorize (`Gate::authorize`), take a form request,
   call one action, toast (`$this->toast()` on the base `Controller`), redirect. Every write is an

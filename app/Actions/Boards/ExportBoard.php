@@ -9,6 +9,7 @@ use App\Models\Checklist;
 use App\Models\ChecklistItem;
 use App\Models\Comment;
 use App\Models\Label;
+use App\Models\Reaction;
 use App\Models\Stack;
 use App\Models\User;
 use Carbon\CarbonInterface;
@@ -39,6 +40,7 @@ class ExportBoard
 			'stacks.cards.checklists.items',
 			'stacks.cards.comments' => fn (HasMany $query) => $query->reorder()->oldest('id'),
 			'stacks.cards.comments.user',
+			'stacks.cards.comments.reactions.user',
 			'stacks.cards.attachments' => fn (HasMany $query) => $query->reorder()->oldest('id'),
 			'stacks.cards.attachments.user',
 		]);
@@ -132,6 +134,10 @@ class ExportBoard
 				'author' => $comment->user?->name,
 				'via_agent' => $comment->via_agent,
 				'body' => $comment->body,
+				'reactions' => $comment->reactions->map(fn (Reaction $reaction) => [
+					'emoji' => $reaction->emoji,
+					'by' => $reaction->user?->name,
+				])->all(),
 				'created_at' => $this->date($comment->created_at),
 			])->all(),
 			'attachments' => $card->attachments->map(fn (Attachment $attachment) => [
