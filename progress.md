@@ -38,7 +38,7 @@ _Last updated: 2026-10-26_
 | 28. Emoji reactions on comments                        | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
-Production (https://stackr.kimiyu.ch) runs `93a2f49` (deployed 2026-10-25, all migrations run).
+Production (https://stackr.kimiyu.ch) runs `7585d22` (deployed 2026-10-26, all migrations run).
 Still open there: a manual check, see "After the deploy" under "Next up".
 (`design/field` and `feature/card-details` are merged into `main` and can be deleted.)
 
