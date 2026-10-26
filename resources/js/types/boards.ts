@@ -217,6 +217,26 @@ export type Destination = {
 };
 
 /** What the board's archive lists. */
+/** An entry in the board's activity feed: card activity or a comment. */
+export type FeedEntry = {
+	key: string;
+	kind: 'activity' | 'comment';
+	type: string | null;
+	data: CardActivity['data'];
+	/** The start of a comment. */
+	snippet: string | null;
+	user: Member | null;
+	via_agent: boolean;
+	created_at: string;
+	card: { id: number; title: string; archived: boolean };
+};
+
+export type BoardFeed = {
+	entries: FeedEntry[];
+	/** Whether there are older entries. */
+	more: boolean;
+};
+
 export type BoardArchive = {
 	cards: { id: number; title: string; stack: string; archived_at: string }[];
 	stacks: {

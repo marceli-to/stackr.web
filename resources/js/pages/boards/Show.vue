@@ -2,6 +2,7 @@
 import { Head, router } from '@inertiajs/vue3';
 import {
 	PhArchive,
+	PhClockCounterClockwise,
 	PhCalendarBlank,
 	PhCheck,
 	PhDownloadSimple,
@@ -14,6 +15,7 @@ import {
 import { useStorage } from '@vueuse/core';
 import { computed, provide, ref, toRef } from 'vue';
 import BoardLists from '@/components/board/BoardLists.vue';
+import BoardActivityPanel from '@/components/board/BoardActivityPanel.vue';
 import BoardArchivePanel from '@/components/board/BoardArchivePanel.vue';
 import BoardCalendar from '@/components/board/BoardCalendar.vue';
 import BoardFilterBar from '@/components/board/BoardFilterBar.vue';
@@ -36,6 +38,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import type {
 	BoardArchive,
+	BoardFeed,
 	BoardChecklist,
 	BoardStack,
 	CardDetail,
@@ -52,6 +55,7 @@ const props = defineProps<{
 	members: Member[];
 	card: CardDetail | null;
 	archive?: BoardArchive;
+	feed?: BoardFeed;
 	destinations?: Destination[];
 	checklists?: BoardChecklist[];
 	watching: boolean;
@@ -92,6 +96,7 @@ function toggleWatching() {
 }
 
 // The rarer board actions live in one menu; these are its dialogs.
+const activityOpen = ref(false);
 const archiveOpen = ref(false);
 const shortcutsOpen = ref(false);
 const infoOpen = ref(false);
@@ -153,6 +158,10 @@ const view = useStorage<'board' | 'calendar'>(
 				<PhUserPlus />
 				{{ canManageMembers ? 'Invite people…' : 'Members…' }}
 			</DropdownMenuItem>
+			<DropdownMenuItem @select="activityOpen = true">
+				<PhClockCounterClockwise />
+				Activity…
+			</DropdownMenuItem>
 			<DropdownMenuItem @select="archiveOpen = true">
 				<PhArchive />
 				Archive…
@@ -184,6 +193,7 @@ const view = useStorage<'board' | 'calendar'>(
 		</AppMenu>
 	</Teleport>
 
+	<BoardActivityPanel v-model:open="activityOpen" :feed="feed" />
 	<BoardArchivePanel v-model:open="archiveOpen" :archive="archive" />
 	<BoardInfo v-model:open="infoOpen" :board="board" />
 	<BoardShortcuts v-model:open="shortcutsOpen" />

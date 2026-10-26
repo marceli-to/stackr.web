@@ -37,6 +37,7 @@ _Last updated: 2026-10-26_
 | 27. Export a board (ZIP: board.json + files, ⋯ menu)   | ✅ done |
 | 28. Emoji reactions on comments                        | ✅ done |
 | 29. More board colours (12 solid, 12 gradients)        | ✅ done |
+| 30. Activity feed for the whole board (⋯ → Activity…)  | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 Production (https://stackr.kimiyu.ch) runs `7585d22` (deployed 2026-10-26, all migrations run).
@@ -199,6 +200,15 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   as they were. The dialog shows the newest 100 mixed in with the comments ("Comments and
   activity"); `describeActivity()` in `card/board.ts` writes the sentences; "Hide details" is
   remembered in localStorage.
+- **Board activity feed:** "Activity…" in the board's ⋯ menu (`BoardActivityPanel.vue`, a dialog
+  like the archive). The `feed` prop is optional and loads when the panel opens:
+  `App\Support\BoardFeed` merges the board's card activities and comments (archived cards
+  included, marked "archived"), newest first, 50 at a time; "Show more" asks for a longer list
+  with an `X-Feed-Limit` header, so the URL keeps only `?card=`. Entries sit under day headings:
+  the card's title, then "Name moved it from … · 14:32" (`describeActivity(activity, 'it')`) or
+  "Name commented" with a two-line snippet. Clicking one opens the card. Only card events are
+  in it: lists and members don't record activity yet (that would need `activities.card_id`
+  nullable plus a `board_id`).
 - **Notifications** (`app/Notifications`, Laravel database notifications): `AssignedToCard`
   (someone else added you), `MentionedInComment`, `CardDueSoon`. All extend `CardNotification`:
   the database channel runs at once (`viaConnections` → `sync`), the mail goes through the queue,

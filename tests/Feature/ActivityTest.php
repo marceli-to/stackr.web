@@ -8,6 +8,7 @@ use App\Models\Board;
 use App\Models\Card;
 use App\Models\Stack;
 use App\Models\User;
+use App\Support\BoardFeed;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -87,5 +88,62 @@ class ActivityTest extends TestCase
 				->where('card.activities.1.type', 'created')
 				->where('card.activities.1.data.stack', 'To do')
 			);
+	}
+
+	public function test_the_board_feed_mixes_activity_and_comments_newest_first()
+	{
+		$this->travelTo(now()->subHour());
+		$this->actingAs($this->user)->post(route('cards.store', $this->todo), ['title' => 'Brief']);
+		$card = Card::firstOrFail();
+		$this->travelBack();
+
+		$this->post(route('comments.store', $card), ['body' => "Looks   good,\n\nship it"]);
+		$this->patch(route('cards.archive', $card));
+
+		// Another board's cards stay out.
+		Card::factory()->create()->activities()->forceCreate(['type' => 'created', 'user_id' => $this->user->id]);
+
+		$this->get(route('boards.show', $this->board))
+			->assertInertia(fn (Assert $page) => $page
+				->missing('feed')
+				->reloadOnly('feed', fn (Assert $reload) => $reload
+					->has('feed.entries', 3)
+					->where('feed.more', false)
+					->where('feed.entries.0.kind', 'activity')
+					->where('feed.entries.0.type', 'archived')
+					->where('feed.entries.0.card.title', 'Brief')
+					->where('feed.entries.0.card.archived', true)
+					->where('feed.entries.1.kind', 'comment')
+					->where('feed.entries.1.snippet', 'Looks good, ship it')
+					->where('feed.entries.1.user.name', 'Amy')
+					->where('feed.entries.2.type', 'created')
+				)
+			);
+	}
+
+	public function test_the_board_feed_comes_in_pages()
+	{
+		$card = Card::factory()->for($this->todo)->create();
+
+		foreach (range(1, 3) as $minutes) {
+			$this->travelTo(now()->addMinutes($minutes));
+			$card->activities()->forceCreate(['type' => 'completed', 'user_id' => $this->user->id]);
+			$this->travel(30)->seconds();
+			$card->comments()->forceCreate(['body' => "Note {$minutes}", 'user_id' => $this->user->id]);
+		}
+
+		$page = BoardFeed::latest($this->board, 4);
+		$this->assertCount(4, $page['entries']);
+		$this->assertTrue($page['more']);
+		$this->assertSame('Note 3', $page['entries']->first()?->getAttribute('body'));
+
+		$this->assertFalse(BoardFeed::latest($this->board, 6)['more']);
+	}
+
+	public function test_only_members_see_the_feed()
+	{
+		$this->actingAs(User::factory()->create())
+			->get(route('boards.show', $this->board))
+			->assertForbidden();
 	}
 }

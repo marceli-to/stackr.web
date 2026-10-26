@@ -12,6 +12,7 @@ use App\Http\Resources\BoardResource;
 use App\Http\Resources\BoardTileResource;
 use App\Http\Resources\CardResource;
 use App\Http\Resources\DestinationResource;
+use App\Http\Resources\FeedEntryResource;
 use App\Http\Resources\InvitationResource;
 use App\Http\Resources\LabelResource;
 use App\Http\Resources\MemberResource;
@@ -20,6 +21,7 @@ use App\Models\Board;
 use App\Models\Checklist;
 use App\Models\Stack;
 use App\Models\User;
+use App\Support\BoardFeed;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -67,7 +69,9 @@ class BoardController extends Controller
 
 	/**
 	 * Show a board. ?card=<id> opens a card; it has to be on this
-	 * board or in its archive. The archive itself loads only when asked for.
+	 * board or in its archive. The archive itself loads only when asked for,
+	 * and so does the activity feed (the panel asks for more entries with
+	 * an X-Feed-Limit header, so the URL stays as it is).
 	 */
 	public function show(Request $request, Board $board): Response
 	{
@@ -118,6 +122,14 @@ class BoardController extends Controller
 					'card' => $checklist->card->title,
 					'items_count' => $checklist->items_count,
 				])),
+			'feed' => Inertia::optional(function () use ($request, $board): array {
+				$feed = BoardFeed::latest($board, min(max((int) $request->header('X-Feed-Limit', '50'), 1), 1000));
+
+				return [
+					'entries' => FeedEntryResource::collection($feed['entries']),
+					'more' => $feed['more'],
+				];
+			}),
 			'archive' => Inertia::optional(fn () => [
 				'cards' => ArchivedCardResource::collection(
 					$board->cards()->whereNotNull('cards.archived_at')->with('stack:id,name')->latest('cards.archived_at')->get(),
