@@ -40,7 +40,7 @@ _Last updated: 2026-10-26_
 | 30. Activity feed for the whole board (⋯ → Activity…)  | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
-Production (https://stackr.kimiyu.ch) runs `7585d22` (deployed 2026-10-26, all migrations run).
+Production (https://stackr.kimiyu.ch) runs `159e5a5` (deployed 2026-10-26, all migrations run).
 Still open there: a manual check, see "After the deploy" under "Next up".
 (`design/field` and `feature/card-details` are merged into `main` and can be deleted.)
 
