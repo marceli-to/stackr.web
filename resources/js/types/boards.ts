@@ -7,6 +7,12 @@ export const solidBoardColors = [
 	'oxblood',
 	'lagoon',
 	'plum',
+	'navy',
+	'indigo',
+	'pine',
+	'bronze',
+	'slate',
+	'graphite',
 ] as const;
 
 /** Each blends two of the solid colours. */
@@ -16,6 +22,13 @@ export const gradientBoardColors = [
 	'tide',
 	'grove',
 	'fig',
+	'aurora',
+	'dune',
+	'dawn',
+	'storm',
+	'midnight',
+	'meadow',
+	'violet',
 ] as const;
 
 export const boardColors = [

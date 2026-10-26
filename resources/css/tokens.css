@@ -1,4 +1,4 @@
-/* Field tokens. A neutral paper for the overview, and six fields: each
+/* Field tokens. A neutral paper for the overview, and twelve fields: each
    board stands on one. shadcn already owns --color-accent and
    --color-muted, so the third ink is --color-ink-3. */
 :root {
@@ -30,6 +30,12 @@
 	--color-field-oxblood: oklch(40% 0.13 22);
 	--color-field-lagoon: oklch(47% 0.085 205);
 	--color-field-plum: oklch(40% 0.11 340);
+	--color-field-navy: oklch(33% 0.1 262);
+	--color-field-indigo: oklch(40% 0.14 288);
+	--color-field-pine: oklch(40% 0.075 168);
+	--color-field-bronze: oklch(46% 0.09 68);
+	--color-field-slate: oklch(42% 0.03 250);
+	--color-field-graphite: oklch(33% 0.008 262);
 
 	--font-display: 'Figtree', ui-sans-serif, system-ui, sans-serif;
 	--font-body: 'Figtree', ui-sans-serif, system-ui, sans-serif;
@@ -98,6 +104,12 @@
 	--color-field-oxblood: oklch(35% 0.11 22);
 	--color-field-lagoon: oklch(41% 0.075 205);
 	--color-field-plum: oklch(35% 0.095 340);
+	--color-field-navy: oklch(29% 0.085 262);
+	--color-field-indigo: oklch(35% 0.12 288);
+	--color-field-pine: oklch(35% 0.065 168);
+	--color-field-bronze: oklch(40% 0.078 68);
+	--color-field-slate: oklch(37% 0.026 250);
+	--color-field-graphite: oklch(29% 0.007 262);
 }
 
 /* A field sets its colour, its fill, the well its lists sit in and a focus
@@ -132,6 +144,24 @@
 [data-field='plum'] {
 	--field: var(--color-field-plum);
 }
+[data-field='navy'] {
+	--field: var(--color-field-navy);
+}
+[data-field='indigo'] {
+	--field: var(--color-field-indigo);
+}
+[data-field='pine'] {
+	--field: var(--color-field-pine);
+}
+[data-field='bronze'] {
+	--field: var(--color-field-bronze);
+}
+[data-field='slate'] {
+	--field: var(--color-field-slate);
+}
+[data-field='graphite'] {
+	--field: var(--color-field-graphite);
+}
 [data-field='dusk'] {
 	--field-from: var(--color-field-cobalt);
 	--field-to: var(--color-field-plum);
@@ -152,12 +182,47 @@
 	--field-from: var(--color-field-plum);
 	--field-to: var(--color-field-oxblood);
 }
+[data-field='aurora'] {
+	--field-from: var(--color-field-pine);
+	--field-to: var(--color-field-indigo);
+}
+[data-field='dune'] {
+	--field-from: var(--color-field-bronze);
+	--field-to: var(--color-field-rust);
+}
+[data-field='dawn'] {
+	--field-from: var(--color-field-rust);
+	--field-to: var(--color-field-plum);
+}
+[data-field='storm'] {
+	--field-from: var(--color-field-slate);
+	--field-to: var(--color-field-navy);
+}
+[data-field='midnight'] {
+	--field-from: var(--color-field-graphite);
+	--field-to: var(--color-field-indigo);
+}
+[data-field='meadow'] {
+	--field-from: var(--color-field-moss);
+	--field-to: var(--color-field-pine);
+}
+[data-field='violet'] {
+	--field-from: var(--color-field-indigo);
+	--field-to: var(--color-field-plum);
+}
 :is(
 	[data-field='dusk'],
 	[data-field='ember'],
 	[data-field='tide'],
 	[data-field='grove'],
-	[data-field='fig']
+	[data-field='fig'],
+	[data-field='aurora'],
+	[data-field='dune'],
+	[data-field='dawn'],
+	[data-field='storm'],
+	[data-field='midnight'],
+	[data-field='meadow'],
+	[data-field='violet']
 ) {
 	--field: color-mix(in oklab, var(--field-from) 50%, var(--field-to));
 	--field-fill: linear-gradient(

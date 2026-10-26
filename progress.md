@@ -36,6 +36,7 @@ _Last updated: 2026-10-26_
 | 26. MCP server for agents (Settings → Agents)          | ✅ done |
 | 27. Export a board (ZIP: board.json + files, ⋯ menu)   | ✅ done |
 | 28. Emoji reactions on comments                        | ✅ done |
+| 29. More board colours (12 solid, 12 gradients)        | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 Production (https://stackr.kimiyu.ch) runs `7585d22` (deployed 2026-10-26, all migrations run).
@@ -75,8 +76,10 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   finished it takes the server's order again, which also undoes a rejected move. A rejected or
   failed move shows one error toast instead of Inertia's full-page error overlay.
 - **Design "Field"** (chosen out of three directions explored with the Hallmark skill). Every board
-  stands on its own dark colour (cobalt, rust, moss, oxblood, lagoon, plum, or one of five gradients
-  blending two of them: dusk, ember, tide, grove, fig; `BoardColor` enum, `boards.color`); the
+  stands on its own dark colour (twelve solids: cobalt, rust, moss, oxblood, lagoon, plum, navy,
+  indigo, pine, bronze, slate, graphite; or one of twelve gradients blending two of them: dusk,
+  ember, tide, grove, fig, aurora, dune, dawn, storm, midnight, meadow, violet; `BoardColor` enum,
+  `boards.color`; the picker is a 6-wide grid, solids above gradients); the
   board page, top bar included, is drenched in it, lists sit in a darker well of it, cards are plain
   white. Solid colours carry a faint diagonal sheen; the `field-fill` utility paints a field's
   `--field-fill` (sheen or gradient), and a gradient's `--field` is its two colours' midpoint. Everything else is neutral warm paper with ink.

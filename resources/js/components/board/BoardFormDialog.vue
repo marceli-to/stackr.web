@@ -32,11 +32,24 @@ const colorNames: Record<BoardColor, string> = {
 	oxblood: 'Oxblood',
 	lagoon: 'Lagoon',
 	plum: 'Plum',
+	navy: 'Navy',
+	indigo: 'Indigo',
+	pine: 'Pine',
+	bronze: 'Bronze',
+	slate: 'Slate',
+	graphite: 'Graphite',
 	dusk: 'Dusk',
 	ember: 'Ember',
 	tide: 'Tide',
 	grove: 'Grove',
 	fig: 'Fig',
+	aurora: 'Aurora',
+	dune: 'Dune',
+	dawn: 'Dawn',
+	storm: 'Storm',
+	midnight: 'Midnight',
+	meadow: 'Meadow',
+	violet: 'Violet',
 };
 
 const open = defineModel<boolean>('open', { required: true });
@@ -217,12 +230,12 @@ const form = computed(() =>
 					<InputError :message="backgroundError ?? undefined" />
 				</div>
 
-				<fieldset class="grid gap-2">
+				<fieldset class="grid gap-3">
 					<legend class="mb-2 text-sm font-normal">Colour</legend>
 					<div
 						v-for="row in [solidBoardColors, gradientBoardColors]"
 						:key="row[0]"
-						class="flex flex-wrap gap-2"
+						class="grid w-fit grid-cols-6 gap-2"
 					>
 						<label
 							v-for="color in row"
