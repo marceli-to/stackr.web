@@ -309,7 +309,7 @@ function reactedWith(comment: CardComment, emoji: string): boolean {
 										</button>
 									</PopoverTrigger>
 									<PopoverContent
-										class="flex w-auto gap-0.5 p-1"
+										class="grid w-auto grid-cols-6 gap-0.5 p-1"
 										align="start"
 									>
 										<button

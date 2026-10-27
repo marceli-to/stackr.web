@@ -290,7 +290,7 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   name asks for the id. Archived cards and lists and templates are invisible to agents.
   `activities.via_agent` and `comments.via_agent` are set when the request came in on a token
   (`App\Support\Agent::acting()`), and the card's timeline shows a faint "· via agent".
-- **Reactions:** a fixed set of six emojis (`Reaction::EMOJIS`, mirrored as `reactionEmojis` in
+- **Reactions:** a fixed set of twelve emojis (👍 ❤️ 😂 😄 🎉 👀 🙏 🔥 🚀 ✅ 😮 👎, the picker in two rows of six) (`Reaction::EMOJIS`, mirrored as `reactionEmojis` in
   `components/card/board.ts`), stored in `comment_reactions` (one of each emoji per person).
   Any board member can react; `POST comments/{comment}/reactions` toggles. Under a comment: one
   pill per emoji with its count (yours gets a faint ring, hover shows who), plus a faint ☺ that

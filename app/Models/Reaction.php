@@ -23,7 +23,7 @@ class Reaction extends Model
 	/**
 	 * The emojis people can react with, in the order they are offered.
 	 */
-	public const EMOJIS = ['👍', '❤️', '😄', '🎉', '👀', '🙏'];
+	public const EMOJIS = ['👍', '❤️', '😂', '😄', '🎉', '👀', '🙏', '🔥', '🚀', '✅', '😮', '👎'];
 
 	/**
 	 * @return BelongsTo<Comment, $this>

@@ -67,7 +67,20 @@ export function closeCard(key: string) {
 }
 
 /** The emojis a comment can get, as in `Reaction::EMOJIS`. */
-export const reactionEmojis = ['👍', '❤️', '😄', '🎉', '👀', '🙏'] as const;
+export const reactionEmojis = [
+	'👍',
+	'❤️',
+	'😂',
+	'😄',
+	'🎉',
+	'👀',
+	'🙏',
+	'🔥',
+	'🚀',
+	'✅',
+	'😮',
+	'👎',
+] as const;
 
 /** Saves changes to a card and keeps the board and the open card in place. */
 export const keep = { preserveScroll: true, preserveState: true } as const;
