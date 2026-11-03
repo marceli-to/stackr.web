@@ -168,7 +168,7 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 	<section
 		v-else
 		data-stack
-		class="flex max-h-[calc(100svh-19.25rem)] w-72 shrink-0 flex-col rounded-[var(--radius-tile)] bg-field-well"
+		class="flex max-h-[calc(100svh-7rem)] w-72 shrink-0 flex-col rounded-[var(--radius-tile)] bg-field-well"
 		:aria-label="stack.name"
 	>
 		<header
