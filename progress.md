@@ -395,6 +395,10 @@ Same method as the kimiyuch boards (gotaticket/usverchauft):
 
 ## Running it
 
+- Shortcuts the user types: **bcp** = build, commit, push (checks first, progress.md current);
+  **bcpd** = bcp, then `./deploy.sh` and the production line in "Where we are"; **ump** = update
+  memory and progress.md, so work can continue on another machine (commit and push progress.md).
+
 - Herd serves it at https://stackr.web.test (the Webroot folder is parked in Herd; secured with
   `herd secure stackr.web`, `APP_URL` is https).
 - `npm run dev` while you work. Without it, the site uses the last `npm run build`.
@@ -412,6 +416,20 @@ Same method as the kimiyuch boards (gotaticket/usverchauft):
 ## Next up
 
 Feature list (2026-10-24). 1–14, 20 and the ZIP export (part of 19) are done; 15–18, 21 and 22–41 are left.
+
+**After the deploy of 2026-11-03** (production is on `781f1fb`), for the user:
+
+- Add `ADMIN_EMAILS=m@marceli.to` to the server `.env`, then
+  `/usr/local/php85/bin/php artisan config:cache` (the deploy cached the config; without it the
+  wizard can't create accounts).
+- Import kartei.site on production with ⋯ → Import from Trello…: the export is
+  `78M00wVY - karteisite.json` (locally also in `storage/app/private/imports/karteisite.json`,
+  gitignored); Marcel → m@marceli.to, Benedikt Flüeler → "New account…" (copy his password from the
+  last screen), jarvis → Nobody. Trello key: from the "Stackr Import" Power-Up at
+  trello.com/power-ups/admin; get a fresh one-day token from the link in the wizard.
+- Then delete the "Stackr Import" Power-Up on Trello.
+- Locally there's a kartei.site board from the command-line test run (Benedikt's comments credited
+  to Marcel); delete it whenever.
 
 **After the deploy of 2026-10-24** (production is on `19807cb`):
 
