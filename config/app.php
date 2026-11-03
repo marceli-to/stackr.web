@@ -123,4 +123,19 @@ return [
 		'store' => env('APP_MAINTENANCE_STORE', 'database'),
 	],
 
+	/*
+	|--------------------------------------------------------------------------
+	| Admins
+	|--------------------------------------------------------------------------
+	|
+	| Comma-separated emails of the people who may create accounts for
+	| others, as the Trello import does for people without one.
+	|
+	*/
+
+	'admins' => array_values(array_filter(array_map(
+		fn (string $email) => strtolower(trim($email)),
+		explode(',', (string) env('ADMIN_EMAILS', '')),
+	))),
+
 ];

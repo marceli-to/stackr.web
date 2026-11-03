@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { Link, router, usePage } from '@inertiajs/vue3';
-import { PhBell, PhDotsThree, PhGearSix, PhSignOut } from '@phosphor-icons/vue';
+import {
+	PhBell,
+	PhDotsThree,
+	PhGearSix,
+	PhSignOut,
+	PhTrayArrowDown,
+} from '@phosphor-icons/vue';
 import { computed, ref } from 'vue';
 import NotificationsDialog from '@/components/NotificationsDialog.vue';
 import {
@@ -12,6 +18,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import UserInfo from '@/components/UserInfo.vue';
+import { create as importTrello } from '@/actions/App/Http/Controllers/TrelloImportController';
 import { logout } from '@/routes';
 import { edit as editProfile } from '@/routes/profile';
 import type { Board } from '@/types';
@@ -70,6 +77,15 @@ const notificationsOpen = ref(false);
 				<DropdownMenuSeparator />
 				<slot />
 			</template>
+			<DropdownMenuItem v-else :as-child="true">
+				<Link
+					class="block w-full cursor-pointer"
+					:href="importTrello()"
+				>
+					<PhTrayArrowDown />
+					Import from Trello…
+				</Link>
+			</DropdownMenuItem>
 			<DropdownMenuSeparator />
 			<DropdownMenuLabel class="px-2.5 py-2 font-normal">
 				<UserInfo :user="user" :show-email="true" />

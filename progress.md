@@ -2,7 +2,7 @@
 
 A Trello clone: boards of lists and cards.
 
-_Last updated: 2026-10-26_
+_Last updated: 2026-11-03_
 
 ## Where we are
 
@@ -38,6 +38,7 @@ _Last updated: 2026-10-26_
 | 28. Emoji reactions on comments                        | ✅ done |
 | 29. More board colours (12 solid, 12 gradients)        | ✅ done |
 | 30. Activity feed for the whole board (⋯ → Activity…)  | ✅ done |
+| 31. Import from Trello (⋯ → Import from Trello…)       | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 Production (https://stackr.kimiyu.ch) runs `e5dd014` (deployed 2026-10-27, all migrations run).
@@ -307,6 +308,27 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   The frontend uses `useTabs` in `vite.config.ts`. `resources/js/components/ui/*` (shadcn) is left as it is.
   The switch is listed in `.git-blame-ignore-revs` (`git config blame.ignoreRevsFile .git-blame-ignore-revs`).
 
+- **Import from Trello.** ⋯ → Import from Trello… (`/imports/trello`, off the boards) is a wizard:
+  upload the board's JSON export (read in the browser first for an overview, up to 20 MB), name
+  the board, say who each Trello person is (an existing user, a new account, or nobody), and
+  optionally give a Trello API key and token. `ImportTrelloBoard` builds the board in one request
+  with the original dates (card creation from the Trello id, comments, files, activity):
+  lists, cards, labels (Trello colours folded onto ours), checklists, members, comments, link
+  attachments as a list in the description, archived lists and cards stay archived. Work by "nobody"
+  is credited to the importer, comments with "**Name:**" in front. No notifications go out.
+  Uploaded files can't come from the JSON (Trello needs OAuth for them), so they go on a
+  `board_imports` row and the page fetches them one per request (`DownloadImportFile`), with a
+  progress bar, so no request runs into the shared host's time limit. Key and token stay in the
+  page and are sent along with each file, never stored. A rejected token keeps the file pending and
+  asks for a new one; a file Trello can't deliver is listed and skipped; an unfinished import shows
+  up again on the wizard with "Continue". The row goes once nothing is pending.
+  New accounts (`CreateImportedUser`) are verified straight away with a random password that's
+  shown once; only admins may create them: `ADMIN_EMAILS` in `.env` (comma-separated,
+  `config('app.admins')`, `User::isAdmin()`). Others pick from the people they share a board with
+  (`User::knownUsers()`). The same import runs from the shell: `php artisan app:import-trello`
+  (picks a Trello export from `storage/`, asks the same questions, or takes `--owner`, `--map`,
+  `--key`, `--token` with `--no-interaction`).
+
 ## Where things are
 
 - Backend: `app/Http/Controllers/*`, `app/Actions/{Boards,Stacks,Cards,Labels,Checklists,Attachments,Comments,Members}/*`,
@@ -323,6 +345,9 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   textarea; `board.ts` holds the shared helpers and `describeActivity()`),
   `resources/js/components/board/*`, `resources/js/components/{AppTopBar,AppMenu,NotificationsDialog}.vue`,
   `resources/js/layouts/{AppLayout,settings/Layout,auth/AuthCardLayout}.vue`
+- Import: `app/Actions/Imports/*`, `app/Http/Controllers/TrelloImportController.php`,
+  `app/Http/Requests/{TrelloImport,ImportDownload}Request.php`, `app/Models/BoardImport.php`,
+  `app/Console/Commands/ImportTrello.php`, `resources/js/pages/imports/Trello.vue`
 - Agents: `routes/ai.php`, `app/Mcp/{Servers/StackrServer,Boards,Shapes}.php`, `app/Mcp/Tools/*`,
   `app/Http/Controllers/Settings/AgentController.php`, `app/Actions/Agents/*`,
   `resources/js/pages/settings/Agents.vue`, `resources/js/components/CodeSnippet.vue`
@@ -349,7 +374,7 @@ Same method as the kimiyuch boards (gotaticket/usverchauft):
   hidden files 403, security headers, caching, compression); CLI and cron always
   `/usr/local/php85/bin/php` (plain `php` on the server is 8.3). `public/.user.ini` raises the upload
   limits (20 MB per file, 420 MB per request; the server default is 64 MB for both).
-- **Server `.env`:** production, debug off, own `APP_KEY`, `SESSION_LIFETIME=720`,
+- **Server `.env`:** production, debug off, `ADMIN_EMAILS=m@marceli.to` (to add with the Trello import deploy), own `APP_KEY`, `SESSION_LIFETIME=720`,
   `SESSION_SECURE_COOKIE=true`, mail via Hostpoint SMTP as `bot@kimiyu.ch` (credentials copied from
   wallaby's `.env`).
 - **Crontab** (append-only, the account hosts many other sites):

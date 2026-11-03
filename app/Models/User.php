@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -98,5 +99,30 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
 	public function memberships(): HasMany
 	{
 		return $this->hasMany(BoardMembership::class);
+	}
+
+	/**
+	 * Listed in ADMIN_EMAILS: may create accounts for others.
+	 */
+	public function isAdmin(): bool
+	{
+		return in_array(strtolower($this->email), (array) config('app.admins'), true);
+	}
+
+	/**
+	 * This user and everyone they share a board with; admins know everyone.
+	 *
+	 * @return Builder<User>
+	 */
+	public function knownUsers(): Builder
+	{
+		if ($this->isAdmin()) {
+			return User::query();
+		}
+
+		return User::query()->whereHas('boards', fn (Builder $query) => $query->whereIn(
+			'boards.id',
+			$this->boards()->select('boards.id'),
+		))->orWhere('users.id', $this->id);
 	}
 }

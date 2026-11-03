@@ -17,6 +17,7 @@ use App\Http\Controllers\LabelController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReactionController;
 use App\Http\Controllers\StackController;
+use App\Http\Controllers\TrelloImportController;
 use App\Http\Controllers\WatchController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -41,6 +42,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::get('boards/{board}/background', [BoardBackgroundController::class, 'show'])->name('boards.background');
 	Route::post('boards/{board}/background', [BoardBackgroundController::class, 'store'])->name('boards.background.store');
 	Route::delete('boards/{board}/background', [BoardBackgroundController::class, 'destroy'])->name('boards.background.destroy');
+
+	Route::get('imports/trello', [TrelloImportController::class, 'create'])->name('imports.trello');
+	Route::post('imports/trello', [TrelloImportController::class, 'store'])->name('imports.trello.store');
+	Route::post('imports/{import}/download', [TrelloImportController::class, 'download'])->name('imports.download');
+	Route::delete('imports/{import}', [TrelloImportController::class, 'destroy'])->name('imports.destroy');
 
 	Route::get('boards/{board}/export', [BoardExportController::class, 'show'])->name('boards.export');
 
