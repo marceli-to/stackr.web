@@ -485,6 +485,28 @@ Same method as the kimiyuch boards (gotaticket/usverchauft):
 
 Feature list (2026-10-24). 1–14, 16, 17, 19 (ZIP and CSV export) and 20 are done; 15, 18, 21 and 22–41 are left.
 
+**After the deploys of 2026-11-05** (up to `0aabb2f`), checks by hand, none of it was tried in a
+browser:
+
+- Scrollbars: thin and tinted in Firefox, Chrome and Safari (macOS hides overlay scrollbars).
+- List menu: Sort cards ›, Copy list…, Move all cards to ›, Archive all cards….
+- Overview: drag board tiles (a click still opens the board, a drop doesn't, the ⋯ menu works; on
+  touch a 200 ms hold starts the drag); the order survives a reload and is per member.
+- Board ⋯ → Export cards as CSV opens in Excel with umlauts intact.
+- Members dialog: Make owner → the old owner can then leave.
+- Checklist item: the cards icon makes a card right below.
+- My cards (⋯ menu or the overview button): order, Show completed, a row opens the card.
+- Set Repository on the Stackr Backlog board (⋯ → Edit → https://github.com/marceli-to/stackr.web)
+  so commit hashes in comments link.
+- The landing page still says "Eleven colours for your boards, five of them gradients"; there are
+  12 solids and 12 gradients now.
+
+Backlog board (Stackr Backlog, `ozy79pbeas`): next up is #21 "Move a list to another board" (list
+menu → Move list to board ›, cards carried over like a card move between boards).
+
+Gotcha: don't give `BoardMembership` (a pivot) a `$fillable`; `attach()` with `role` then drops the
+role and the insert fails.
+
 **After the deploy of 2026-11-03** (`781f1fb`), for the user:
 
 - Add `ADMIN_EMAILS=m@marceli.to` to the server `.env`, then
