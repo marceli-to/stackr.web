@@ -15,16 +15,21 @@ class RecordActivity
 	/**
 	 * Logs what just happened to the card, by whoever is signed in, and tells
 	 * the people following it. Someone just added to the card hears about
-	 * that from AssignedToCard instead.
+	 * that from AssignedToCard instead. $notify false only logs it, for bulk
+	 * work that would otherwise flood the bell.
 	 *
 	 * @param  array<string, mixed>  $data
 	 */
-	public function handle(Card $card, string $type, array $data = []): Activity
+	public function handle(Card $card, string $type, array $data = [], bool $notify = true): Activity
 	{
 		$activity = new Activity(['type' => $type, 'data' => $data ?: null, 'via_agent' => Agent::acting()]);
 		$activity->card()->associate($card);
 		$activity->user()->associate(Auth::user());
 		$activity->save();
+
+		if (! $notify) {
+			return $activity;
+		}
 
 		$this->notifyWatchers->handle(
 			$card,

@@ -41,6 +41,7 @@ _Last updated: 2026-11-05_
 | 31. Import from Trello (⋯ → Import from Trello…)       | ✅ done |
 | 32. Sort a list (list menu → Sort cards)               | ✅ done |
 | 33. Thin, tinted scrollbars                            | ✅ done |
+| 34. Copy a list (list menu → Copy list…)               | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 Production (https://stackr.kimiyu.ch) runs `d5d6321` (deployed 2026-11-05, no new migrations; `ADMIN_EMAILS` still to be added to the server `.env` by the user).
@@ -247,6 +248,12 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   1–999); the header then shows "3 / 5", red when over, and nothing is blocked. "Collapse list" is
   personal (localStorage `stackr.collapsed.<board>`): the list shrinks to a narrow column with
   its name on its side and the card count; click it to expand. Collapsed lists can still be dragged.
+- **Copying a list:** "Copy list…" in the list menu asks for a name (the list's own, to start
+  with) and puts the copy right after the original (`stacks.copy`, `CopyStack`), card limit
+  included. Every active card is copied through `CopyCard` with everything but comments
+  (checklists, labels, members, files, cover); `$asIs` keeps templates templates, records
+  "copied" and skips `NotifyWatchers` (`RecordActivity`'s `notify: false`), so a big list
+  doesn't flood anyone's bell. Archived cards stay behind.
 - **Sorting a list:** "Sort cards" in the list menu (`stacks.sort`, `SortStack`, `CardSort` enum)
   orders the active cards once by due date (soonest first, none last), newest, oldest or title
   (natural, any case); ties keep their order. It rewrites the cards' positions (`a0`, `a1`, …), so
@@ -513,7 +520,7 @@ Gaps compared with Trello (added 2026-10-25, not prioritised yet):
 
 **Lists (gaps)**
 
-27. Copy a list.
+27. ~~Copy a list.~~ Done.
 28. Move a list to another board.
 29. Move or archive every card in a list at once.
 30. ~~Sort a list by due date or creation date.~~ Done (also by title).

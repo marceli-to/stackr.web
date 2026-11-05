@@ -65,6 +65,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::patch('stacks/{stack}', [StackController::class, 'update'])->name('stacks.update');
 	Route::patch('stacks/{stack}/limit', [StackController::class, 'limit'])->name('stacks.limit');
 	Route::patch('stacks/{stack}/move', [StackController::class, 'move'])->name('stacks.move');
+	Route::post('stacks/{stack}/copy', [StackController::class, 'copy'])->name('stacks.copy');
 	Route::patch('stacks/{stack}/sort', [StackController::class, 'sort'])->name('stacks.sort');
 	Route::patch('stacks/{stack}/archive', [StackController::class, 'archive'])->name('stacks.archive');
 	Route::patch('stacks/{stack}/restore', [StackController::class, 'restore'])->name('stacks.restore');

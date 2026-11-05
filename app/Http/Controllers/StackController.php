@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Stacks\ArchiveStack;
+use App\Actions\Stacks\CopyStack;
 use App\Actions\Stacks\CreateStack;
 use App\Actions\Stacks\DeleteStack;
 use App\Actions\Stacks\MoveStack;
@@ -66,6 +67,20 @@ class StackController extends Controller
 		Gate::authorize('update', $stack->board);
 
 		$moveStack->handle($stack, $request->integer('index'));
+
+		return back();
+	}
+
+	/**
+	 * Copy a list and its cards, right after the original.
+	 */
+	public function copy(StackRequest $request, Stack $stack, CopyStack $copyStack): RedirectResponse
+	{
+		Gate::authorize('update', $stack->board);
+
+		$copyStack->handle($stack, $request->validated('name'));
+
+		$this->toast(__('List copied.'));
 
 		return back();
 	}

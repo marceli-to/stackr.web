@@ -23,13 +23,14 @@ class CopyCard
 	 * Copies the card into a list (on any of the user's boards) at the given
 	 * index. Title, description and dates always come along; $keep picks
 	 * the rest: checklists, labels, members, attachments. Comments stay, and
-	 * the copy is never a template itself.
+	 * the copy is never a template itself, unless $asIs (copying a whole
+	 * list), which keeps a template a template and notifies nobody.
 	 *
 	 * @param  list<string>  $keep
 	 */
-	public function handle(Card $card, Stack $target, int $index, string $title, array $keep): Card
+	public function handle(Card $card, Stack $target, int $index, string $title, array $keep, bool $asIs = false): Card
 	{
-		return DB::transaction(function () use ($card, $target, $index, $title, $keep): Card {
+		return DB::transaction(function () use ($card, $target, $index, $title, $keep, $asIs): Card {
 			$siblings = $target->cards()
 				->active()
 				->get(['id', 'position'])
@@ -42,6 +43,7 @@ class CopyCard
 				'start_at' => $card->start_at,
 				'due_at' => $card->due_at,
 				'cover_color' => $card->cover_color,
+				'is_template' => $asIs && $card->is_template,
 				'position' => FractionalIndex::forIndex($siblings, $index),
 			]);
 			$copy->stack()->associate($target);
@@ -67,7 +69,12 @@ class CopyCard
 				$this->carryCardOver->handle($copy, $target->board);
 			}
 
-			$this->recordActivity->handle($copy, $card->is_template ? 'from_template' : 'copied', ['from' => $card->title]);
+			$this->recordActivity->handle(
+				$copy,
+				$card->is_template && ! $asIs ? 'from_template' : 'copied',
+				['from' => $card->title],
+				notify: ! $asIs,
+			);
 
 			return $copy;
 		});

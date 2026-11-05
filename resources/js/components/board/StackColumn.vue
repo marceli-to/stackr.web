@@ -3,6 +3,7 @@ import { Form, router } from '@inertiajs/vue3';
 import {
 	PhArchive,
 	PhArrowsInLineHorizontal,
+	PhCopy,
 	PhDotsThree,
 	PhGauge,
 	PhPencilSimple,
@@ -88,6 +89,33 @@ function saveLimit(value: string | number | null) {
 			preserveScroll: true,
 			preserveState: true,
 			onSuccess: () => (limitOpen.value = false),
+		},
+	);
+}
+
+// The copy lands right after this list, with copies of all its cards.
+const copyOpen = ref(false);
+const copyName = ref('');
+const copyError = ref<string | undefined>();
+const copying = ref(false);
+
+function startCopy() {
+	copyName.value = props.stack.name;
+	copyError.value = undefined;
+	copyOpen.value = true;
+}
+
+function saveCopy() {
+	router.post(
+		StackController.copy(props.stack.id).url,
+		{ name: copyName.value },
+		{
+			preserveScroll: true,
+			preserveState: true,
+			onStart: () => (copying.value = true),
+			onFinish: () => (copying.value = false),
+			onSuccess: () => (copyOpen.value = false),
+			onError: (errors) => (copyError.value = errors.name),
 		},
 	);
 }
@@ -258,6 +286,10 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 						<PhGauge />
 						Card limit…
 					</DropdownMenuItem>
+					<DropdownMenuItem @select="startCopy">
+						<PhCopy />
+						Copy list…
+					</DropdownMenuItem>
 					<DropdownMenuSub>
 						<DropdownMenuSubTrigger>
 							<PhSortAscending />
@@ -346,6 +378,44 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 						>
 					</DialogClose>
 					<Button type="submit">Save</Button>
+				</DialogFooter>
+			</form>
+		</DialogContent>
+	</Dialog>
+
+	<Dialog v-model:open="copyOpen">
+		<DialogContent class="sm:max-w-sm">
+			<form class="space-y-5" @submit.prevent="saveCopy">
+				<DialogHeader>
+					<DialogTitle>Copy list</DialogTitle>
+					<DialogDescription>
+						The copy goes right after “{{ stack.name }}”, with all
+						its cards: checklists, labels, members and files, but no
+						comments.
+					</DialogDescription>
+				</DialogHeader>
+				<div class="grid gap-2">
+					<label for="copy-name" class="text-sm font-medium"
+						>Name</label
+					>
+					<Input
+						id="copy-name"
+						v-model="copyName"
+						maxlength="255"
+						required
+						autocomplete="off"
+					/>
+					<p v-if="copyError" class="text-xs text-destructive">
+						{{ copyError }}
+					</p>
+				</div>
+				<DialogFooter class="gap-2">
+					<DialogClose as-child>
+						<Button type="button" variant="secondary"
+							>Cancel</Button
+						>
+					</DialogClose>
+					<Button type="submit" :disabled="copying">Copy</Button>
 				</DialogFooter>
 			</form>
 		</DialogContent>

@@ -176,4 +176,58 @@ class MoveCopyCardTest extends TestCase
 			->post(route('cards.copy', $this->card), ['index' => 0, 'title' => ''])
 			->assertSessionHasErrors(['title', 'stack_id']);
 	}
+
+	public function test_a_list_can_be_copied_with_its_cards()
+	{
+		$next = Stack::factory()->for($this->board)->create(['name' => 'Done']);
+		$this->stack->update(['wip_limit' => 5]);
+		$label = $this->board->labels()->create(['name' => 'Bug', 'color' => LabelColor::Red]);
+		$watcher = User::factory()->create();
+		$this->board->members()->attach($watcher, ['role' => BoardRole::Member]);
+		$this->board->watchers()->attach($watcher);
+		$this->card->labels()->attach($label);
+		$this->card->members()->attach($watcher);
+		$this->card->checklists()->create(['title' => 'Steps'])->items()->create(['title' => 'One']);
+		$this->card->comments()->create(['body' => 'Hi', 'user_id' => $this->user->id]);
+		$this->actingAs($this->user)
+			->post(route('attachments.store', $this->card), ['files' => [UploadedFile::fake()->image('cover.png')]]);
+		Card::factory()->for($this->stack)->create(['title' => 'Form', 'is_template' => true]);
+		Card::factory()->for($this->stack)->create(['title' => 'Gone', 'archived_at' => now()]);
+		$watcher->notifications()->delete();
+
+		$this->actingAs($this->user)
+			->post(route('stacks.copy', $this->stack), ['name' => 'To do (copy)'])
+			->assertSessionHasNoErrors();
+
+		$this->assertSame(['To do', 'To do (copy)', 'Done'], $this->board->stacks()->pluck('name')->all());
+		$copy = $this->board->stacks()->where('name', 'To do (copy)')->sole();
+		$this->assertSame(5, $copy->wip_limit);
+		$this->assertSame(['Brief', 'Form'], $copy->cards()->pluck('title')->all());
+
+		$brief = $copy->cards()->where('title', 'Brief')->sole();
+		$this->assertSame([$label->id], $brief->labels()->pluck('labels.id')->all());
+		$this->assertSame([$watcher->id], $brief->members()->pluck('users.id')->all());
+		$this->assertSame(['One'], $brief->checklists()->sole()->items()->pluck('title')->all());
+		$this->assertSame(0, $brief->comments()->count());
+		$this->assertSame($brief->attachments()->sole()->id, $brief->cover_attachment_id);
+		$this->assertSame('copied', $brief->activities()->sole()->type);
+		$this->assertTrue($copy->cards()->where('title', 'Form')->sole()->is_template);
+
+		// The original stays as it was, and nobody hears about the copies.
+		$this->assertSame(['Brief', 'Form', 'Gone'], $this->stack->cards()->pluck('title')->all());
+		$this->assertSame(0, $watcher->notifications()->count());
+	}
+
+	public function test_copying_a_list_needs_a_name_and_membership()
+	{
+		$this->actingAs($this->user)
+			->post(route('stacks.copy', $this->stack), ['name' => ''])
+			->assertSessionHasErrors('name');
+
+		$this->actingAs(User::factory()->create())
+			->post(route('stacks.copy', $this->stack), ['name' => 'Copy'])
+			->assertForbidden();
+
+		$this->assertSame(1, $this->board->stacks()->count());
+	}
 }
