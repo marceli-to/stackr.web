@@ -64,6 +64,72 @@ class BoardManagementTest extends TestCase
 			);
 	}
 
+	public function test_a_user_can_reorder_their_overview()
+	{
+		$user = User::factory()->create();
+		foreach (['Alpha', 'Beta', 'Gamma', 'Delta'] as $name) {
+			Board::factory()->ownedBy($user)->create(['name' => $name]);
+		}
+		$gamma = Board::query()->where('name', 'Gamma')->firstOrFail();
+		$alpha = Board::query()->where('name', 'Alpha')->firstOrFail();
+
+		// Alphabetical at first: Alpha, Beta, Delta, Gamma.
+		$this->actingAs($user)->patch(route('boards.move', $gamma), ['index' => 0])->assertRedirect();
+		$this->actingAs($user)->patch(route('boards.move', $alpha), ['index' => 3])->assertRedirect();
+
+		$this->actingAs($user)
+			->get(route('boards.index'))
+			->assertInertia(fn (Assert $page) => $page
+				->where('boards.0.name', 'Gamma')
+				->where('boards.1.name', 'Beta')
+				->where('boards.2.name', 'Delta')
+				->where('boards.3.name', 'Alpha')
+			);
+
+		// A board added later goes after the placed ones.
+		Board::factory()->ownedBy($user)->create(['name' => 'Aardvark']);
+
+		$this->actingAs($user)
+			->get(route('boards.index'))
+			->assertInertia(fn (Assert $page) => $page
+				->where('boards.3.name', 'Alpha')
+				->where('boards.4.name', 'Aardvark')
+			);
+	}
+
+	public function test_each_member_keeps_their_own_board_order()
+	{
+		$owner = User::factory()->create();
+		$member = User::factory()->create();
+		$first = Board::factory()->ownedBy($owner)->create(['name' => 'First']);
+		$second = Board::factory()->ownedBy($owner)->create(['name' => 'Second']);
+		$first->members()->attach($member, ['role' => BoardRole::Member->value]);
+		$second->members()->attach($member, ['role' => BoardRole::Member->value]);
+
+		$this->actingAs($member)->patch(route('boards.move', $second), ['index' => 0])->assertRedirect();
+
+		$this->actingAs($member)
+			->get(route('boards.index'))
+			->assertInertia(fn (Assert $page) => $page->where('boards.0.name', 'Second'));
+
+		$this->actingAs($owner)
+			->get(route('boards.index'))
+			->assertInertia(fn (Assert $page) => $page->where('boards.0.name', 'First'));
+	}
+
+	public function test_only_members_can_move_a_board()
+	{
+		$board = Board::factory()->ownedBy(User::factory()->create())->create();
+
+		$this->actingAs(User::factory()->create())
+			->patch(route('boards.move', $board), ['index' => 0])
+			->assertForbidden();
+
+		$this->actingAs($board->members()->firstOrFail())
+			->patch(route('boards.move', $board), ['index' => -1])
+			->assertSessionHasErrors('index');
+	}
+
 	public function test_a_user_can_create_several_boards_and_owns_them()
 	{
 		$user = User::factory()->create();

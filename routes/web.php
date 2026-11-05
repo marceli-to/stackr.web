@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::redirect('dashboard', '/boards')->name('dashboard');
 
 	Route::resource('boards', BoardController::class)->except(['create', 'edit']);
+	Route::patch('boards/{board}/move', [BoardController::class, 'move'])->name('boards.move');
 
 	Route::post('notifications/read', [NotificationController::class, 'readAll'])->name('notifications.read-all');
 	Route::post('notifications/{notification}/open', [NotificationController::class, 'open'])->name('notifications.open');

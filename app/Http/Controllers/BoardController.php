@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Actions\Boards\CreateBoard;
 use App\Actions\Boards\DeleteBoard;
+use App\Actions\Boards\MoveBoard;
 use App\Actions\Boards\UpdateBoard;
 use App\Http\Requests\BoardRequest;
+use App\Http\Requests\MoveRequest;
 use App\Http\Resources\ArchivedCardResource;
 use App\Http\Resources\ArchivedStackResource;
 use App\Http\Resources\BoardResource;
@@ -18,6 +20,7 @@ use App\Http\Resources\LabelResource;
 use App\Http\Resources\MemberResource;
 use App\Http\Resources\StackResource;
 use App\Models\Board;
+use App\Models\BoardMembership;
 use App\Models\Checklist;
 use App\Models\Stack;
 use App\Models\User;
@@ -43,12 +46,10 @@ class BoardController extends Controller
 				'stacks' => fn ($query) => $query->active(),
 				'cards' => fn ($query) => $query->active()->whereNull('stacks.archived_at'),
 			])])
-			->get()
-			->sortBy('board.name', SORT_NATURAL | SORT_FLAG_CASE)
-			->values();
+			->get();
 
 		return Inertia::render('boards/Index', [
-			'boards' => BoardTileResource::collection($memberships),
+			'boards' => BoardTileResource::collection(BoardMembership::inOverviewOrder($memberships)),
 		]);
 	}
 
@@ -151,6 +152,23 @@ class BoardController extends Controller
 		$updateBoard->handle($board, $request->validated());
 
 		$this->toast(__('Board updated.'));
+
+		return back();
+	}
+
+	/**
+	 * Move a board on the user's own overview; other members keep their order.
+	 */
+	public function move(MoveRequest $request, Board $board, MoveBoard $moveBoard): RedirectResponse
+	{
+		/** @var User $user */
+		$user = $request->user();
+
+		$membership = $user->memberships()->where('board_id', $board->id)->first();
+
+		abort_if($membership === null, 403);
+
+		$moveBoard->handle($membership, $request->integer('index'));
 
 		return back();
 	}

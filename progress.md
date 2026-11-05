@@ -45,6 +45,7 @@ _Last updated: 2026-11-05_
 | 35. Move or archive all cards in a list                | ✅ done |
 | 36. Commit hashes link to the board's repository       | ✅ done |
 | 37. MCP tools for lists and labels                     | ✅ done |
+| 38. Reorder boards on the overview (drag the tiles)    | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 Production (https://stackr.kimiyu.ch) runs `7bcca12` (deployed 2026-11-05, migration for `boards.repository_url` run; `ADMIN_EMAILS` still to be added to the server `.env` by the user).
@@ -271,6 +272,12 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   to `<repository>/commit/<hash>`, in plain text and in inline code that is only the hash (shown
   as code). Code blocks, existing links (autolinks too) and image alt text are skipped. GitHub and
   GitLab both answer `/commit/<hash>`. No repository, no change. In the ZIP export, not in MCP.
+- **Board order on the overview:** each member drags the tiles into their own order
+  (`boards.move`, `MoveBoard`), kept as a fractional key in `board_user.position`. Boards never
+  placed have no key and follow the placed ones by name, so new boards and boards shared with you
+  land at the end. The first move gives keys to the boards shown before it, in their shown order,
+  so nothing else jumps. Touch needs a 200 ms hold before a drag starts. MCP `list_boards` stays
+  alphabetical.
 - **Sorting a list:** "Sort cards" in the list menu (`stacks.sort`, `SortStack`, `CardSort` enum)
   orders the active cards once by due date (soonest first, none last), newest, oldest or title
   (natural, any case); ties keep their order. It rewrites the cards' positions (`a0`, `a1`, …), so
@@ -536,7 +543,7 @@ Gaps compared with Trello (added 2026-10-25, not prioritised yet):
 
 22. Copy a board, and board templates.
 23. Import a board, starting with the ZIP from our own export.
-24. Reorder boards on the overview.
+24. ~~Reorder boards on the overview.~~ Done.
 25. Activity feed for the whole board (activity is only shown per card today).
 26. Undo deleting a board (soft delete with a grace period).
 

@@ -6,9 +6,13 @@ import {
 	PhPlus,
 	PhTrash,
 } from '@phosphor-icons/vue';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { VueDraggable } from 'vue-draggable-plus';
+import type { DraggableEvent } from 'vue-draggable-plus';
+import BoardController from '@/actions/App/Http/Controllers/BoardController';
 import DeleteBoardDialog from '@/components/board/DeleteBoardDialog.vue';
 import BoardFormDialog from '@/components/board/BoardFormDialog.vue';
+import { hasPendingMoves, saveMove } from '@/components/board/useBoardMove';
 import { Button } from '@/components/ui/button';
 import {
 	DropdownMenu,
@@ -67,6 +71,35 @@ function remove(board: BoardSummary) {
 	deleteOpen.value = true;
 }
 
+// Local copy that drag & drop rearranges straight away; the order is the
+// user's own, other members keep theirs.
+const tiles = ref<BoardSummary[]>([...props.boards]);
+
+function resync() {
+	tiles.value = [...props.boards];
+}
+
+watch(
+	() => props.boards,
+	() => {
+		if (!hasPendingMoves()) {
+			resync();
+		}
+	},
+);
+
+function onBoardMoved(event: DraggableEvent<BoardSummary>) {
+	if (event.newIndex === undefined || event.newIndex === event.oldIndex) {
+		return;
+	}
+
+	saveMove(
+		BoardController.move(event.data.key),
+		{ index: event.newIndex },
+		resync,
+	);
+}
+
 function plural(count: number, word: string) {
 	return `${count} ${word}${count === 1 ? '' : 's'}`;
 }
@@ -82,10 +115,21 @@ function plural(count: number, word: string) {
 			Boards
 		</h1>
 
-		<ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+		<VueDraggable
+			v-model="tiles"
+			tag="ul"
+			:animation="150"
+			draggable="[data-board-tile]"
+			:delay="200"
+			:delay-on-touch-only="true"
+			ghost-class="opacity-40"
+			class="grid gap-3 select-none sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+			@update="onBoardMoved"
+		>
 			<li
-				v-for="board in boards"
+				v-for="board in tiles"
 				:key="board.id"
+				data-board-tile
 				:data-field="board.color"
 				class="relative flex aspect-[16/10] flex-col rounded-[var(--radius-tile)] field-fill bg-cover bg-center p-5 text-field-ink"
 				:style="
@@ -184,7 +228,7 @@ function plural(count: number, word: string) {
 					</span>
 				</button>
 			</li>
-		</ul>
+		</VueDraggable>
 	</div>
 
 	<BoardFormDialog
