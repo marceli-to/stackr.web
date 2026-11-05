@@ -170,6 +170,31 @@ class CardDetailsTest extends TestCase
 		$this->assertSame(0, Checklist::count());
 	}
 
+	public function test_a_checklist_item_becomes_a_card_below_its_card()
+	{
+		$after = Card::factory()->for($this->card->stack)->create(['title' => 'Next card', 'position' => 'a5']);
+		$this->card->update(['position' => 'a0']);
+		$checklist = $this->card->checklists()->create(['title' => 'Launch']);
+		$item = $checklist->items()->create(['title' => 'Set up DNS', 'completed_at' => now()]);
+		$checklist->items()->create(['title' => 'Stays']);
+
+		$this->actingAs($this->user)
+			->post(route('checklist-items.convert', $item))
+			->assertRedirect();
+
+		$card = Card::query()->where('title', 'Set up DNS')->firstOrFail();
+		$this->assertSame($this->card->stack_id, $card->stack_id);
+		$this->assertNotNull($card->completed_at);
+		$this->assertSame(['Write copy', 'Set up DNS', 'Next card'], $this->card->stack->cards()->pluck('title')->all());
+		$this->assertSame(['Stays'], $checklist->items()->pluck('title')->all());
+		$this->assertSame('from_checklist', $card->activities()->value('type'));
+		$this->assertNotNull($after->fresh());
+
+		$this->actingAs(User::factory()->create())
+			->post(route('checklist-items.convert', $checklist->items()->firstOrFail()))
+			->assertForbidden();
+	}
+
 	public function test_uploading_an_image_makes_it_the_cover_and_members_can_view_it()
 	{
 		$this->actingAs($this->user)

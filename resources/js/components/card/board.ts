@@ -186,6 +186,8 @@ export function describeActivity(
 			return `created ${card} from the template “${data.from}”`;
 		case 'copied':
 			return `copied ${card} from “${data.from}”`;
+		case 'from_checklist':
+			return `made ${card} from a checklist item on “${data.from}”`;
 		case 'moved':
 			return `moved ${card} from ${data.from} to ${data.to}`;
 		case 'moved_board':

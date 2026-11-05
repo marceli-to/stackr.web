@@ -19,6 +19,7 @@ class ActivityText
 		return match ($activity->type) {
 			'created' => "Added to {$value('stack')}",
 			'copied' => "Copied from “{$value('from')}”",
+			'from_checklist' => "Made from a checklist item on “{$value('from')}”",
 			'from_template' => "Created from the template “{$value('from')}”",
 			'moved' => "Moved from {$value('from')} to {$value('to')}",
 			'moved_board' => "Moved from the board {$value('from')} to {$value('to')}",

@@ -48,6 +48,7 @@ _Last updated: 2026-11-05_
 | 38. Reorder boards on the overview (drag the tiles)    | ✅ done |
 | 39. CSV export of a board's cards (⋯ menu)             | ✅ done |
 | 40. Hand over a board (members → Make owner)           | ✅ done |
+| 41. Turn a checklist item into a card                  | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 Production (https://stackr.kimiyu.ch) runs `a65cb0c` (deployed 2026-11-05, migration for `board_user.position` run with `fe0da9b`; `ADMIN_EMAILS` still to be added to the server `.env` by the user).
@@ -276,6 +277,11 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   to `<repository>/commit/<hash>`, in plain text and in inline code that is only the hash (shown
   as code). Code blocks, existing links (autolinks too) and image alt text are skipped. GitHub and
   GitLab both answer `/commit/<hash>`. No repository, no change. In the ZIP export, not in MCP.
+- **Checklist item → card:** the cards icon on an item (hover, next to ✕) runs
+  `checklist-items.convert` (`ConvertChecklistItem`): a new card with the item's title, right below
+  the item's card in the same list (completed if the item was ticked), and the item leaves the
+  checklist. Nothing else carries over (no labels, members or dates). Activity `from_checklist`
+  ("made this card from a checklist item on …"), which notifies the board's watchers like `created`.
 - **CSV export:** ⋯ → "Export cards as CSV" (`boards.export.csv`, `ExportBoardCsv`) gives one row
   per active card in board order: list, title, description, labels (name, or colour when unnamed),
   members, start/due/completed (`Y-m-d H:i`, app timezone), checklist done/total, comment and
@@ -567,7 +573,7 @@ Gaps compared with Trello (added 2026-10-25, not prioritised yet):
 **Cards (gaps)**
 
 31. Checklist items with a due date and an assigned member; reorder checklist items.
-32. Turn a checklist item into a card.
+32. ~~Turn a checklist item into a card.~~ Done.
 33. Recurring cards or due dates.
 34. Custom fields, votes, card aging.
 35. Bulk select: move, label or archive several cards at once.

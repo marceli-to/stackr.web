@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3';
-import { PhCheckSquare, PhX } from '@phosphor-icons/vue';
+import { PhCards, PhCheckSquare, PhX } from '@phosphor-icons/vue';
 import { computed, ref } from 'vue';
 import ChecklistController from '@/actions/App/Http/Controllers/ChecklistController';
 import ChecklistItemController from '@/actions/App/Http/Controllers/ChecklistItemController';
@@ -88,6 +88,11 @@ function saveItem(item: ChecklistItem) {
 	}
 
 	editingItem.value = null;
+}
+
+// The new card lands right below this one, in the same list.
+function convertItem(item: ChecklistItem) {
+	router.post(ChecklistItemController.convert(item.id).url, {}, keep);
 }
 
 function removeItem(item: ChecklistItem) {
@@ -195,6 +200,16 @@ function removeItem(item: ChecklistItem) {
 				>
 					{{ item.title }}
 				</span>
+				<Button
+					variant="ghost"
+					size="icon-sm"
+					class="opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+					:aria-label="`Make ${item.title} a card`"
+					title="Make a card"
+					@click="convertItem(item)"
+				>
+					<PhCards />
+				</Button>
 				<Button
 					variant="ghost"
 					size="icon-sm"

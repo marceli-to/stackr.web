@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Checklists\ConvertChecklistItem;
 use App\Actions\Checklists\CreateChecklistItem;
 use App\Actions\Checklists\DeleteChecklistItem;
 use App\Actions\Checklists\UpdateChecklistItem;
@@ -34,6 +35,20 @@ class ChecklistItemController extends Controller
 		Gate::authorize('update', $item->checklist->card->stack->board);
 
 		$updateItem->handle($item, $request->validated());
+
+		return back();
+	}
+
+	/**
+	 * Turn an item into a card below its card.
+	 */
+	public function convert(ChecklistItem $item, ConvertChecklistItem $convertItem): RedirectResponse
+	{
+		Gate::authorize('update', $item->checklist->card->stack->board);
+
+		$card = $convertItem->handle($item);
+
+		$this->toast(__('“:title” is now a card.', ['title' => $card->title]));
 
 		return back();
 	}

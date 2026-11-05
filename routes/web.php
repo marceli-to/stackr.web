@@ -100,6 +100,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::post('checklists/{checklist}/items', [ChecklistItemController::class, 'store'])->name('checklist-items.store');
 	Route::patch('checklist-items/{item}', [ChecklistItemController::class, 'update'])->name('checklist-items.update');
 	Route::delete('checklist-items/{item}', [ChecklistItemController::class, 'destroy'])->name('checklist-items.destroy');
+	Route::post('checklist-items/{item}/card', [ChecklistItemController::class, 'convert'])->name('checklist-items.convert');
 
 	Route::post('cards/{card}/attachments', [AttachmentController::class, 'store'])->name('attachments.store');
 	Route::get('attachments/{attachment}', [AttachmentController::class, 'show'])->name('attachments.show');
