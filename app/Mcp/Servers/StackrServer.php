@@ -9,14 +9,19 @@ use App\Mcp\Tools\AddLabelTool;
 use App\Mcp\Tools\ArchiveCardTool;
 use App\Mcp\Tools\AssignMemberTool;
 use App\Mcp\Tools\CreateCardTool;
+use App\Mcp\Tools\CreateLabelTool;
+use App\Mcp\Tools\CreateListTool;
 use App\Mcp\Tools\GetBoardTool;
 use App\Mcp\Tools\GetCardTool;
 use App\Mcp\Tools\ListBoardsTool;
 use App\Mcp\Tools\MoveCardTool;
+use App\Mcp\Tools\MoveListTool;
 use App\Mcp\Tools\RemoveLabelTool;
+use App\Mcp\Tools\RenameListTool;
 use App\Mcp\Tools\TickChecklistItemTool;
 use App\Mcp\Tools\UnassignMemberTool;
 use App\Mcp\Tools\UpdateCardTool;
+use App\Mcp\Tools\UpdateLabelTool;
 use Laravel\Mcp\Server;
 use Laravel\Mcp\Server\Attributes\Instructions;
 use Laravel\Mcp\Server\Attributes\Name;
@@ -34,6 +39,9 @@ use Laravel\Mcp\Server\Attributes\Version;
 	to the list for work in progress, do the work, tick its checklist items, comment on what you
 	did, then move it to "Done" (or mark it completed with update_card). Lists can be named by
 	name or id; if a name is ambiguous you'll be asked for the id.
+
+	You can also set up a board: create_list, rename_list and move_list for its lists, and
+	create_label and update_label for its labels. Nothing can be deleted through these tools.
 	MD)]
 class StackrServer extends Server
 {
@@ -53,5 +61,10 @@ class StackrServer extends Server
 		AddLabelTool::class,
 		RemoveLabelTool::class,
 		ArchiveCardTool::class,
+		CreateListTool::class,
+		RenameListTool::class,
+		MoveListTool::class,
+		CreateLabelTool::class,
+		UpdateLabelTool::class,
 	];
 }

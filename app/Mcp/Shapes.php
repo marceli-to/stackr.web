@@ -132,6 +132,24 @@ class Shapes
 	}
 
 	/**
+	 * The board's active lists in order, without their cards.
+	 *
+	 * @return list<array<string, mixed>>
+	 */
+	public static function lists(Board $board): array
+	{
+		return array_values($board->stacks()->active()->get()->map(fn (Stack $stack): array => self::list($stack))->all());
+	}
+
+	/**
+	 * @return array<string, mixed>
+	 */
+	public static function list(Stack $stack): array
+	{
+		return ['id' => $stack->id, 'name' => $stack->name, 'wip_limit' => $stack->wip_limit];
+	}
+
+	/**
 	 * @return array<string, mixed>
 	 */
 	public static function member(User $user): array

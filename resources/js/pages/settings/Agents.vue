@@ -232,7 +232,8 @@ function revoke(id: number) {
 		<p class="text-sm text-muted-foreground">
 			The agent can list your boards, read and create cards, edit them,
 			comment, move them between lists, work through checklists, assign
-			members, set labels and archive cards. It can't delete anything,
+			members, set labels and archive cards. It can also add, rename and
+			reorder lists and create and edit labels. It can't delete anything,
 			change board settings or invite people.
 		</p>
 	</div>

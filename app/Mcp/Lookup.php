@@ -91,6 +91,21 @@ class Lookup
 		return $this->byName($board->stacks()->active()->get(), $list, 'list', 'name');
 	}
 
+	/**
+	 * A list on this very board, by id or name (any case), for changing the
+	 * list itself.
+	 */
+	public function boardStack(User $user, Board $board, int|string $list): Stack
+	{
+		$stack = $this->stack($user, $board, $list);
+
+		if ($stack->board_id !== $board->id) {
+			$this->notFound('list', "There's no list {$list} on {$board->name}.");
+		}
+
+		return $stack;
+	}
+
 	public function checklist(User $user, int $id): Checklist
 	{
 		$checklist = Checklist::query()->find($id);

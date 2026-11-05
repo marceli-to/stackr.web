@@ -44,6 +44,7 @@ _Last updated: 2026-11-05_
 | 34. Copy a list (list menu → Copy list…)               | ✅ done |
 | 35. Move or archive all cards in a list                | ✅ done |
 | 36. Commit hashes link to the board's repository       | ✅ done |
+| 37. MCP tools for lists and labels                     | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 Production (https://stackr.kimiyu.ch) runs `0334204` (deployed 2026-11-05, migration for `boards.repository_url` run; `ADMIN_EMAILS` still to be added to the server `.env` by the user).
@@ -315,10 +316,12 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   Tokens are made and revoked in Settings → Agents (`AgentController`, behind the password
   confirmation like Security). They never expire, act as their user on all of that user's boards,
   and are shown once (flashed as `agentToken`) together with a filled-in `claude mcp add` command
-  and a `.mcp.json` snippet. There are 15 tools in `app/Mcp/Tools`: list_boards, get_board,
+  and a `.mcp.json` snippet. There are 20 tools in `app/Mcp/Tools`: list_boards, get_board,
   get_card, create_card, update_card, move_card, add_comment, add_checklist, add_checklist_item,
-  tick_checklist_item, assign_member, unassign_member, add_label, remove_label, archive_card.
-  There's no deleting, no board settings and no inviting. Tools call the same actions as the
+  tick_checklist_item, assign_member, unassign_member, add_label, remove_label, archive_card,
+  and for setting up a board create_list, rename_list, move_list (1-based `position`, past the
+  end = last), create_label, update_label (empty name = colour only). List tools only touch lists
+  on the named board (`Lookup::boardStack`). There's no deleting, no board settings and no inviting. Tools call the same actions as the
   controllers. Permissions: `App\Mcp\Lookup` only finds things on the user's own boards (other
   boards read as "not found") and runs the same `BoardPolicy` check. Validation reuses the form
   requests' rules. Lists, members and labels can be named by name (any case) or id; an ambiguous

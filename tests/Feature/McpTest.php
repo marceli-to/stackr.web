@@ -12,13 +12,18 @@ use App\Mcp\Tools\AddLabelTool;
 use App\Mcp\Tools\ArchiveCardTool;
 use App\Mcp\Tools\AssignMemberTool;
 use App\Mcp\Tools\CreateCardTool;
+use App\Mcp\Tools\CreateLabelTool;
+use App\Mcp\Tools\CreateListTool;
 use App\Mcp\Tools\GetBoardTool;
 use App\Mcp\Tools\GetCardTool;
 use App\Mcp\Tools\MoveCardTool;
+use App\Mcp\Tools\MoveListTool;
 use App\Mcp\Tools\RemoveLabelTool;
+use App\Mcp\Tools\RenameListTool;
 use App\Mcp\Tools\TickChecklistItemTool;
 use App\Mcp\Tools\UnassignMemberTool;
 use App\Mcp\Tools\UpdateCardTool;
+use App\Mcp\Tools\UpdateLabelTool;
 use App\Models\Board;
 use App\Models\Card;
 use App\Models\Stack;
@@ -350,5 +355,88 @@ class McpTest extends TestCase
 		StackrServer::actingAs($this->user)
 			->tool(GetCardTool::class, ['card_id' => $this->card->id])
 			->assertHasErrors();
+	}
+
+	public function test_lists_can_be_created_renamed_and_moved()
+	{
+		StackrServer::actingAs($this->user)
+			->tool(CreateListTool::class, ['board' => $this->board->key, 'name' => 'Doing'])
+			->assertOk()
+			->assertSee('Doing');
+
+		$this->assertSame(['To do', 'Done', 'Doing'], $this->board->stacks()->pluck('name')->all());
+
+		StackrServer::actingAs($this->user)
+			->tool(MoveListTool::class, ['board' => $this->board->key, 'list' => 'doing', 'position' => 2])
+			->assertOk();
+
+		$this->assertSame(['To do', 'Doing', 'Done'], $this->board->stacks()->pluck('name')->all());
+
+		StackrServer::actingAs($this->user)
+			->tool(MoveListTool::class, ['board' => $this->board->key, 'list' => (string) $this->todo->id, 'position' => 99])
+			->assertOk();
+
+		$this->assertSame(['Doing', 'Done', 'To do'], $this->board->stacks()->pluck('name')->all());
+
+		StackrServer::actingAs($this->user)
+			->tool(RenameListTool::class, ['board' => $this->board->key, 'list' => 'Doing', 'name' => 'In progress'])
+			->assertOk()
+			->assertSee('In progress');
+
+		StackrServer::actingAs($this->user)
+			->tool(RenameListTool::class, ['board' => $this->board->key, 'list' => 'Done', 'name' => ''])
+			->assertHasErrors();
+
+		$this->assertSame(['In progress', 'Done', 'To do'], $this->board->stacks()->pluck('name')->all());
+	}
+
+	public function test_list_tools_stay_on_the_named_board()
+	{
+		$other = Board::factory()->ownedBy($this->user)->create(['name' => 'Other']);
+		$inbox = Stack::factory()->for($other)->create(['name' => 'Inbox']);
+
+		StackrServer::actingAs($this->user)
+			->tool(RenameListTool::class, ['board' => $this->board->key, 'list' => (string) $inbox->id, 'name' => 'Mine'])
+			->assertHasErrors();
+
+		$this->assertSame('Inbox', $inbox->fresh()->name);
+
+		StackrServer::actingAs($this->user)
+			->tool(CreateListTool::class, ['board' => $this->strangersCard()->stack->board->key, 'name' => 'Sneaky'])
+			->assertHasErrors();
+	}
+
+	public function test_labels_can_be_created_and_edited()
+	{
+		StackrServer::actingAs($this->user)
+			->tool(CreateLabelTool::class, ['board' => $this->board->key, 'name' => 'Bug', 'color' => 'red'])
+			->assertOk();
+
+		$label = $this->board->labels()->sole();
+		$this->assertSame('Bug', $label->name);
+		$this->assertSame(LabelColor::Red, $label->color);
+
+		StackrServer::actingAs($this->user)
+			->tool(UpdateLabelTool::class, ['board' => $this->board->key, 'label' => 'bug', 'color' => 'orange'])
+			->assertOk();
+
+		$this->assertSame(['Bug', LabelColor::Orange], [$label->fresh()->name, $label->fresh()->color]);
+
+		StackrServer::actingAs($this->user)
+			->tool(UpdateLabelTool::class, ['board' => $this->board->key, 'label' => (string) $label->id, 'name' => ''])
+			->assertOk();
+
+		$this->assertNull($label->fresh()->name);
+		$this->assertSame(LabelColor::Orange, $label->fresh()->color);
+
+		StackrServer::actingAs($this->user)
+			->tool(CreateLabelTool::class, ['board' => $this->board->key, 'color' => 'pink'])
+			->assertHasErrors();
+
+		StackrServer::actingAs($this->user)
+			->tool(CreateLabelTool::class, ['board' => $this->board->key, 'color' => 'sky'])
+			->assertOk();
+
+		$this->assertSame(2, $this->board->labels()->count());
 	}
 }

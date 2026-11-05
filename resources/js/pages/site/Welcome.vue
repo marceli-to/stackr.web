@@ -121,6 +121,7 @@ const agentCan = [
 	'Tick off checklist items and add new ones',
 	'Comment, assign members and set labels',
 	'Archive cards',
+	'Add, rename and reorder lists, and set up labels',
 ];
 
 const agentCannot = [
