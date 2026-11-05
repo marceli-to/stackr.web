@@ -6,6 +6,7 @@ import {
 	PhCalendarBlank,
 	PhCheck,
 	PhDownloadSimple,
+	PhTable,
 	PhEye,
 	PhInfo,
 	PhKanban,
@@ -24,6 +25,7 @@ import BoardShortcuts from '@/components/board/BoardShortcuts.vue';
 import { createFilter, filterKey } from '@/components/board/filter';
 import { boardKey } from '@/components/card/board';
 import AppMenu from '@/components/AppMenu.vue';
+import BoardExportController from '@/actions/App/Http/Controllers/BoardExportController';
 import {
 	exportMethod as exportBoard,
 	unwatch as unwatchBoard,
@@ -175,6 +177,17 @@ const view = useStorage<'board' | 'calendar'>(
 				>
 					<PhDownloadSimple />
 					Export board
+				</a>
+			</DropdownMenuItem>
+			<DropdownMenuItem :as-child="true">
+				<a
+					class="block w-full cursor-pointer"
+					:href="BoardExportController.csv.url(board.key)"
+					title="A spreadsheet with one row per active card"
+					download
+				>
+					<PhTable />
+					Export cards as CSV
 				</a>
 			</DropdownMenuItem>
 			<DropdownMenuSeparator />

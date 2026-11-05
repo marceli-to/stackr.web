@@ -50,6 +50,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::delete('imports/{import}', [TrelloImportController::class, 'destroy'])->name('imports.destroy');
 
 	Route::get('boards/{board}/export', [BoardExportController::class, 'show'])->name('boards.export');
+	Route::get('boards/{board}/export/csv', [BoardExportController::class, 'csv'])->name('boards.export.csv');
 
 	Route::post('boards/{board}/watch', [WatchController::class, 'board'])->name('boards.watch');
 	Route::delete('boards/{board}/watch', [WatchController::class, 'board'])->name('boards.unwatch');

@@ -80,5 +80,49 @@ class ExportTest extends TestCase
 		$this->actingAs(User::factory()->create())
 			->get(route('boards.export', $this->board))
 			->assertForbidden();
+
+		$this->actingAs(User::factory()->create())
+			->get(route('boards.export.csv', $this->board))
+			->assertForbidden();
+	}
+
+	public function test_a_member_downloads_the_cards_as_csv()
+	{
+		$stack = Stack::factory()->for($this->board)->create(['name' => 'To do']);
+		$card = Card::factory()->for($stack)->create(['title' => 'Write copy, "short"', 'due_at' => '2026-12-01 09:30']);
+		Card::factory()->for($stack)->create(['title' => '=HYPERLINK("evil")']);
+		Card::factory()->for($stack)->create(['title' => 'Old idea', 'archived_at' => now()]);
+
+		$card->labels()->attach($this->board->labels()->create(['name' => 'Urgent', 'color' => LabelColor::cases()[0]]));
+		$card->labels()->attach($this->board->labels()->create(['name' => null, 'color' => LabelColor::cases()[1]]));
+		$card->members()->attach($this->user);
+		$checklist = $card->checklists()->create(['title' => 'Steps']);
+		$checklist->items()->create(['title' => 'Draft', 'completed_at' => now()]);
+		$checklist->items()->create(['title' => 'Review']);
+		$card->comments()->forceCreate(['user_id' => $this->user->id, 'body' => 'Done']);
+
+		$response = $this->actingAs($this->user)->get(route('boards.export.csv', $this->board));
+
+		$response->assertOk()->assertDownload('stackr-launch-plan-'.now()->format('Y-m-d').'.csv');
+		$this->assertStringStartsWith('text/csv', (string) $response->headers->get('Content-Type'));
+
+		$csv = (string) $response->getContent();
+		$this->assertStringStartsWith("\u{FEFF}List,Title,", $csv);
+
+		$rows = array_map(str_getcsv(...), explode("\n", trim(substr($csv, 3))));
+		$this->assertCount(3, $rows);
+
+		$row = array_combine($rows[0], $rows[1]);
+		$this->assertSame('To do', $row['List']);
+		$this->assertSame('Write copy, "short"', $row['Title']);
+		$this->assertSame('Urgent, '.LabelColor::cases()[1]->value, $row['Labels']);
+		$this->assertSame('Ada', $row['Members']);
+		$this->assertSame('2026-12-01 09:30', $row['Due']);
+		$this->assertSame('1/2', $row['Checklist']);
+		$this->assertSame('1', $row['Comments']);
+		$this->assertSame(route('boards.show', [$this->board, 'card' => $card->id]), $row['Link']);
+
+		// Spreadsheets won't run a title as a formula.
+		$this->assertSame("'=HYPERLINK(\"evil\")", $rows[2][1]);
 	}
 }

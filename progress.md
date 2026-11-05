@@ -46,6 +46,7 @@ _Last updated: 2026-11-05_
 | 36. Commit hashes link to the board's repository       | ✅ done |
 | 37. MCP tools for lists and labels                     | ✅ done |
 | 38. Reorder boards on the overview (drag the tiles)    | ✅ done |
+| 39. CSV export of a board's cards (⋯ menu)             | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 Production (https://stackr.kimiyu.ch) runs `fe0da9b` (deployed 2026-11-05, migration for `board_user.position` run; `ADMIN_EMAILS` still to be added to the server `.env` by the user).
@@ -272,6 +273,12 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   to `<repository>/commit/<hash>`, in plain text and in inline code that is only the hash (shown
   as code). Code blocks, existing links (autolinks too) and image alt text are skipped. GitHub and
   GitLab both answer `/commit/<hash>`. No repository, no change. In the ZIP export, not in MCP.
+- **CSV export:** ⋯ → "Export cards as CSV" (`boards.export.csv`, `ExportBoardCsv`) gives one row
+  per active card in board order: list, title, description, labels (name, or colour when unnamed),
+  members, start/due/completed (`Y-m-d H:i`, app timezone), checklist done/total, comment and
+  attachment counts, created/updated and a link that opens the card. Comma-separated with a UTF-8
+  BOM so Excel reads umlauts; cells starting with `= + - @` get a leading `'` against formula
+  injection. Archived lists and cards stay out, as in the ZIP.
 - **Board order on the overview:** each member drags the tiles into their own order
   (`boards.move`, `MoveBoard`), kept as a fractional key in `board_user.position`. Boards never
   placed have no key and follow the placed ones by name, so new boards and boards shared with you
@@ -461,7 +468,7 @@ Same method as the kimiyuch boards (gotaticket/usverchauft):
 
 ## Next up
 
-Feature list (2026-10-24). 1–14, 20 and the ZIP export (part of 19) are done; 15–18, 21 and 22–41 are left.
+Feature list (2026-10-24). 1–14, 19 (ZIP and CSV export) and 20 are done; 15–18, 21 and 22–41 are left.
 
 **After the deploy of 2026-11-03** (`781f1fb`), for the user:
 
@@ -513,7 +520,7 @@ Feature list (2026-10-24). 1–14, 20 and the ZIP export (part of 19) are done; 
 
 17. "My cards" page: everything assigned to me across all boards, sorted by due date.
 18. Starring or pinning boards, and archiving boards.
-19. Export a board (JSON or CSV) as a backup.
+19. ~~Export a board (JSON or CSV) as a backup.~~ Done (ZIP and CSV).
 
 **Agents**
 

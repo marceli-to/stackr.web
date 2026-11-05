@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Boards\ExportBoard;
+use App\Actions\Boards\ExportBoardCsv;
 use App\Models\Board;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -22,5 +24,20 @@ class BoardExportController extends Controller
 		return response()
 			->download($exportBoard->handle($board), $name, ['Content-Type' => 'application/zip'])
 			->deleteFileAfterSend();
+	}
+
+	/**
+	 * Download the board's active cards as a CSV, one row per card.
+	 */
+	public function csv(Board $board, ExportBoardCsv $exportBoardCsv): Response
+	{
+		Gate::authorize('view', $board);
+
+		$name = 'stackr-'.(Str::slug($board->name) ?: $board->key).'-'.now()->format('Y-m-d').'.csv';
+
+		return response($exportBoardCsv->handle($board), 200, [
+			'Content-Type' => 'text/csv; charset=UTF-8',
+			'Content-Disposition' => 'attachment; filename="'.$name.'"',
+		]);
 	}
 }
