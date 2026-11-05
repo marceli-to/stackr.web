@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Stacks\ArchiveStack;
+use App\Actions\Stacks\ArchiveStackCards;
 use App\Actions\Stacks\CopyStack;
 use App\Actions\Stacks\CreateStack;
 use App\Actions\Stacks\DeleteStack;
 use App\Actions\Stacks\MoveStack;
+use App\Actions\Stacks\MoveStackCards;
 use App\Actions\Stacks\RenameStack;
 use App\Actions\Stacks\RestoreStack;
 use App\Actions\Stacks\SetStackLimit;
 use App\Actions\Stacks\SortStack;
 use App\Enums\CardSort;
 use App\Http\Requests\MoveRequest;
+use App\Http\Requests\StackCardsMoveRequest;
 use App\Http\Requests\StackLimitRequest;
 use App\Http\Requests\StackRequest;
 use App\Http\Requests\StackSortRequest;
@@ -93,6 +96,35 @@ class StackController extends Controller
 		Gate::authorize('update', $stack->board);
 
 		$sortStack->handle($stack, $request->enum('by', CardSort::class) ?? CardSort::Due);
+
+		return back();
+	}
+
+	/**
+	 * Move every card in a list to another list on the board.
+	 */
+	public function moveCards(StackCardsMoveRequest $request, Stack $stack, MoveStackCards $moveStackCards): RedirectResponse
+	{
+		Gate::authorize('update', $stack->board);
+
+		$target = Stack::query()->findOrFail($request->integer('stack_id'));
+		$count = $moveStackCards->handle($stack, $target);
+
+		$this->toast(trans_choice('{0} No cards to move.|{1} 1 card moved to :list.|[2,*] :count cards moved to :list.', $count, ['list' => $target->name]));
+
+		return back();
+	}
+
+	/**
+	 * Archive every card in a list; the list stays.
+	 */
+	public function archiveCards(Stack $stack, ArchiveStackCards $archiveStackCards): RedirectResponse
+	{
+		Gate::authorize('update', $stack->board);
+
+		$count = $archiveStackCards->handle($stack);
+
+		$this->toast(trans_choice('{0} No cards to archive.|{1} 1 card archived.|[2,*] :count cards archived.', $count));
 
 		return back();
 	}

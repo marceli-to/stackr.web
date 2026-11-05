@@ -2,7 +2,9 @@
 import { Form, router } from '@inertiajs/vue3';
 import {
 	PhArchive,
+	PhArrowRight,
 	PhArrowsInLineHorizontal,
+	PhBoxArrowDown,
 	PhCopy,
 	PhDotsThree,
 	PhGauge,
@@ -25,6 +27,7 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuSeparator,
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
@@ -44,6 +47,8 @@ import type { BoardCard, BoardStack } from '@/types';
 
 const props = defineProps<{
 	stack: BoardStack;
+	/** The board's other lists, for moving all cards. */
+	others: BoardStack[];
 	resync: () => void;
 }>();
 
@@ -116,6 +121,29 @@ function saveCopy() {
 			onFinish: () => (copying.value = false),
 			onSuccess: () => (copyOpen.value = false),
 			onError: (errors) => (copyError.value = errors.name),
+		},
+	);
+}
+
+// Every card at once: to the bottom of another list, or into the archive.
+function moveAll(target: BoardStack) {
+	router.patch(
+		StackController.moveCards(props.stack.id).url,
+		{ stack_id: target.id },
+		{ preserveScroll: true, preserveState: true },
+	);
+}
+
+const archiveAllOpen = ref(false);
+
+function archiveAll() {
+	router.patch(
+		StackController.archiveCards(props.stack.id).url,
+		{},
+		{
+			preserveScroll: true,
+			preserveState: true,
+			onSuccess: () => (archiveAllOpen.value = false),
 		},
 	);
 }
@@ -286,6 +314,11 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 						<PhGauge />
 						Card limit…
 					</DropdownMenuItem>
+					<DropdownMenuItem @select="toggleCollapsed">
+						<PhArrowsInLineHorizontal />
+						Collapse list
+					</DropdownMenuItem>
+					<DropdownMenuSeparator />
 					<DropdownMenuItem @select="startCopy">
 						<PhCopy />
 						Copy list…
@@ -305,10 +338,31 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 							</DropdownMenuItem>
 						</DropdownMenuSubContent>
 					</DropdownMenuSub>
-					<DropdownMenuItem @select="toggleCollapsed">
-						<PhArrowsInLineHorizontal />
-						Collapse list
+					<DropdownMenuSub>
+						<DropdownMenuSubTrigger
+							:disabled="!cards.length || !others.length"
+						>
+							<PhArrowRight />
+							Move all cards to
+						</DropdownMenuSubTrigger>
+						<DropdownMenuSubContent>
+							<DropdownMenuItem
+								v-for="other in others"
+								:key="other.id"
+								@select="moveAll(other)"
+							>
+								<span class="truncate">{{ other.name }}</span>
+							</DropdownMenuItem>
+						</DropdownMenuSubContent>
+					</DropdownMenuSub>
+					<DropdownMenuItem
+						:disabled="!cards.length"
+						@select="archiveAllOpen = true"
+					>
+						<PhBoxArrowDown />
+						Archive all cards…
 					</DropdownMenuItem>
+					<DropdownMenuSeparator />
 					<DropdownMenuItem @select="archive">
 						<PhArchive />
 						Archive list
@@ -380,6 +434,30 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 					<Button type="submit">Save</Button>
 				</DialogFooter>
 			</form>
+		</DialogContent>
+	</Dialog>
+
+	<Dialog v-model:open="archiveAllOpen">
+		<DialogContent class="sm:max-w-sm">
+			<DialogHeader>
+				<DialogTitle>Archive all cards</DialogTitle>
+				<DialogDescription>
+					{{
+						cards.length === 1
+							? 'The card'
+							: `All ${cards.length} cards`
+					}}
+					in “{{ stack.name }}” go to the archive, including any
+					hidden by the filter. The list stays. You can restore them
+					from ⋯ → Archive…
+				</DialogDescription>
+			</DialogHeader>
+			<DialogFooter class="gap-2">
+				<DialogClose as-child>
+					<Button type="button" variant="secondary">Cancel</Button>
+				</DialogClose>
+				<Button type="button" @click="archiveAll">Archive</Button>
+			</DialogFooter>
 		</DialogContent>
 	</Dialog>
 

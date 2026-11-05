@@ -68,6 +68,7 @@ function onStackMoved(event: DraggableEvent<BoardStack>) {
 				:key="stack.id"
 				v-model:cards="stack.cards"
 				:stack="stack"
+				:others="lists.filter((list) => list.id !== stack.id)"
 				:resync="resync"
 			/>
 		</VueDraggable>

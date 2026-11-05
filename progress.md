@@ -42,6 +42,7 @@ _Last updated: 2026-11-05_
 | 32. Sort a list (list menu → Sort cards)               | ✅ done |
 | 33. Thin, tinted scrollbars                            | ✅ done |
 | 34. Copy a list (list menu → Copy list…)               | ✅ done |
+| 35. Move or archive all cards in a list                | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 Production (https://stackr.kimiyu.ch) runs `800af98` (deployed 2026-11-05, no new migrations; `ADMIN_EMAILS` still to be added to the server `.env` by the user).
@@ -254,6 +255,13 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   (checklists, labels, members, files, cover); `$asIs` keeps templates templates, records
   "copied" and skips `NotifyWatchers` (`RecordActivity`'s `notify: false`), so a big list
   doesn't flood anyone's bell. Archived cards stay behind.
+- **All cards of a list at once:** "Move all cards to ›" (another active list on the same board,
+  `stacks.cards.move`, `MoveStackCards`, to its bottom in order) and "Archive all cards…" (asks
+  first, `stacks.cards.archive`, `ArchiveStackCards`; the list stays) in the list menu. Each card
+  logs `moved` / `archived`, without notifications. `StackCardsMoveRequest` authorizes in
+  `authorize()`, so outsiders get a 403 before validation. Moving to another board is card #21.
+  The list menu is grouped: list settings (rename, limit, collapse), the cards (copy, sort,
+  move all, archive all), then "Archive list".
 - **Sorting a list:** "Sort cards" in the list menu (`stacks.sort`, `SortStack`, `CardSort` enum)
   orders the active cards once by due date (soonest first, none last), newest, oldest or title
   (natural, any case); ties keep their order. It rewrites the cards' positions (`a0`, `a1`, …), so
@@ -522,7 +530,7 @@ Gaps compared with Trello (added 2026-10-25, not prioritised yet):
 
 27. ~~Copy a list.~~ Done.
 28. Move a list to another board.
-29. Move or archive every card in a list at once.
+29. ~~Move or archive every card in a list at once.~~ Done (within the board).
 30. ~~Sort a list by due date or creation date.~~ Done (also by title).
 
 **Cards (gaps)**

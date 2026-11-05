@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\BoardRole;
 use App\Models\Board;
 use App\Models\Card;
 use App\Models\Stack;
@@ -157,5 +158,63 @@ class ArchiveTest extends TestCase
 		$this->actingAs($outsider)->patch(route('cards.restore', $card))->assertForbidden();
 		$this->actingAs($outsider)->patch(route('stacks.archive', $this->stack))->assertForbidden();
 		$this->actingAs($outsider)->patch(route('stacks.restore', $this->stack))->assertForbidden();
+	}
+
+	public function test_all_cards_in_a_list_can_be_moved_to_another_list()
+	{
+		$done = Stack::factory()->for($this->board)->create(['name' => 'Done']);
+		Card::factory()->for($done)->create(['title' => 'Earlier']);
+		Card::factory()->for($this->stack)->create(['title' => 'One']);
+		Card::factory()->for($this->stack)->create(['title' => 'Two']);
+		Card::factory()->for($this->stack)->create(['title' => 'Old', 'archived_at' => now()]);
+		$watcher = User::factory()->create();
+		$this->board->members()->attach($watcher, ['role' => BoardRole::Member]);
+		$this->board->watchers()->attach($watcher);
+
+		$this->actingAs($this->user)
+			->patch(route('stacks.cards.move', $this->stack), ['stack_id' => $done->id])
+			->assertSessionHasNoErrors();
+
+		$this->assertSame(['Earlier', 'One', 'Two'], $done->cards()->pluck('title')->all());
+		$this->assertSame(['Old'], $this->stack->cards()->pluck('title')->all());
+		$this->assertSame('moved', $done->cards()->where('title', 'One')->sole()->activities()->sole()->type);
+		$this->assertSame(0, $watcher->notifications()->count());
+	}
+
+	public function test_moving_all_cards_needs_another_list_on_the_same_board()
+	{
+		$other = Board::factory()->ownedBy($this->user)->create();
+		$elsewhere = Stack::factory()->for($other)->create();
+		$archived = Stack::factory()->for($this->board)->create(['archived_at' => now()]);
+		Card::factory()->for($this->stack)->create();
+
+		foreach ([$this->stack->id, $elsewhere->id, $archived->id, null] as $target) {
+			$this->actingAs($this->user)
+				->patch(route('stacks.cards.move', $this->stack), ['stack_id' => $target])
+				->assertSessionHasErrors('stack_id');
+		}
+
+		$this->actingAs(User::factory()->create())
+			->patch(route('stacks.cards.move', $this->stack), ['stack_id' => $archived->id])
+			->assertForbidden();
+
+		$this->assertSame(1, $this->stack->cards()->count());
+	}
+
+	public function test_all_cards_in_a_list_can_be_archived()
+	{
+		Card::factory()->for($this->stack)->count(3)->create();
+
+		$this->actingAs($this->user)
+			->patch(route('stacks.cards.archive', $this->stack))
+			->assertSessionHasNoErrors();
+
+		$this->assertSame(0, $this->stack->cards()->active()->count());
+		$this->assertSame(3, $this->stack->cards()->count());
+		$this->assertNull($this->stack->fresh()->archived_at);
+
+		$this->actingAs(User::factory()->create())
+			->patch(route('stacks.cards.archive', $this->stack))
+			->assertForbidden();
 	}
 }
