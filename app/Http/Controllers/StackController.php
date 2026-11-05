@@ -9,12 +9,14 @@ use App\Actions\Stacks\CreateStack;
 use App\Actions\Stacks\DeleteStack;
 use App\Actions\Stacks\MoveStack;
 use App\Actions\Stacks\MoveStackCards;
+use App\Actions\Stacks\MoveStackToBoard;
 use App\Actions\Stacks\RenameStack;
 use App\Actions\Stacks\RestoreStack;
 use App\Actions\Stacks\SetStackLimit;
 use App\Actions\Stacks\SortStack;
 use App\Enums\CardSort;
 use App\Http\Requests\MoveRequest;
+use App\Http\Requests\StackBoardMoveRequest;
 use App\Http\Requests\StackCardsMoveRequest;
 use App\Http\Requests\StackLimitRequest;
 use App\Http\Requests\StackRequest;
@@ -70,6 +72,20 @@ class StackController extends Controller
 		Gate::authorize('update', $stack->board);
 
 		$moveStack->handle($stack, $request->integer('index'));
+
+		return back();
+	}
+
+	/**
+	 * Move a list with its cards to the end of another of the user's boards.
+	 */
+	public function moveToBoard(StackBoardMoveRequest $request, Stack $stack, MoveStackToBoard $moveStackToBoard): RedirectResponse
+	{
+		$target = Board::query()->findOrFail($request->integer('board_id'));
+
+		$moveStackToBoard->handle($stack, $target);
+
+		$this->toast(__(':list moved to :board.', ['list' => $stack->name, 'board' => $target->name]));
 
 		return back();
 	}

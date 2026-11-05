@@ -111,6 +111,59 @@ class MoveCopyCardTest extends TestCase
 			->assertSessionHasErrors('stack_id');
 	}
 
+	public function test_a_list_moves_to_the_end_of_another_board_with_all_its_cards()
+	{
+		$inbox = $this->otherBoard();
+		$outsider = User::factory()->create();
+		$this->board->members()->attach($outsider->id, ['role' => BoardRole::Member]);
+
+		$label = $this->board->labels()->create(['name' => 'Bug', 'color' => LabelColor::Red]);
+		$this->card->labels()->attach($label);
+		$this->card->members()->attach([$this->user->id, $outsider->id]);
+		$this->card->watchers()->attach($outsider->id);
+		$old = Card::factory()->for($this->stack)->create(['title' => 'Old', 'archived_at' => now()]);
+
+		$this->actingAs($this->user)
+			->post(route('attachments.store', $this->card), ['files' => [UploadedFile::fake()->image('a.png')]]);
+
+		$this->actingAs($this->user)
+			->patch(route('stacks.board', $this->stack), ['board_id' => $inbox->board_id])
+			->assertRedirect();
+
+		$stack = $this->stack->fresh();
+		$this->assertSame($inbox->board_id, $stack->board_id);
+		$this->assertSame(['Inbox', 'To do'], $inbox->board->stacks()->pluck('name')->all());
+		$this->assertSame(['Brief', 'Old'], $stack->cards()->pluck('title')->all());
+		$this->assertSame(0, $this->board->stacks()->count());
+
+		$card = $this->card->fresh();
+		$this->assertSame($inbox->board->labels()->sole()->id, $card->labels()->sole()->id);
+		$this->assertSame([$this->user->id], $card->members()->pluck('users.id')->all());
+		$this->assertSame([], $card->watchers()->pluck('users.id')->all());
+		$this->assertStringStartsWith("attachments/{$inbox->board_id}/{$card->id}/", $card->attachments()->sole()->path);
+		$this->assertSame('moved_board', $card->activities()->latest('id')->value('type'));
+		$this->assertSame(0, $old->activities()->count());
+	}
+
+	public function test_a_list_moves_only_to_another_board_the_user_is_on()
+	{
+		$foreign = Board::factory()->create();
+
+		$this->actingAs($this->user)
+			->patch(route('stacks.board', $this->stack), ['board_id' => $foreign->id])
+			->assertSessionHasErrors('board_id');
+
+		$this->actingAs($this->user)
+			->patch(route('stacks.board', $this->stack), ['board_id' => $this->board->id])
+			->assertSessionHasErrors('board_id');
+
+		$this->actingAs(User::factory()->create())
+			->patch(route('stacks.board', $this->stack), ['board_id' => $this->otherBoard()->board_id])
+			->assertForbidden();
+
+		$this->assertSame($this->board->id, $this->stack->fresh()->board_id);
+	}
+
 	public function test_a_copy_keeps_what_was_picked()
 	{
 		$label = $this->board->labels()->create(['name' => 'Bug', 'color' => LabelColor::Red]);

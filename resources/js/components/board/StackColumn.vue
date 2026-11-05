@@ -4,6 +4,7 @@ import {
 	PhArchive,
 	PhArrowRight,
 	PhArrowsInLineHorizontal,
+	PhArrowSquareOut,
 	PhBoxArrowDown,
 	PhCopy,
 	PhDotsThree,
@@ -43,6 +44,7 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Spinner } from '@/components/ui/spinner';
 import type { BoardCard, BoardStack } from '@/types';
 
 const props = defineProps<{
@@ -57,7 +59,7 @@ const cards = defineModel<BoardCard[]>('cards', { required: true });
 // Filtered-out cards stay in the list, only hidden, so dropped cards still
 // land at the right index among all of the list's cards.
 const { shows } = useFilter();
-const { board } = useBoard();
+const { board, destinations } = useBoard();
 
 // Collapsing is a personal view, so it's remembered in the browser.
 const collapsedLists = useStorage<number[]>(
@@ -121,6 +123,46 @@ function saveCopy() {
 			onFinish: () => (copying.value = false),
 			onSuccess: () => (copyOpen.value = false),
 			onError: (errors) => (copyError.value = errors.name),
+		},
+	);
+}
+
+// The whole list, cards and all, to the end of another of your boards.
+const boardMoveOpen = ref(false);
+const boardMoveTo = ref<number | null>(null);
+const boardMoveError = ref<string | undefined>();
+const boardMoving = ref(false);
+const otherBoards = computed(
+	() =>
+		destinations.value?.filter(
+			(destination) => destination.id !== board.value.id,
+		) ?? [],
+);
+
+function startBoardMove() {
+	boardMoveError.value = undefined;
+	boardMoveTo.value = null;
+	boardMoveOpen.value = true;
+	router.reload({
+		only: ['destinations'],
+		onSuccess: () => (boardMoveTo.value = otherBoards.value[0]?.id ?? null),
+	});
+}
+
+function saveBoardMove() {
+	if (boardMoveTo.value === null) {
+		return;
+	}
+
+	router.patch(
+		StackController.moveToBoard(props.stack.id).url,
+		{ board_id: boardMoveTo.value },
+		{
+			preserveScroll: true,
+			onStart: () => (boardMoving.value = true),
+			onFinish: () => (boardMoving.value = false),
+			onSuccess: () => (boardMoveOpen.value = false),
+			onError: (errors) => (boardMoveError.value = errors.board_id),
 		},
 	);
 }
@@ -323,6 +365,10 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 						<PhCopy />
 						Copy list…
 					</DropdownMenuItem>
+					<DropdownMenuItem @select="startBoardMove">
+						<PhArrowSquareOut />
+						Move list to board…
+					</DropdownMenuItem>
 					<DropdownMenuSub>
 						<DropdownMenuSubTrigger>
 							<PhSortAscending />
@@ -458,6 +504,63 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 				</DialogClose>
 				<Button type="button" @click="archiveAll">Archive</Button>
 			</DialogFooter>
+		</DialogContent>
+	</Dialog>
+
+	<Dialog v-model:open="boardMoveOpen">
+		<DialogContent class="sm:max-w-sm">
+			<form class="space-y-5" @submit.prevent="saveBoardMove">
+				<DialogHeader>
+					<DialogTitle>Move list to board</DialogTitle>
+					<DialogDescription>
+						“{{ stack.name }}” goes to the end of the board you
+						pick, with all its cards. Labels come along, and people
+						who aren't on that board are taken off the cards.
+					</DialogDescription>
+				</DialogHeader>
+				<div v-if="!destinations" class="flex justify-center py-4">
+					<Spinner />
+				</div>
+				<p
+					v-else-if="otherBoards.length === 0"
+					class="text-sm text-muted-foreground"
+				>
+					You have no other board to move it to.
+				</p>
+				<div v-else class="grid gap-2">
+					<label for="board-move-to" class="text-sm font-medium"
+						>Board</label
+					>
+					<select
+						id="board-move-to"
+						v-model="boardMoveTo"
+						class="h-9 w-full rounded-[var(--radius-sheet)] bg-sheet px-2.5 text-[0.9375rem] ring-1 focus-field ring-(--control-edge) outline-hidden ring-inset dark:bg-(--color-paper-2)"
+					>
+						<option
+							v-for="destination in otherBoards"
+							:key="destination.id"
+							:value="destination.id"
+						>
+							{{ destination.name }}
+						</option>
+					</select>
+					<p v-if="boardMoveError" class="text-xs text-destructive">
+						{{ boardMoveError }}
+					</p>
+				</div>
+				<DialogFooter class="gap-2">
+					<DialogClose as-child>
+						<Button type="button" variant="secondary"
+							>Cancel</Button
+						>
+					</DialogClose>
+					<Button
+						type="submit"
+						:disabled="boardMoving || boardMoveTo === null"
+						>Move</Button
+					>
+				</DialogFooter>
+			</form>
 		</DialogContent>
 	</Dialog>
 

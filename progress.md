@@ -278,6 +278,13 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   to `<repository>/commit/<hash>`, in plain text and in inline code that is only the hash (shown
   as code). Code blocks, existing links (autolinks too) and image alt text are skipped. GitHub and
   GitLab both answer `/commit/<hash>`. No repository, no change. In the ZIP export, not in MCP.
+- **Moving a list to another board:** list menu → "Move list to board…" (`stacks.board`,
+  `MoveStackToBoard`, `StackBoardMoveRequest`: any other board you're a member of). The list goes
+  to the end of that board with all its cards, archived ones too, so restoring still works. Each
+  card is fitted like a single cross-board card move (`CarryCardOver`: labels matched by name and
+  colour or created, members and now also watchers who aren't on the new board dropped;
+  `MoveCardFiles` moves the files, shared with `MoveCard`). Active cards log `moved_board` without
+  notifying anyone.
 - **My cards:** `/my-cards` (`MyCardsController`, `MyCardResource`, `pages/cards/Mine.vue`) lists
   the active cards you're a member of, on boards you belong to, in active lists, sorted by due
   date (none last), then board name and board order. Laid out like a board: columns Overdue (only
@@ -505,8 +512,11 @@ browser:
 - The landing page still says "Eleven colours for your boards, five of them gradients"; there are
   12 solids and 12 gradients now.
 
-Backlog board (Stackr Backlog, `ozy79pbeas`): next up is #21 "Move a list to another board" (list
-menu → Move list to board ›, cards carried over like a card move between boards).
+- List menu → Move list to board…: the list lands at the end of the other board, labels and
+  members carried over.
+
+Backlog board (Stackr Backlog, `ozy79pbeas`): #21 "Move a list to another board" is built; pick the
+next card with the user.
 
 Gotcha: don't give `BoardMembership` (a pivot) a `$fillable`; `attach()` with `role` then drops the
 role and the insert fails.
@@ -598,7 +608,7 @@ Gaps compared with Trello (added 2026-10-25, not prioritised yet):
 **Lists (gaps)**
 
 27. ~~Copy a list.~~ Done.
-28. Move a list to another board.
+28. ~~Move a list to another board.~~ Done.
 29. ~~Move or archive every card in a list at once.~~ Done (within the board).
 30. ~~Sort a list by due date or creation date.~~ Done (also by title).
 

@@ -11,7 +11,7 @@ class CarryCardOver
 	/**
 	 * Fits a card that just arrived from another board to its new one:
 	 * labels are matched by name and colour (and created when missing), and
-	 * only members of the new board stay on it.
+	 * only members of the new board stay on it or keep watching it.
 	 */
 	public function handle(Card $card, Board $board): void
 	{
@@ -25,5 +25,6 @@ class CarryCardOver
 
 		$members = $board->members()->pluck('users.id');
 		$card->members()->sync($card->members()->pluck('users.id')->intersect($members));
+		$card->watchers()->sync($card->watchers()->pluck('users.id')->intersect($members));
 	}
 }
