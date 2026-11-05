@@ -40,6 +40,7 @@ _Last updated: 2026-11-05_
 | 30. Activity feed for the whole board (⋯ → Activity…)  | ✅ done |
 | 31. Import from Trello (⋯ → Import from Trello…)       | ✅ done |
 | 32. Sort a list (list menu → Sort cards)               | ✅ done |
+| 33. Thin, tinted scrollbars                            | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 Production (https://stackr.kimiyu.ch) runs `2949507` (deployed 2026-11-05, no new migrations; `ADMIN_EMAILS` still to be added to the server `.env` by the user).
@@ -113,6 +114,10 @@ Still open there: a manual check, see "After the deploy" under "Next up".
       Focus outlines need `focus-visible:outline-solid` (Tailwind 4's `outline-none` clears the style).
       Text fields don't get the outline: the `focus-field` utility (`app.css`) swaps it for a soft
       halo, `--field-focus` in `tokens.css`. Every enabled button has `cursor: pointer` (`base.css`).
+    - Scrollbars (`base.css`): thin, no track, the thumb is `currentColor` at 28% (45% while
+      hovered), so lists on a dark field get light thumbs and paper gets dark ones, dark mode
+      included. Standard `scrollbar-*` properties, with a `::-webkit-scrollbar` fallback for Safari.
+      macOS hides overlay scrollbars unless "Show scroll bars: Always" is set.
     - Card dialog: no colour strip unless there's a cover; on open it focuses the sheet, not the
       close button, so no ring shows after a click. Faint `--surface-edge` hairlines give it
       structure: a full-width line under the header, `divide-y` between the main column's sections,
