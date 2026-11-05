@@ -45,7 +45,7 @@ _Last updated: 2026-11-05_
 | 35. Move or archive all cards in a list                | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
-Production (https://stackr.kimiyu.ch) runs `800af98` (deployed 2026-11-05, no new migrations; `ADMIN_EMAILS` still to be added to the server `.env` by the user).
+Production (https://stackr.kimiyu.ch) runs `b2e735f` (deployed 2026-11-05, no new migrations; `ADMIN_EMAILS` still to be added to the server `.env` by the user).
 Still open there: a manual check, see "After the deploy" under "Next up".
 (`design/field` and `feature/card-details` are merged into `main` and can be deleted.)
 
