@@ -47,7 +47,7 @@ _Last updated: 2026-11-05_
 | 37. MCP tools for lists and labels                     | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
-Production (https://stackr.kimiyu.ch) runs `0334204` (deployed 2026-11-05, migration for `boards.repository_url` run; `ADMIN_EMAILS` still to be added to the server `.env` by the user).
+Production (https://stackr.kimiyu.ch) runs `7bcca12` (deployed 2026-11-05, migration for `boards.repository_url` run; `ADMIN_EMAILS` still to be added to the server `.env` by the user).
 Still open there: a manual check, see "After the deploy" under "Next up".
 (`design/field` and `feature/card-details` are merged into `main` and can be deleted.)
 
@@ -321,7 +321,9 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   tick_checklist_item, assign_member, unassign_member, add_label, remove_label, archive_card,
   and for setting up a board create_list, rename_list, move_list (1-based `position`, past the
   end = last), create_label, update_label (empty name = colour only). List tools only touch lists
-  on the named board (`Lookup::boardStack`). There's no deleting, no board settings and no inviting. Tools call the same actions as the
+  on the named board (`Lookup::boardStack`). There's no deleting, no board settings and no inviting.
+  `laravel/mcp` pages `tools/list` 15 at a time; `StackrServer::$defaultPaginationLength = 50`
+  keeps every tool on one page (a test counts them), since not every client follows `nextCursor`. Tools call the same actions as the
   controllers. Permissions: `App\Mcp\Lookup` only finds things on the user's own boards (other
   boards read as "not found") and runs the same `BoardPolicy` check. Validation reuses the form
   requests' rules. Lists, members and labels can be named by name (any case) or id; an ambiguous
