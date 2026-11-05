@@ -49,6 +49,7 @@ _Last updated: 2026-11-05_
 | 39. CSV export of a board's cards (⋯ menu)             | ✅ done |
 | 40. Hand over a board (members → Make owner)           | ✅ done |
 | 41. Turn a checklist item into a card                  | ✅ done |
+| 42. "My cards" page (⋯ menu, or the overview's button) | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 Production (https://stackr.kimiyu.ch) runs `8158c13` (deployed 2026-11-05, migration for `board_user.position` run with `fe0da9b`; `ADMIN_EMAILS` still to be added to the server `.env` by the user).
@@ -277,6 +278,11 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   to `<repository>/commit/<hash>`, in plain text and in inline code that is only the hash (shown
   as code). Code blocks, existing links (autolinks too) and image alt text are skipped. GitHub and
   GitLab both answer `/commit/<hash>`. No repository, no change. In the ZIP export, not in MCP.
+- **My cards:** `/my-cards` (`MyCardsController`, `MyCardResource`, `pages/cards/Mine.vue`) lists
+  the active cards you're a member of, on boards you belong to, in active lists: soonest due first,
+  no due date last, then board name and board order. Completed cards are hidden behind "Show
+  completed (n)". Each row shows the board's colour, board · list, labels, due and checklist
+  progress, and opens the card on its board. Reached from the ⋯ menu and a button on the overview.
 - **Checklist item → card:** the cards icon on an item (hover, next to ✕) runs
   `checklist-items.convert` (`ConvertChecklistItem`): a new card with the item's title, right below
   the item's card in the same list (completed if the item was ticked), and the item leaves the
@@ -477,7 +483,7 @@ Same method as the kimiyuch boards (gotaticket/usverchauft):
 
 ## Next up
 
-Feature list (2026-10-24). 1–14, 16, 19 (ZIP and CSV export) and 20 are done; 15, 17, 18, 21 and 22–41 are left.
+Feature list (2026-10-24). 1–14, 16, 17, 19 (ZIP and CSV export) and 20 are done; 15, 18, 21 and 22–41 are left.
 
 **After the deploy of 2026-11-03** (`781f1fb`), for the user:
 
@@ -527,7 +533,7 @@ Feature list (2026-10-24). 1–14, 16, 19 (ZIP and CSV export) and 20 are done; 
 
 **Overview and account**
 
-17. "My cards" page: everything assigned to me across all boards, sorted by due date.
+17. ~~"My cards" page: everything assigned to me across all boards, sorted by due date.~~ Done.
 18. Starring or pinning boards, and archiving boards.
 19. ~~Export a board (JSON or CSV) as a backup.~~ Done (ZIP and CSV).
 

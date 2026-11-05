@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import {
+	PhCards,
 	PhDotsThree,
 	PhPencilSimple,
 	PhPlus,
@@ -20,6 +21,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { myCards } from '@/routes';
 import { index, show } from '@/routes/boards';
 import { boardColors } from '@/types';
 import type { BoardColor, BoardSummary } from '@/types';
@@ -109,11 +111,19 @@ function plural(count: number, word: string) {
 	<Head title="Boards" />
 
 	<div class="flex h-full flex-1 flex-col gap-10 px-3 pt-8 pb-12 md:px-5">
-		<h1
-			class="font-display text-4xl leading-[1.05] font-bold tracking-(--tracking-display) md:text-[2.75rem]"
-		>
-			Boards
-		</h1>
+		<div class="flex flex-wrap items-end justify-between gap-4">
+			<h1
+				class="font-display text-4xl leading-[1.05] font-bold tracking-(--tracking-display) md:text-[2.75rem]"
+			>
+				Boards
+			</h1>
+			<Button variant="secondary" size="sm" :as-child="true">
+				<Link :href="myCards()">
+					<PhCards />
+					My cards
+				</Link>
+			</Button>
+		</div>
 
 		<VueDraggable
 			v-model="tiles"

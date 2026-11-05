@@ -2,6 +2,7 @@
 import { Link, router, usePage } from '@inertiajs/vue3';
 import {
 	PhBell,
+	PhCards,
 	PhDotsThree,
 	PhGearSix,
 	PhSignOut,
@@ -19,11 +20,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import UserInfo from '@/components/UserInfo.vue';
 import { create as importTrello } from '@/actions/App/Http/Controllers/TrelloImportController';
-import { logout } from '@/routes';
+import { logout, myCards } from '@/routes';
 import { edit as editProfile } from '@/routes/profile';
 import type { Board } from '@/types';
 
-// The ⋯ menu at the end of the top bar: notifications, whatever the
+// The ⋯ menu at the end of the top bar: notifications and your cards, whatever the
 // board adds below them (view, people, archive), and your account last.
 // A yellow dot on the button says there's something unread. On a board
 // it's frosted glass of the board's colour.
@@ -72,6 +73,12 @@ const notificationsOpen = ref(false);
 				>
 					{{ unread > 9 ? '9+' : unread }}
 				</span>
+			</DropdownMenuItem>
+			<DropdownMenuItem :as-child="true">
+				<Link class="block w-full cursor-pointer" :href="myCards()">
+					<PhCards />
+					My cards
+				</Link>
 			</DropdownMenuItem>
 			<template v-if="$slots.default">
 				<DropdownMenuSeparator />
