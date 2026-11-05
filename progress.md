@@ -42,7 +42,7 @@ _Last updated: 2026-11-05_
 | 32. Sort a list (list menu → Sort cards)               | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
-Production (https://stackr.kimiyu.ch) runs `781f1fb` (deployed 2026-11-03, all migrations run; `ADMIN_EMAILS` still to be added to the server `.env` by the user).
+Production (https://stackr.kimiyu.ch) runs `2949507` (deployed 2026-11-05, no new migrations; `ADMIN_EMAILS` still to be added to the server `.env` by the user).
 Still open there: a manual check, see "After the deploy" under "Next up".
 (`design/field` and `feature/card-details` are merged into `main` and can be deleted.)
 
@@ -422,7 +422,7 @@ Same method as the kimiyuch boards (gotaticket/usverchauft):
 
 Feature list (2026-10-24). 1–14, 20 and the ZIP export (part of 19) are done; 15–18, 21 and 22–41 are left.
 
-**After the deploy of 2026-11-03** (production is on `781f1fb`), for the user:
+**After the deploy of 2026-11-03** (`781f1fb`), for the user:
 
 - Add `ADMIN_EMAILS=m@marceli.to` to the server `.env`, then
   `/usr/local/php85/bin/php artisan config:cache` (the deploy cached the config; without it the
