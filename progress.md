@@ -47,6 +47,7 @@ _Last updated: 2026-11-05_
 | 37. MCP tools for lists and labels                     | ✅ done |
 | 38. Reorder boards on the overview (drag the tiles)    | ✅ done |
 | 39. CSV export of a board's cards (⋯ menu)             | ✅ done |
+| 40. Hand over a board (members → Make owner)           | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 Production (https://stackr.kimiyu.ch) runs `6d2a1a3` (deployed 2026-11-05, migration for `board_user.position` run with `fe0da9b`; `ADMIN_EMAILS` still to be added to the server `.env` by the user).
@@ -138,7 +139,9 @@ Still open there: a manual check, see "After the deploy" under "Next up".
 - **Members & invitations:** the board's top bar shows all members, you included, as an avatar stack;
   "Invite people…" ("Members…" for non-owners) in the ⋯ menu. Both
   open the members dialog (`membersOpen` in `components/board/members.ts` is shared between them) (`components/board/BoardMembers.vue`). Only the owner invites (by email) and
-  removes members; anyone else can leave; the owner can't leave. An address with an account is added
+  removes members; anyone else can leave; the owner can't leave until they hand the board over
+  ("Make owner" on a member, `boards.members.owner`, `HandOverBoard`: roles swap, the old owner
+  stays on as a member; one owner at all times, no email to the new owner). An address with an account is added
   right away and gets `AddedToBoardMail`; any other address gets a `board_invitations` row and
   `BoardInvitationMail` with `/invitations/{token}` (valid 14 days, inviting again renews it).
   Guests opening the link go to register (or login) with the email filled in and come back via
@@ -468,7 +471,7 @@ Same method as the kimiyuch boards (gotaticket/usverchauft):
 
 ## Next up
 
-Feature list (2026-10-24). 1–14, 19 (ZIP and CSV export) and 20 are done; 15–18, 21 and 22–41 are left.
+Feature list (2026-10-24). 1–14, 16, 19 (ZIP and CSV export) and 20 are done; 15, 17, 18, 21 and 22–41 are left.
 
 **After the deploy of 2026-11-03** (`781f1fb`), for the user:
 
@@ -514,7 +517,7 @@ Feature list (2026-10-24). 1–14, 19 (ZIP and CSV export) and 20 are done; 15�
     Done; production runs it via the `schedule:run` cron line (see "Production").
 14. ~~Watching a card or board, to get notified about changes.~~ Done (bell only).
 15. Avatars: upload a profile picture instead of initials.
-16. Hand over ownership: the owner can't leave a board, and there's no way to pass it on.
+16. ~~Hand over ownership: the owner can't leave a board, and there's no way to pass it on.~~ Done.
 
 **Overview and account**
 

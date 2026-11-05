@@ -20,8 +20,8 @@ import { getInitials } from '@/composables/useInitials';
 import type { BoardInvitation, BoardMember } from '@/types';
 
 // The board's people: an avatar stack in the top bar that opens the members
-// dialog, as does the board menu. Only the owner invites and removes; anyone
-// else can leave.
+// dialog, as does the board menu. Only the owner invites, removes and hands
+// the board over; anyone else can leave.
 const page = usePage<{
 	board: { key: string; name: string };
 	members: BoardMember[];
@@ -43,8 +43,8 @@ const { copy, copied } = useClipboard({ legacy: true });
 const shown = computed(() => members.value.slice(0, 4));
 const more = computed(() => members.value.length - shown.value.length);
 
-// The member whose "Remove" or "Leave" waits for a second click.
-const confirming = ref<number | null>(null);
+// The member whose "Remove", "Leave" or "Make owner" waits for a second click.
+const confirming = ref<{ id: number; action: 'remove' | 'owner' } | null>(null);
 
 const actionClass =
 	'rounded-sm text-sm text-muted-foreground underline decoration-current/30 underline-offset-4 hover:text-foreground hover:decoration-current focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid';
@@ -223,23 +223,39 @@ const actionClass =
 					<span
 						v-if="member.role === 'owner'"
 						class="text-sm text-muted-foreground"
+						:title="
+							member.id === me
+								? 'To leave, make someone else the owner first.'
+								: undefined
+						"
 					>
 						Owner
 					</span>
 					<template v-else-if="canManage || member.id === me">
 						<Form
-							v-if="confirming === member.id"
+							v-if="confirming?.id === member.id"
 							v-bind="
-								BoardMemberController.destroy.form({
-									board: board.key,
-									user: member.id,
-								})
+								confirming.action === 'owner'
+									? BoardMemberController.owner.form({
+											board: board.key,
+											user: member.id,
+										})
+									: BoardMemberController.destroy.form({
+											board: board.key,
+											user: member.id,
+										})
 							"
 							:options="{ preserveScroll: true }"
 							class="flex items-center gap-3"
 							@success="confirming = null"
 							v-slot="{ processing }"
 						>
+							<span
+								v-if="confirming.action === 'owner'"
+								class="text-sm text-muted-foreground"
+							>
+								You'll stay on as a member.
+							</span>
 							<button
 								type="submit"
 								:disabled="processing"
@@ -247,9 +263,11 @@ const actionClass =
 								class="text-destructive hover:text-destructive"
 							>
 								{{
-									member.id === me
-										? 'Yes, leave'
-										: 'Yes, remove'
+									confirming.action === 'owner'
+										? 'Yes, hand over'
+										: member.id === me
+											? 'Yes, leave'
+											: 'Yes, remove'
 								}}
 							</button>
 							<button
@@ -260,14 +278,33 @@ const actionClass =
 								Cancel
 							</button>
 						</Form>
-						<button
-							v-else
-							type="button"
-							:class="actionClass"
-							@click="confirming = member.id"
-						>
-							{{ member.id === me ? 'Leave' : 'Remove' }}
-						</button>
+						<template v-else>
+							<button
+								v-if="canManage"
+								type="button"
+								:class="actionClass"
+								@click="
+									confirming = {
+										id: member.id,
+										action: 'owner',
+									}
+								"
+							>
+								Make owner
+							</button>
+							<button
+								type="button"
+								:class="actionClass"
+								@click="
+									confirming = {
+										id: member.id,
+										action: 'remove',
+									}
+								"
+							>
+								{{ member.id === me ? 'Leave' : 'Remove' }}
+							</button>
+						</template>
 					</template>
 				</li>
 

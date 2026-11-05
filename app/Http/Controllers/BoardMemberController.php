@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Members\HandOverBoard;
 use App\Actions\Members\InviteMember;
 use App\Actions\Members\RemoveMember;
 use App\Enums\BoardRole;
@@ -30,6 +31,26 @@ class BoardMemberController extends Controller
 		$this->toast($invited instanceof User
 			? __(':name was added.', ['name' => $invited->name])
 			: __('Invitation sent to :email.', ['email' => $invited->email]));
+
+		return back();
+	}
+
+	/**
+	 * Hand the board over to another member. The old owner stays on as a
+	 * member and can then leave.
+	 */
+	public function owner(Request $request, Board $board, User $user, HandOverBoard $handOverBoard): RedirectResponse
+	{
+		Gate::authorize('manageMembers', $board);
+
+		/** @var User $owner */
+		$owner = $request->user();
+
+		abort_if($board->roleOf($user) !== BoardRole::Member, 404);
+
+		$handOverBoard->handle($board, $owner, $user);
+
+		$this->toast(__(':name now owns :board.', ['name' => $user->name, 'board' => $board->name]));
 
 		return back();
 	}

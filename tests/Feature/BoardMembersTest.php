@@ -218,6 +218,50 @@ class BoardMembersTest extends TestCase
 		$this->assertSame(BoardRole::Owner, $this->board->roleOf($this->owner));
 	}
 
+	public function test_the_owner_hands_the_board_over_and_can_then_leave()
+	{
+		$member = $this->member();
+
+		$this->actingAs($this->owner)
+			->patch(route('boards.members.owner', [$this->board, $member]))
+			->assertRedirect();
+
+		$this->assertSame(BoardRole::Owner, $this->board->roleOf($member));
+		$this->assertSame(BoardRole::Member, $this->board->roleOf($this->owner));
+
+		// The old owner lost the owner's rights and may leave now.
+		$this->actingAs($this->owner)
+			->patch(route('boards.members.owner', [$this->board, $member]))
+			->assertForbidden();
+
+		$this->actingAs($this->owner)
+			->delete(route('boards.members.destroy', [$this->board, $this->owner]))
+			->assertRedirect(route('boards.index'));
+
+		$this->assertNull($this->board->roleOf($this->owner));
+	}
+
+	public function test_only_the_owner_hands_over_and_only_to_a_member()
+	{
+		$member = $this->member();
+		$other = $this->member();
+
+		$this->actingAs($member)
+			->patch(route('boards.members.owner', [$this->board, $member]))
+			->assertForbidden();
+
+		$this->actingAs($this->owner)
+			->patch(route('boards.members.owner', [$this->board, User::factory()->create()]))
+			->assertNotFound();
+
+		$this->actingAs($this->owner)
+			->patch(route('boards.members.owner', [$this->board, $this->owner]))
+			->assertNotFound();
+
+		$this->assertSame(BoardRole::Owner, $this->board->roleOf($this->owner));
+		$this->assertSame(BoardRole::Member, $this->board->roleOf($other));
+	}
+
 	public function test_the_owner_can_withdraw_an_invitation()
 	{
 		$invitation = $this->invite();

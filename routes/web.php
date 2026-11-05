@@ -59,6 +59,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 	Route::post('boards/{board}/members', [BoardMemberController::class, 'store'])->name('boards.members.store');
 	Route::delete('boards/{board}/members/{user}', [BoardMemberController::class, 'destroy'])->name('boards.members.destroy');
+	Route::patch('boards/{board}/members/{user}/owner', [BoardMemberController::class, 'owner'])->name('boards.members.owner');
 	Route::post('boards/{board}/invite-link', [InviteLinkController::class, 'store'])->name('invite-link.store');
 	Route::delete('boards/{board}/invite-link', [InviteLinkController::class, 'destroy'])->name('invite-link.destroy');
 	Route::delete('invitations/{invitation}', [BoardInvitationController::class, 'destroy'])->name('invitations.destroy');
