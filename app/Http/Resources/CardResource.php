@@ -33,12 +33,13 @@ class CardResource extends JsonResource
 
 		/** @var list<string> $names */
 		$names = $this->stack->board->members()->pluck('name')->all();
+		$repository = $this->stack->board->repository_url;
 
 		return [
 			'id' => $this->id,
 			'title' => $this->title,
 			'description' => $this->description,
-			'description_html' => Markdown::toHtml($this->description),
+			'description_html' => Markdown::toHtml($this->description, $repository),
 			'start_at' => $this->start_at,
 			'due_at' => $this->due_at,
 			'completed_at' => $this->completed_at,
@@ -58,7 +59,7 @@ class CardResource extends JsonResource
 			'cover_color' => $this->cover_color,
 			'checklists' => ChecklistResource::collection($this->checklists),
 			'attachments' => AttachmentResource::collection($this->attachments),
-			'comments' => $this->comments->map(fn (Comment $comment) => (new CommentResource($comment))->mentioning($names)),
+			'comments' => $this->comments->map(fn (Comment $comment) => (new CommentResource($comment))->mentioning($names)->linkingCommits($repository)),
 			'activities' => ActivityResource::collection($this->activities),
 		];
 	}

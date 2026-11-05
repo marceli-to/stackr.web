@@ -45,6 +45,8 @@ export type Board = {
 	name: string;
 	description: string | null;
 	url: string | null;
+	/** Where commit hashes in comments and descriptions link to. */
+	repository_url: string | null;
 	color: BoardColor;
 	/** A photo behind the board, or null for the plain colour. */
 	background_url: string | null;

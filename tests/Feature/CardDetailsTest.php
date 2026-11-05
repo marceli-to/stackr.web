@@ -314,4 +314,28 @@ class CardDetailsTest extends TestCase
 
 		$this->assertEmpty(Storage::disk(Attachment::DISK)->allFiles("attachments/{$this->board->id}"));
 	}
+
+	public function test_commit_hashes_link_to_the_boards_repository()
+	{
+		$this->actingAs($this->user)
+			->patch(route('boards.update', $this->board), [
+				'name' => $this->board->name,
+				'repository_url' => 'https://github.com/marceli-to/stackr.web',
+			])
+			->assertSessionHasNoErrors();
+		$this->card->update(['description' => 'Fixed in 93a2f49']);
+		$this->card->comments()->create(['body' => 'Deployed b38f452', 'user_id' => $this->user->id]);
+
+		$this->actingAs($this->user)
+			->get(route('boards.show', [$this->board, 'card' => $this->card->id]))
+			->assertInertia(fn (Assert $page) => $page
+				->where('board.repository_url', 'https://github.com/marceli-to/stackr.web')
+				->where('card.description_html', fn (string $html) => str_contains($html, 'href="https://github.com/marceli-to/stackr.web/commit/93a2f49"'))
+				->where('card.comments.0.body_html', fn (string $html) => str_contains($html, 'href="https://github.com/marceli-to/stackr.web/commit/b38f452"'))
+			);
+
+		$this->actingAs($this->user)
+			->patch(route('boards.update', $this->board), ['name' => $this->board->name, 'repository_url' => 'javascript:alert(1)'])
+			->assertSessionHasErrors('repository_url');
+	}
 }

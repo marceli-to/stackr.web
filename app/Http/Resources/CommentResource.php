@@ -22,11 +22,23 @@ class CommentResource extends JsonResource
 	public array $names = [];
 
 	/**
+	 * The board's repository, to link commit hashes.
+	 */
+	public ?string $repository = null;
+
+	/**
 	 * @param  list<string>  $names
 	 */
 	public function mentioning(array $names): static
 	{
 		$this->names = $names;
+
+		return $this;
+	}
+
+	public function linkingCommits(?string $repository): static
+	{
+		$this->repository = $repository;
 
 		return $this;
 	}
@@ -39,7 +51,7 @@ class CommentResource extends JsonResource
 		return [
 			'id' => $this->id,
 			'body' => $this->body,
-			'body_html' => Mentions::highlight((string) Markdown::toHtml($this->body), $this->names),
+			'body_html' => Mentions::highlight((string) Markdown::toHtml($this->body, $this->repository), $this->names),
 			'user' => $this->user?->only('id', 'name'),
 			'mine' => $this->user_id === $request->user()?->id,
 			'via_agent' => $this->via_agent,

@@ -88,6 +88,7 @@ class ExportBoard
 				'name' => $board->name,
 				'description' => $board->description,
 				'url' => $board->url,
+				'repository_url' => $board->repository_url,
 				'color' => $board->color->value,
 				'created_at' => $this->date($board->created_at),
 			],

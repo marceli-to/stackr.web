@@ -178,6 +178,32 @@ const form = computed(() =>
 					<InputError :message="errors.url" />
 				</div>
 
+				<div class="grid gap-2">
+					<Label for="board-repository">
+						Repository
+						<span class="font-normal text-muted-foreground"
+							>(optional)</span
+						>
+					</Label>
+					<Input
+						id="board-repository"
+						name="repository_url"
+						type="url"
+						inputmode="url"
+						maxlength="2048"
+						:default-value="board?.repository_url ?? ''"
+						placeholder="https://github.com/owner/repo"
+						aria-describedby="board-repository-hint"
+					/>
+					<p
+						id="board-repository-hint"
+						class="text-xs text-muted-foreground"
+					>
+						Commit hashes in comments and descriptions link to it.
+					</p>
+					<InputError :message="errors.repository_url" />
+				</div>
+
 				<div v-if="board" class="grid gap-2">
 					<p class="text-sm font-normal">Background photo</p>
 					<div class="flex items-center gap-3">

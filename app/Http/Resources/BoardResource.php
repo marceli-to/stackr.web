@@ -22,6 +22,7 @@ class BoardResource extends JsonResource
 			'name' => $this->name,
 			'description' => $this->description,
 			'url' => $this->url,
+			'repository_url' => $this->repository_url,
 			'color' => $this->color,
 			// The file name changes with every upload, so the URL can be cached for good.
 			'background_url' => $this->background_path !== null

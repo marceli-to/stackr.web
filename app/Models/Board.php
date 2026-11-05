@@ -22,13 +22,14 @@ use Illuminate\Support\Str;
  * @property string $name
  * @property string|null $description
  * @property string|null $url
+ * @property string|null $repository_url
  * @property BoardColor $color
  * @property string|null $background_path
  * @property string|null $invite_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'description', 'url', 'color', 'background_path'])]
+#[Fillable(['name', 'description', 'url', 'repository_url', 'color', 'background_path'])]
 class Board extends Model
 {
 	/** @use HasFactory<BoardFactory> */
