@@ -439,4 +439,14 @@ class McpTest extends TestCase
 
 		$this->assertSame(2, $this->board->labels()->count());
 	}
+
+	public function test_every_tool_is_listed_on_one_page()
+	{
+		$token = $this->user->createToken('agent')->plainTextToken;
+
+		$this->withToken($token)->postJson('/mcp', ['jsonrpc' => '2.0', 'id' => 1, 'method' => 'tools/list'])
+			->assertOk()
+			->assertJsonCount(20, 'result.tools')
+			->assertJsonMissingPath('result.nextCursor');
+	}
 }

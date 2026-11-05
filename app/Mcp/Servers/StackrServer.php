@@ -45,6 +45,12 @@ use Laravel\Mcp\Server\Attributes\Version;
 	MD)]
 class StackrServer extends Server
 {
+	/**
+	 * All tools on one page: laravel/mcp pages lists 15 at a time, and not
+	 * every client asks for the next page.
+	 */
+	public int $defaultPaginationLength = 50;
+
 	protected array $tools = [
 		ListBoardsTool::class,
 		GetBoardTool::class,
