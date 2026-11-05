@@ -135,6 +135,61 @@ class BoardTest extends TestCase
 		$this->assertSame(['A', 'B', 'C'], $this->stackNames());
 	}
 
+	public function test_a_list_can_be_sorted()
+	{
+		$stack = Stack::factory()->for($this->board)->create();
+		$make = fn (string $title, ?string $due, string $created) => Card::factory()->for($stack)->create([
+			'title' => $title,
+			'due_at' => $due,
+			'created_at' => $created,
+		]);
+		$make('beta', null, '2026-01-02');
+		$make('Alpha 10', '2026-03-01', '2026-01-04');
+		$make('Alpha 9', '2026-02-01', '2026-01-01');
+		$archived = $make('Zed', '2026-01-01', '2026-01-03');
+		$archived->update(['archived_at' => now()]);
+
+		$sort = fn (string $by) => $this->actingAs($this->user)
+			->patch(route('stacks.sort', $stack), ['by' => $by])
+			->assertSessionHasNoErrors();
+		$active = fn () => $stack->cards()->active()->pluck('title')->all();
+
+		$sort('due');
+		$this->assertSame(['Alpha 9', 'Alpha 10', 'beta'], $active());
+
+		$sort('newest');
+		$this->assertSame(['Alpha 10', 'beta', 'Alpha 9'], $active());
+
+		$sort('oldest');
+		$this->assertSame(['Alpha 9', 'beta', 'Alpha 10'], $active());
+
+		$sort('title');
+		$this->assertSame(['Alpha 9', 'Alpha 10', 'beta'], $active());
+
+		// Dragging still works on the new keys.
+		$this->actingAs($this->user)
+			->patch(route('cards.move', $stack->cards()->active()->where('title', 'beta')->first()), [
+				'stack_id' => $stack->id,
+				'index' => 0,
+			]);
+		$this->assertSame(['beta', 'Alpha 9', 'Alpha 10'], $active());
+
+		$this->assertSame('Zed', $stack->cards()->whereNotNull('archived_at')->value('title'));
+
+		$this->actingAs($this->user)
+			->patch(route('stacks.sort', $stack), ['by' => 'size'])
+			->assertSessionHasErrors('by');
+	}
+
+	public function test_only_members_can_sort_a_list()
+	{
+		$stack = Stack::factory()->for($this->board)->create();
+
+		$this->actingAs(User::factory()->create())
+			->patch(route('stacks.sort', $stack), ['by' => 'due'])
+			->assertForbidden();
+	}
+
 	public function test_deleting_a_list_deletes_its_cards()
 	{
 		$stack = Stack::factory()->for($this->board)->create();

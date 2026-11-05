@@ -9,9 +9,12 @@ use App\Actions\Stacks\MoveStack;
 use App\Actions\Stacks\RenameStack;
 use App\Actions\Stacks\RestoreStack;
 use App\Actions\Stacks\SetStackLimit;
+use App\Actions\Stacks\SortStack;
+use App\Enums\CardSort;
 use App\Http\Requests\MoveRequest;
 use App\Http\Requests\StackLimitRequest;
 use App\Http\Requests\StackRequest;
+use App\Http\Requests\StackSortRequest;
 use App\Models\Board;
 use App\Models\Stack;
 use Illuminate\Http\RedirectResponse;
@@ -63,6 +66,18 @@ class StackController extends Controller
 		Gate::authorize('update', $stack->board);
 
 		$moveStack->handle($stack, $request->integer('index'));
+
+		return back();
+	}
+
+	/**
+	 * Sort a list's cards once, by due date, creation date or title.
+	 */
+	public function sort(StackSortRequest $request, Stack $stack, SortStack $sortStack): RedirectResponse
+	{
+		Gate::authorize('update', $stack->board);
+
+		$sortStack->handle($stack, $request->enum('by', CardSort::class) ?? CardSort::Due);
 
 		return back();
 	}

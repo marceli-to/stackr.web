@@ -6,6 +6,7 @@ import {
 	PhDotsThree,
 	PhGauge,
 	PhPencilSimple,
+	PhSortAscending,
 } from '@phosphor-icons/vue';
 import { useStorage } from '@vueuse/core';
 import { computed, nextTick, ref, useTemplateRef } from 'vue';
@@ -23,6 +24,9 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
@@ -102,6 +106,22 @@ function archive() {
 	router.patch(
 		StackController.archive(props.stack.id).url,
 		{},
+		{ preserveScroll: true, preserveState: true },
+	);
+}
+
+// Sorting is a one-off: the server rewrites the order, later drags work as usual.
+const sorts = [
+	{ by: 'due', label: 'Due date' },
+	{ by: 'newest', label: 'Newest first' },
+	{ by: 'oldest', label: 'Oldest first' },
+	{ by: 'title', label: 'Title (A–Z)' },
+] as const;
+
+function sort(by: (typeof sorts)[number]['by']) {
+	router.patch(
+		StackController.sort(props.stack.id).url,
+		{ by },
 		{ preserveScroll: true, preserveState: true },
 	);
 }
@@ -238,6 +258,21 @@ function onCardMoved(event: DraggableEvent<BoardCard>, fromElsewhere: boolean) {
 						<PhGauge />
 						Card limit…
 					</DropdownMenuItem>
+					<DropdownMenuSub>
+						<DropdownMenuSubTrigger>
+							<PhSortAscending />
+							Sort cards
+						</DropdownMenuSubTrigger>
+						<DropdownMenuSubContent>
+							<DropdownMenuItem
+								v-for="option in sorts"
+								:key="option.by"
+								@select="sort(option.by)"
+							>
+								{{ option.label }}
+							</DropdownMenuItem>
+						</DropdownMenuSubContent>
+					</DropdownMenuSub>
 					<DropdownMenuItem @select="toggleCollapsed">
 						<PhArrowsInLineHorizontal />
 						Collapse list

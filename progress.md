@@ -2,7 +2,7 @@
 
 A Trello clone: boards of lists and cards.
 
-_Last updated: 2026-11-03_
+_Last updated: 2026-11-05_
 
 ## Where we are
 
@@ -39,6 +39,7 @@ _Last updated: 2026-11-03_
 | 29. More board colours (12 solid, 12 gradients)        | ✅ done |
 | 30. Activity feed for the whole board (⋯ → Activity…)  | ✅ done |
 | 31. Import from Trello (⋯ → Import from Trello…)       | ✅ done |
+| 32. Sort a list (list menu → Sort cards)               | ✅ done |
 
 Everything is on `main` and pushed to GitHub (https://github.com/marceli-to/stackr.web).
 Production (https://stackr.kimiyu.ch) runs `781f1fb` (deployed 2026-11-03, all migrations run; `ADMIN_EMAILS` still to be added to the server `.env` by the user).
@@ -241,6 +242,10 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   1–999); the header then shows "3 / 5", red when over, and nothing is blocked. "Collapse list" is
   personal (localStorage `stackr.collapsed.<board>`): the list shrinks to a narrow column with
   its name on its side and the card count; click it to expand. Collapsed lists can still be dragged.
+- **Sorting a list:** "Sort cards" in the list menu (`stacks.sort`, `SortStack`, `CardSort` enum)
+  orders the active cards once by due date (soonest first, none last), newest, oldest or title
+  (natural, any case); ties keep their order. It rewrites the cards' positions (`a0`, `a1`, …), so
+  it isn't a lasting mode; archived cards keep their old keys and land wherever those fall on restore.
 - **Background photos:** "Background photo" in the board's edit dialog uploads at once
   (`BoardBackgroundController`, `SetBackground`): JPEG/PNG/WebP up to 20 MB, shrunk to 2400px
   WebP when wider, stored privately under `backgrounds/{board}/` and served to members only
@@ -506,7 +511,7 @@ Gaps compared with Trello (added 2026-10-25, not prioritised yet):
 27. Copy a list.
 28. Move a list to another board.
 29. Move or archive every card in a list at once.
-30. Sort a list by due date or creation date.
+30. ~~Sort a list by due date or creation date.~~ Done (also by title).
 
 **Cards (gaps)**
 
