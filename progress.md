@@ -279,10 +279,13 @@ Still open there: a manual check, see "After the deploy" under "Next up".
   as code). Code blocks, existing links (autolinks too) and image alt text are skipped. GitHub and
   GitLab both answer `/commit/<hash>`. No repository, no change. In the ZIP export, not in MCP.
 - **My cards:** `/my-cards` (`MyCardsController`, `MyCardResource`, `pages/cards/Mine.vue`) lists
-  the active cards you're a member of, on boards you belong to, in active lists: soonest due first,
-  no due date last, then board name and board order. Completed cards are hidden behind "Show
-  completed (n)". Each row shows the board's colour, board · list, labels, due and checklist
-  progress, and opens the card on its board. Reached from the ⋯ menu and a button on the overview.
+  the active cards you're a member of, on boards you belong to, in active lists, sorted by due
+  date (none last), then board name and board order. Laid out like a board: columns Overdue (only
+  when something is), Today, Next 7 days, Later and No due date, bucketed in the browser's time
+  zone; they share the width (15–20rem each) and stack on phones. Board chips filter to one board;
+  "Show completed (n)" adds a Completed column. A card shows its board's colour dot, board · list,
+  labels, title, due (with the time only under Today) and checklist progress, and opens on its
+  board. Reached from the ⋯ menu and a button on the overview.
 - **Checklist item → card:** the cards icon on an item (hover, next to ✕) runs
   `checklist-items.convert` (`ConvertChecklistItem`): a new card with the item's title, right below
   the item's card in the same list (completed if the item was ticked), and the item leaves the
@@ -495,7 +498,8 @@ browser:
 - Board ⋯ → Export cards as CSV opens in Excel with umlauts intact.
 - Members dialog: Make owner → the old owner can then leave.
 - Checklist item: the cards icon makes a card right below.
-- My cards (⋯ menu or the overview button): order, Show completed, a row opens the card.
+- My cards (⋯ menu or the overview button): columns by due date, board filter, Show completed,
+  a card opens on its board. (The layout was checked in headless Chrome at 1440 and 500 px.)
 - Set Repository on the Stackr Backlog board (⋯ → Edit → https://github.com/marceli-to/stackr.web)
   so commit hashes in comments link.
 - The landing page still says "Eleven colours for your boards, five of them gradients"; there are
