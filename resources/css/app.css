@@ -268,3 +268,16 @@
 		box-shadow: var(--field-focus);
 	}
 }
+
+/* Selects draw their own chevron, inset from the edge like the text, instead
+   of the browser's one hugging the border. Outside the layers on purpose:
+   the selects set their padding with px-* utilities, and this has to win on
+   the right side only. The chevron is a mid grey that reads in both themes. */
+select:not([multiple]):not([size]) {
+	appearance: none;
+	padding-right: 2.25rem;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath fill='none' stroke='%23888' stroke-linecap='round' stroke-linejoin='round' stroke-width='24' d='m208 96-80 80-80-80'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 0.75rem center;
+	background-size: 0.875rem;
+}
